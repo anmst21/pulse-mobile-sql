@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store, fetchUserInfo, fetchUserAudios } from "./src/redux";
 import { getAccessToken } from "./src/utils/initializeSpotifyApp";
+// import MapboxGL from "@rnmapbox/maps";
 
 import {
   Dimensions,
@@ -78,10 +79,13 @@ const App = () => {
   //   socketConnection(socket);
   //   return () => socket.disconnect();
   // }, []);
+  // useEffect(() => {
+  //   MapboxGL.setAccessToken("YOUR_MAPBOX_ACCESS_TOKEN");
+  // }, []);
 
   useEffect(() => {
     fetchUserDetails();
-    getAccessToken();
+    // getAccessToken();
     const intervalId = setInterval(getAccessToken, 50 * 60 * 1000);
     const socket = io(config.apiURL);
     socketConnection(socket);

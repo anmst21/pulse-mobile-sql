@@ -14,6 +14,7 @@ const UserPage = () => {
   const { navigate } = useNavigation();
 
   const storedUserInfo = useSelector((state) => state.user.userInfo);
+  console.log("storedUserInfo", storedUserInfo)
   const audioList = useSelector((state) => state.audio.recordings);
   console.log("storedUserInfo._id", storedUserInfo._id);
 
@@ -22,8 +23,8 @@ const UserPage = () => {
       <UserWall
         userAudios={audioList}
         userInfo={storedUserInfo}
-        userId={storedUserInfo._id}
-        storedUserInfo={storedUserInfo._id}
+        userId={storedUserInfo.id}
+        storedUserInfo={storedUserInfo.id}
       />
       <Button
         title="Sign Out"

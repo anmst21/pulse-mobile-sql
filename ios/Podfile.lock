@@ -626,10 +626,6 @@ PODS:
   - RNSVG (13.14.0):
     - React-Core
   - SocketRocket (0.6.1)
-  - ViroKit (1.0):
-    - React
-  - ViroReact (1.0):
-    - React
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -732,8 +728,6 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSoundLevel (from `../node_modules/react-native-sound-level`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - "ViroKit (from `../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer/`)"
-  - "ViroReact (from `../node_modules/@viro-community/react-viro/ios/`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -903,10 +897,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-sound-level"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  ViroKit:
-    :path: "../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer/"
-  ViroReact:
-    :path: "../node_modules/@viro-community/react-viro/ios/"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1003,11 +993,9 @@ SPEC CHECKSUMS:
   RNSoundLevel: 370bf3a30d947a0391f13893053c1210ebcf2e9c
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  ViroKit: 700d3d4ca086368d06224de1cbbc19781aea2094
-  ViroReact: f4980e6b04918c4340637f9cbaae22a6bb7ea440
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: ab84c85d3d7f975ee0658c94688e862703b1c0d1
+PODFILE CHECKSUM: 8bb2a6a64e18508ec390aa3a61e12de0f90b6afc
 
 COCOAPODS: 1.13.0

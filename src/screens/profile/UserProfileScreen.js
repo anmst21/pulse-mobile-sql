@@ -34,7 +34,7 @@ const UserProfileScreen = ({ route }) => {
     <>
       <View style={styles.header}>
         <Text style={styles.h1}>{userInfo.userName}</Text>
-        {storedUserInfo._id === id && (
+        {storedUserInfo.id === id && (
           <Button
             title="Add Friends"
             onPress={() => {
@@ -71,5 +71,6 @@ const styles = StyleSheet.create({
   h1: {
     marginLeft: 20,
     fontSize: 28,
+    backgroundColor: "black"
   },
 });

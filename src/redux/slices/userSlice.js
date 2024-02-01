@@ -9,21 +9,33 @@ import {
 
 import { uploadImage, deleteImage } from "../thunks/imageThunk";
 import { deleteAudio } from "../thunks/audioThunk";
+// {
+//   "email": "1",
+//     "followersCount": 0,
+//       "followingCount": 0,
+//         "id": 12,
+//           "image_link":
+//   "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/12/f8948ebd-2eab-4f2b-a640-7edfedf6d0f0.png",
+//     "postsCount": 0,
+//       "subscribersCount": 0,
+//         "subscriptionsCount": 0,
+//           "username": "1"
+// }
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
     userInfo: {
-      __v: 0,
-      _id: "",
+      id: null,
       email: "",
-      userName: "",
-      imageLink: null,
+      username: "",
+      image_link: null,
       dateCreated: "",
       postsCount: 0,
       followersCount: 0,
-      subscribersCount: 0,
       followingCount: 0,
+      subscribersCount: 0,
+      subscriptionsCount: 0,
       notificationsCount: 0,
     },
     token: null,

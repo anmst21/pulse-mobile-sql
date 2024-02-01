@@ -71,7 +71,7 @@ const MainFlow = () => {
 
 export default MainApp = () => {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, }}>
       <Stack.Navigator
         initialRouteName="Main"
         screenOptions={{
