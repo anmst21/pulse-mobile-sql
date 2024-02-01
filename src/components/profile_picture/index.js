@@ -1,12 +1,44 @@
-import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
-import React from "react";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { Image, } from "expo-image";
+import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteImage, uploadImage } from "../../redux";
+import Icon from "../icon";
+import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
 const ProfilePicture = ({ imageLink, userId }) => {
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("isLoading", isLoading);
+
+
+  const rotation = useSharedValue(0);
+
+  // Define the animated style for the loader icon
+  const spinningAnimation = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotation.value}deg` }],
+    };
+  });
+
+  // Start the spinning animation
+  const startSpinning = () => {
+    rotation.value = withRepeat(withTiming(360, { duration: 1000, easing: Easing.linear }), -1, false);
+  };
+
+  // Start the spinning animation when isLoading is true
+  useEffect(() => {
+    if (isLoading) {
+      startSpinning();
+    } else {
+      rotation.value = 0;
+    }
+  }, [isLoading]);
+
+
+
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -41,19 +73,26 @@ const ProfilePicture = ({ imageLink, userId }) => {
 
   return (
     <TouchableOpacity
-      onPress={storedUserInfo._id === userId ? pickImage : null}
-      activeOpacity={storedUserInfo._id === userId ? 0.2 : 1}
+      onPress={storedUserInfo.id === userId ? pickImage : null}
+      activeOpacity={storedUserInfo.id === userId ? 0.2 : 1}
     >
       <View style={styles.container}>
+        {isLoading && <Animated.View style={[styles.loader, spinningAnimation]}>
+          <Icon name="loaderIcon" />
+        </Animated.View>}
         {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
         {imageLink ? (
           <Image
             source={{ uri: imageLink }}
             style={{ width: 100, height: 100, borderRadius: 1000 }}
+            //  onLoadStart={() => setIsLoading(true)} // Handle load start
+            onLoadStart={() => { setIsLoading(true) }} // Handle load end
+            onLoad={() => { setIsLoading(false); console.log("ended") }}
           />
         ) : (
-          <Text>Pick Image</Text>
+          <Icon name="profileIcon" style={{ width: 120, height: 120, color: "#3B3B3B" }} />
         )}
+
       </View>
     </TouchableOpacity>
   );
@@ -62,11 +101,16 @@ const ProfilePicture = ({ imageLink, userId }) => {
 export default ProfilePicture;
 
 const styles = StyleSheet.create({
+  loader: {
+    position: "absolute",
+    zIndex: 1000
+  },
+
   container: {
     width: 100,
     height: 100,
     borderRadius: 1000,
-    backgroundColor: "grey",
+
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

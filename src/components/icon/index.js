@@ -31,11 +31,23 @@ import Mic from "./mic";
 import Spotify from "./spotify";
 import Music from "./music";
 import WaveForm from "./waveForm";
+import ProfileIcon from "./profileIcon"
+import LoaderIcon from "./loaderIcon"
+import FollowIcon from "./followIcon"
+import SubscribeIcon from "./subscribeIcon"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "waveForm":
       return <WaveForm style={style} />;
+    case "subscribeIcon":
+      return <SubscribeIcon style={style} />;
+    case "followIcon":
+      return <FollowIcon style={style} />;
+    case "loaderIcon":
+      return <LoaderIcon style={style} />;
+    case "profileIcon":
+      return <ProfileIcon style={style} />;
     case "mountains":
       return <Mountains style={style} />;
     case "x":

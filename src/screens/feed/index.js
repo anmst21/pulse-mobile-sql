@@ -28,8 +28,8 @@ const FeedScreen = ({ navigation }) => {
   const activeTab = useSelector((state) => state.tab);
   const isMenuVisible = useSharedValue(true);
   const opacity = useSharedValue(0);
-  const feedOpacity = useSharedValue(0);
   const scrollY = useSharedValue(0);
+  const feedOpacity = useSharedValue(0);
 
 
   useEffect(() => {
@@ -107,26 +107,26 @@ const FeedScreen = ({ navigation }) => {
   const renderContent = () => {
     if (activeTab.map) {
       return (<MapContainer />)
-    } else {
-      return (
-          <List
-            url="/feed/fetchFeed"
-            limit={2}
-            listItem="post"
-            paddingTop={185}
-            paddingBottom={270}
-            onScrollEvent={(value) => {
-              if (!activeTab.player) {
-                scrollY.value = value;
-                if (opacity.value <= 0) {
-                  isMenuVisible.value = false;
-                } else {
-                  isMenuVisible.value = true;
-                }
-              }
-            }}
-          />
-      )
+      // } else {
+      //   return (
+      //       // <List
+      //       //   url="/feed/fetchFeed"
+      //       //   limit={2}
+      //       //   listItem="post"
+      //       //   paddingTop={185}
+      //       //   paddingBottom={270}
+      //       //   onScrollEvent={(value) => {
+      //       //     if (!activeTab.player) {
+      //       //       scrollY.value = value;
+      //       //       if (opacity.value <= 0) {
+      //       //         isMenuVisible.value = false;
+      //       //       } else {
+      //       //         isMenuVisible.value = true;
+      //       //       }
+      //       //     }
+      //       //   }}
+      //       // />
+      //   )
     }
   }
 

@@ -24,7 +24,8 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
         <View style={styles.itemsCenter}>
           <CustomText >
-            {userInfo.username}, {userInfo.id}
+            <CustomText style={{ fontSize: 25 }}>
+              {userInfo.username}</CustomText>, {userInfo.id}
           </CustomText>
           <View style={styles.infoContainer}>
 
@@ -35,22 +36,23 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
               </View>
             </TouchableOpacity> */}
             <View style={styles.lilBox}>
-              <CustomText>Posts:</CustomText>
-              <CustomText>{userInfo.postsCount}</CustomText>
+              <CustomText style={{ fontSize: 14 }}>Posts:</CustomText>
+              <CustomText style={{ fontSize: 18 }}>{userInfo.postsCount}</CustomText>
             </View>
 
             <TouchableOpacity onPress={() => handlePress("followers")}>
               <View style={styles.lilBox}>
-                <CustomText>Followers:</CustomText>
-                <CustomText>{userInfo.followersCount}</CustomText>
+                <CustomText style={{ fontSize: 14 }}>Followers:</CustomText>
+                <CustomText style={{ fontSize: 18 }}>{userInfo.followersCount}</CustomText>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePress("subscribers")}>
               <View style={styles.lilBox}>
-                <CustomText>Subscribers:</CustomText>
-                <CustomText>{userInfo.subscribersCount}</CustomText>
+                <CustomText style={{ fontSize: 14 }}>Subs:</CustomText>
+                <CustomText style={{ fontSize: 18 }}>{userInfo.subscribersCount}</CustomText>
               </View>
             </TouchableOpacity>
+
           </View>
           {/* <View style={styles.infoContainer}>
             <TouchableOpacity onPress={() => handlePress("fetchSubscribing")}>
@@ -88,10 +90,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   lilBox: {
-    borderRightWidth: 1,
-    borderColor: "black",
+    backgroundColor: "#3B3B3B",
+    height: 40,
     alignItems: "center",
-
+    width: 70,
+    borderRadius: 5,
     justifyContent: "center",
   },
   container: {
