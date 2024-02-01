@@ -14,6 +14,7 @@ import Animated, {
 
 import Theme from "../../styles/theme";
 import NotificationHeader from "../../components/header/notificationHeader";
+import Icon from "../../components/icon";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -123,14 +124,19 @@ const Notifications = () => {
   const textSwitch = (item) => {
     switch (item.type) {
       case "follow":
-        return (
-          <CustomText>{item.username} is now following you</CustomText>
+        return (<View style={styles.textComponent}>
+          <CustomText>{item.username}</CustomText>
+          <CustomText style={styles.textMessage}>Now following you</CustomText>
+        </View>
         );
       case "subscription_request":
         return (
-          <CustomText>
-            {item.username} sent you a subscription request
-          </CustomText>
+          <View style={styles.textComponent}>
+            <CustomText>{item.username}</CustomText>
+            <CustomText style={styles.textMessage}>
+              Sent you a subscription request
+            </CustomText>
+          </View>
         );
     }
   };
@@ -156,12 +162,14 @@ const Notifications = () => {
   const NotificationItem = ({ item }) => (
     <View style={styles.notificationContainer}>
       <View style={styles.userIconWithTextContainer}>
-        <Image source={{ uri: item.image_link }} style={styles.userImage} />
-        <View style={styles.textContainer}>{textSwitch(item)}</View>
+        {item.image_link ? <Image source={{ uri: item.image_link }} style={styles.userImage} /> : <Icon name="profileIcon" style={{ width: 40, height: 40, color: "#808080" }} />}
+
+
+        {textSwitch(item)}
       </View>
-      <View style={styles.buttonContainer}>{buttonSwitch(item)}</View>
+      {/* <View style={styles.buttonContainer}>{buttonSwitch(item)}</View> */}
       <View style={styles.textContainer}>
-        <CustomText style={{ color: "#fff696" }}>
+        <CustomText style={styles.dateText}>
           {humanReadableDate(item.date)}
         </CustomText>
       </View>
@@ -185,18 +193,38 @@ const Notifications = () => {
 export default Notifications;
 
 const styles = StyleSheet.create({
+  textMessage: {
+    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: 14,
+    // backgroundColor: "blue",
+    position: "absolute",
+    top: 30,
+
+  },
+  textComponent: {
+    position: "relative",
+    flex: 1,
+    marginLeft: 20
+  },
+  dateText: {
+    color: "rgba(255, 255, 255, 0.4)",
+    fontSize: 12,
+  },
   userIconWithTextContainer: {
     alignItems: "center", // centers items horizontally
     justifyContent: "start", // centers items vertically
     flexDirection: "row",
   },
-  userImage: { width: 30, height: 30, borderRadius: 1000 },
+  userImage: { width: 40, height: 40, borderRadius: 1000 },
   textContainer: {
-    paddingLeft: 10,
+    alignItems: "flex-end"
   },
   notificationContainer: {
-    marginHorizontal: 20,
-    marginBottom: 40,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    paddingBottom: 20,
+    borderBottomColor: "rgba(250, 251, 254, 0.20)",
+    borderWidth: 1
   },
   buttonContainer: {
     flexDirection: "row",

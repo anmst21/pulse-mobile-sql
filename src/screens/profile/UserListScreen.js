@@ -87,17 +87,18 @@ const UserListScreen = ({ route }) => {
 
   const tabSwitch = (position, type) => {
     if (position === 1 && type === "followers") {
+      setResults()
       setPage("followers")
-      setResults()
+
     } else if (position === 2 && type === "followers") {
+      setResults()
       setPage("following")
-      setResults()
     } else if (position === 1 && type === "subscribers") {
+      setResults()
       setPage("subscribers")
-      setResults()
     } else if (position === 2 && type === "subscribers") {
-      setPage("subscribing")
       setResults()
+      setPage("subscribing")
     }
   }
 
