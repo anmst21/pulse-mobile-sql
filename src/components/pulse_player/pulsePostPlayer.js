@@ -31,7 +31,7 @@ const PulsePlayer = ({
     deepLink = "";
   }
   const { duration, soundLevels, type, extension, fileName, audioLink } = data;
-
+  console.log("isPlaying", isPlaying)
   const [waveWidth, setWaveWidth] = useState(100);
 
   const onEditorRightLayout = (event) => {

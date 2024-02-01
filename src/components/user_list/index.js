@@ -14,7 +14,7 @@ import FollowUnfollowButton from "../follow_unfollow_button";
 const UsersList = ({ results, setResults }) => {
   const navigation = useNavigation();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
-
+  console.log("UsersList", results)
   return (
     <>
       {results ? (
@@ -25,25 +25,25 @@ const UsersList = ({ results, setResults }) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
-                storedUserInfo._id !== item._id
+                storedUserInfo.id !== item.id
                   ? navigation.push("UserProfileScreen", {
-                      id: item._id,
-                      item,
-                    })
+                    id: item.id,
+                    item,
+                  })
                   : navigation.dispatch(StackActions.popToTop());
               }}
             >
               <View style={styles.userElement}>
                 <View style={styles.imageContainer}>
-                  {item.imageLink ? (
+                  {item.image_link ? (
                     <Image
-                      source={{ uri: item.imageLink }}
+                      source={{ uri: item.image_link }}
                       style={{ width: 30, height: 30, borderRadius: 1000 }}
                     />
                   ) : null}
-                  <Text style={styles.itemText}>{item.userName}</Text>
+                  <Text style={styles.itemText}>{item.username}</Text>
                 </View>
-                {storedUserInfo._id !== item._id ? (
+                {storedUserInfo.id !== item.id ? (
                   <FollowUnfollowButton
                     item={item}
                     results={results}
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
     marginBottom: 10,
-    color: "white",
+    color: "black",
   },
   imageContainer: {
     flexDirection: "row",

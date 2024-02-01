@@ -4,6 +4,7 @@ import CustomText from "../../components/text";
 import Icon from "../../components/icon";
 import InAppBrowser from "react-native-inappbrowser-reborn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import config from "../../../config";
 
 const SignInWithService = () => {
   const [spotifyState, setSpotifyState] = useState(false);
@@ -62,7 +63,7 @@ const SignInWithService = () => {
           <TouchableOpacity
             onPress={() => {
               openUrl(
-                "https://bcd7-108-36-184-166.ngrok-free.app/loginSpotify"
+                config.apiURL + "spotify/login"
               );
               // openUrl("https://google.com");
             }}

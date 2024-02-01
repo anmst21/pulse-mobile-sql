@@ -2,6 +2,7 @@ import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Theme from "../../styles/theme"
+// import MapboxGL from "@rnmapbox/maps";
 
 
 import Animated, {
@@ -19,11 +20,13 @@ import customMapStyle from "../../components/map/mapStyle";
 import CustomText from "../../components/text";
 import Button from "../../components/button"
 
+// MapboxGL.setAccessToken("pk.eyJ1IjoicHVsbGxzZSIsImEiOiJjbHMxd3A4ODIwZnByMmptdWd5a3BzeHl1In0.F1HIey0bio21PgW8rW8vTQ")
+
 const MapContainer = () => {
 
     return (
         <View style={styles.container}>
-            <MapView
+            {/* <MapView
                 provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                 style={styles.map}
                 customMapStyle={customMapStyle}
@@ -34,7 +37,7 @@ const MapContainer = () => {
                     longitudeDelta: 0.0121,
                 }}
             >
-            </MapView>
+            </MapView> */}
 
         </View>
     );
@@ -50,5 +53,5 @@ const styles = StyleSheet.create({
     },
     map: {
         ...StyleSheet.absoluteFillObject,
-      },
+    },
 })

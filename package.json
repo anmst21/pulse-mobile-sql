@@ -22,7 +22,6 @@
     "@reduxjs/toolkit": "^1.9.7",
     "@rivascva/react-native-code-editor": "^1.2.2",
     "@shopify/react-native-skia": "^0.1.214",
-    "@viro-community/react-viro": "npm:react-viro-sw",
     "axios": "^1.5.1",
     "buffer": "^6.0.3",
     "expo": "~49.0.13",

@@ -16,10 +16,10 @@ import Icon from "../../components/icon";
 const UserPosts = ({ storedUserInfo, userId, audioList }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
+  const [playingNow, setPlayingNow] = useState(null);
 
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const dispatch = useDispatch();
-  console.log("audioList", audioList);
 
   const setPlayer = async () => {
     await Audio.setAudioModeAsync({
@@ -161,19 +161,21 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
       <ScrollView>
         {audioList
           ? audioList.map((audio) => (
-              <View key={audio._id} style={styles.postComponent}>
-                <PulsePlayer
-                  data={audio}
-                  toggleSound={toggleSound}
-                  playbackPosition={playbackPosition}
-                  onPostSliderValueChange={onPostSliderValueChange}
-                  sound={sound}
-                  // isPlaying={isPlaying}
-                  isPlaying={playingStatus[audio._id]}
-                />
-                {trash(audio._id)}
-              </View>
-            ))
+            <View key={audio._id} style={styles.postComponent}>
+              <PulsePlayer
+                data={audio}
+                toggleSound={toggleSound}
+                playbackPosition={playbackPosition}
+                onPostSliderValueChange={onPostSliderValueChange}
+                sound={sound}
+                // isPlaying={isPlaying}
+                isPlaying={playingStatus[audio._id]}
+                playingNow={playingNow}
+                id={audio._id}
+              />
+              {trash(audio._id)}
+            </View>
+          ))
           : null}
       </ScrollView>
     </View>

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import userApi from "../axios/userApi";
+import sqlApi from "../axios/sqlApi";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -9,7 +10,7 @@ const uploadImage = createAsyncThunk(
     try {
       const user = await AsyncStorage.getItem("userId");
       // Get the preassigned S3 URL for image
-      const response = await userApi.get(`/api/createImage?userId=${user}`);
+      const response = await sqlApi.post(`/user/createImage`, { userId: user });
       const { url, key } = response.data;
 
       await axios.put(url, blob, {
@@ -20,9 +21,9 @@ const uploadImage = createAsyncThunk(
       const finalUrl =
         "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/" + key;
 
-      await userApi.post("/api/saveImageLink", {
+      await sqlApi.post("/user/saveImageLink", {
         imageLink: finalUrl,
-        user,
+        userId: user,
       });
       console.log("finalUrl", finalUrl);
       return finalUrl;

@@ -33,7 +33,7 @@ const refreshAccessToken = async () => {
 
   // Call your backend endpoint to refresh the token
   try {
-    const response = await axios.post(config.apiURL + "refresh", {
+    const response = await axios.post(config.apiURL + "spotify/refresh", {
       refreshToken,
     });
 
