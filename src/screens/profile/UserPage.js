@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo, fetchUserAudios } from "../../redux";
 import { useFocusEffect } from "@react-navigation/native";
 import UserWall from "./UserWall";
+import Icon from "../../components/icon";
 
 const UserPage = () => {
   const [userId, setUserId] = useState(null);
@@ -19,13 +20,15 @@ const UserPage = () => {
   console.log("storedUserInfo._id", storedUserInfo._id);
 
   return (
-    <View>
+    <View style={styles.container}>
+
       <UserWall
         userAudios={audioList}
         userInfo={storedUserInfo}
         userId={storedUserInfo.id}
         storedUserInfo={storedUserInfo.id}
       />
+
       <Button
         title="Sign Out"
         onPress={() => {
@@ -38,4 +41,9 @@ const UserPage = () => {
 
 export default UserPage;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  // container: {
+  //   backgroundColor: "black",
+  //   flex: 1
+  // }
+});
