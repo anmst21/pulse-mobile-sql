@@ -2,8 +2,9 @@ import { StyleSheet, Text, View, Button } from "react-native";
 import React, { useEffect, useState } from "react";
 import UserWall from "./UserWall";
 import { useSelector } from "react-redux";
-import userApi from "../../redux/axios/userApi";
+import sqlApi from "../../redux/axios/sqlApi";
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
+import CustomText from "../../components/text";
 
 const UserProfileScreen = ({ route }) => {
   const { id, item } = route.params;
@@ -11,16 +12,16 @@ const UserProfileScreen = ({ route }) => {
   const [userAudios, setUserAudios] = useState();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   const [userButton, setUserButton] = useState([item]);
-
+  console.log("fetchUserInfo", id)
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await userApi.get(`/userinfo/${id}`);
-        const responseAudios = await userApi.get(
-          `/api/userAudios?userId=${id}`
-        );
+        const response = await sqlApi.get(`/user/${id}`);
+        // const responseAudios = await userApi.get(
+        //   `/api/userAudios?userId=${id}`
+        // );
 
-        setUserAudios(responseAudios.data);
+        // setUserAudios(responseAudios.data);
         setUserInfo(response.data);
       } catch (error) {
         console.error("An error occurred while fetching the user info:", error);
@@ -31,45 +32,66 @@ const UserProfileScreen = ({ route }) => {
   }, [id]);
 
   return (
-    <>
+
+    <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.h1}>{userInfo.userName}</Text>
-        {storedUserInfo._id === id && (
+
+
+        {/* {storedUserInfo.id === id && (
           <Button
             title="Add Friends"
             onPress={() => {
               navigate("AddFriendsScreen");
             }}
           />
-        )}
+        )} */}
       </View>
+      <View style={styles.btnInteraction}>
+        <FollowUnfollowButton
+          item={userButton[0]}
+          results={userButton}
+          setResults={setUserButton}
+        />
+      </View>
+
       <UserWall
         storedUserInfo={storedUserInfo}
         userAudios={userAudios}
         userInfo={userInfo}
         userId={id}
+
       />
-      <FollowUnfollowButton
-        item={userButton[0]}
-        results={userButton}
-        setResults={setUserButton}
-      />
-    </>
+
+    </View>
+
   );
 };
 
 export default UserProfileScreen;
 
 const styles = StyleSheet.create({
+  btnInteraction: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    position: 'absolute', // Position the button absolutely
+    bottom: 100, // Place it at the bottom
+
+  },
+  container: {
+    backgroundColor: "black",
+    flex: 1
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
     paddingRight: 10,
-    marginTop: 150,
+    marginTop: 80,
   },
   h1: {
     marginLeft: 20,
     fontSize: 28,
+    color: "white"
   },
 });

@@ -14,10 +14,14 @@ import SignInWithService from "./SignInWithService";
 const Settings = ({ route }) => {
   console.log(route.params?.access_token);
   console.log(route.params?.refresh_token);
+  console.log("expires_in", route.params?.expires_in);
 
-  const setSpotifyStorage = async ({ access, refresh }) => {
+  const setSpotifyStorage = async ({ access, refresh, expires_in }) => {
     if (access) {
       await AsyncStorage.setItem("accessToken", access);
+    }
+    if (expires_in) {
+      await AsyncStorage.setItem("expiresIn", expires_in);
     }
     if (refresh) {
       await AsyncStorage.setItem("refreshToken", refresh);
@@ -28,8 +32,9 @@ const Settings = ({ route }) => {
     setSpotifyStorage({
       access: route.params?.access_token,
       refresh: route.params?.refresh_token,
+      expires_in: route.params?.expires_in,
     });
-  }, [route.params?.access_token, route.params?.refresh_token]);
+  }, [route.params]);
 
   if (route.params?.access_token && route.params?.refresh_token) {
     InAppBrowser.close();
@@ -41,8 +46,6 @@ const Settings = ({ route }) => {
       </View>
 
       <SignInWithService />
-
-      <PlayerComponent />
     </View>
   );
 };

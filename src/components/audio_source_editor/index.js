@@ -1,33 +1,46 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import CustomText from '../text';
-import RecordingEditor from './recordingEditor';
-import SpotifyEditor from './spotifyEditor';
-import FileEditor from './fileEditor';
+import RecordingEditor from "./recordingEditor";
+import SpotifyEditor from "./spotifyEditor";
+import FileEditor from "./fileEditor";
+import { useFocusEffect } from "@react-navigation/native";
+import { setPlaybackPosition, setIsPlaying } from "../../redux";
+import usePlaybackStatusUpdate from "../../hooks/usePlaybackStatusUpdate";
 
 const App = () => {
-    const player = useSelector((state) => state.player);
+  const player = useSelector((state) => state.player);
+  const dispatch = useDispatch();
+  const sound = useSelector((state) => state.pulseRecording.sound);
 
-    const renderEditor = () => {
-        switch (player.editedPulse?.audioSourceType) {
-            case "recording":
-                return <RecordingEditor/>
-            case "file":
-                return <FileEditor/>
-            case "spotify":
-                return <SpotifyEditor/>
-            default:
-                return
-        }
+  const [isLooping, setIsLooping] = useState(false);
+
+  usePlaybackStatusUpdate(sound);
+
+  const toggleLooping = async () => {
+    try {
+      await sound.setIsLoopingAsync(!isLooping);
+      setIsLooping(!isLooping);
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    return (
-        <View>
-            {renderEditor()}
-        </View>
-    );
+  const renderEditor = () => {
+    switch (player.editedPulse?.audioSourceType) {
+      case "recording":
+        return <RecordingEditor />;
+      case "file":
+        return <FileEditor />;
+      case "spotify":
+        return <SpotifyEditor />;
+      default:
+        return;
+    }
+  };
+
+  return <View>{renderEditor()}</View>;
 };
 
 export default App;

@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Audio } from "expo-av";
-import * as Sharing from "expo-sharing";
 import RNSoundLevel from "react-native-sound-level";
 import { uploadAudio, createPulse } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,17 +16,15 @@ import Icon from "../../components/icon";
 import { useFocusEffect } from "@react-navigation/native";
 import { modifyObjectArray } from "../../components/soundbar/soundbarThunk";
 
-import Slider from "@react-native-community/slider";
 import * as Clipboard from "expo-clipboard";
-import { Linking, Image } from "react-native";
 
 import SoundBar from "../../components/soundbar";
-import SignInWithService from "../settings/SignInWithService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import config from "../../../config";
 
-import Button from "../../components/button"
+import Button from "../../components/button";
+import SpotifyPlayer from "../../components/spotify_player";
 
 export default function App() {
   const [name, setName] = useState("Recording");
@@ -36,9 +33,7 @@ export default function App() {
   const [sound, setSound] = useState();
 
   const [duration, setDuration] = useState(0);
-  console.log("duration", duration);
   const [playbackPosition, setPlaybackPosition] = useState(0);
-  console.log("playbackPosition", playbackPosition);
   const [soundLevels, setSoundLevels] = useState([]);
 
   const [isLooping, setIsLooping] = useState(false);
@@ -47,6 +42,10 @@ export default function App() {
 
   const [currentView, setCurrentView] = useState("waveform");
   const [spotifyTrack, setSpotifyTrack] = useState();
+
+  const dispatch = useDispatch();
+  const storedUserInfo = useSelector((state) => state.user.userInfo);
+
   const toggleView = () => {
     switch (currentView) {
       case "file":
@@ -66,7 +65,7 @@ export default function App() {
     switch (currentView) {
       case "file":
         return (
-          <TouchableOpacity onPress={toggleView} onLongPress={startRecording}>
+          <TouchableOpacity onPress={toggleView}>
             <View style={styles.btnContainer}>
               <Icon name="fileIcon" />
             </View>
@@ -75,22 +74,22 @@ export default function App() {
       case "waveform":
         return !isRecording ? (
           <TouchableOpacity onPress={toggleView} onLongPress={startRecording}>
-            <View style={styles.btnContainer}>
-              <View style={styles.startRec} />
-            </View>
+            <View style={styles.btnContainer}></View>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={stopRecording}>
-            <View style={styles.stopRec}>
-              <Icon name="stopRec" />
-            </View>
+            <View style={styles.stopRec}></View>
           </TouchableOpacity>
         );
       case "spotify":
         return (
           <TouchableOpacity
             onPress={!spotifyTrack ? toggleView : null}
-            onLongPress={() => getTrack("1sseW3KwsD0HSBnjqJTS1D")}
+            onLongPress={() =>
+              getTrack(
+                "https://open.spotify.com/track/4ZtqsOdBbS6GoedzzRGSo9?si=cc4485a8083e4c07"
+              )
+            }
           >
             <Icon name="spotifyIcon" style={{ width: 50, height: 50 }} />
           </TouchableOpacity>
@@ -98,24 +97,6 @@ export default function App() {
     }
   };
 
-  const dispatch = useDispatch();
-  const storedUserInfo = useSelector((state) => state.user.userInfo);
-
-  const clearSpotifyTrack = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      if (sound._loaded) {
-        // Check if sound is loaded before trying to unload
-        await sound.unloadAsync();
-      }
-    }
-    setSpotifyTrack(null);
-    setSound(undefined);
-    setIsRecording(false);
-    setIsPlaying(false);
-    setPlaybackPosition(0);
-    setDuration(0);
-  };
   const loadAudio = async (audioLink) => {
     const soundInstance = new Audio.Sound();
 
@@ -127,9 +108,12 @@ export default function App() {
     }
   };
 
-  const getTrack = async () => {
+  const getTrack = async (pastedLink) => {
+    if (spotifyTrack) {
+      clearSpotifyTrack();
+    }
     try {
-      const link = await Clipboard.getStringAsync();
+      const link = pastedLink ? pastedLink : await Clipboard.getStringAsync();
 
       const token = await AsyncStorage.getItem("accessToken");
       function getSpotifyTrackID() {
@@ -144,7 +128,6 @@ export default function App() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("response", response.data.preview_url);
       setSpotifyTrack(response.data);
       loadAudio(response.data.preview_url);
       setDuration(30000);
@@ -189,7 +172,7 @@ export default function App() {
     RNSoundLevel.onNewFrame = (data) => {
       // Output the sound level data
 
-      if (data.id % 2 === 0) {
+      if (data.id) {
         setSoundLevels((prevLevels) => [...prevLevels, data]);
       }
     };
@@ -230,6 +213,22 @@ export default function App() {
     } catch (error) {
       console.error("Error resetting:", error);
     }
+  };
+
+  const clearSpotifyTrack = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      if (sound._loaded) {
+        // Check if sound is loaded before trying to unload
+        await sound.unloadAsync();
+      }
+    }
+    setSpotifyTrack(null);
+    setSound(undefined);
+    setIsRecording(false);
+    setIsPlaying(false);
+    setPlaybackPosition(0);
+    setDuration(0);
   };
 
   const onSliderValueChange = async (value) => {
@@ -320,30 +319,16 @@ export default function App() {
     );
   };
 
-  const makePulse = () => {
-    dispatch(
-      uploadAudio({
-        blob,
-        duration,
-        callback: async (data) => {
-          console.log("here", data._id);
-          pulse(data);
-        },
-      })
-    );
-    setName("Recording");
-  };
-
   const rederPlayerButtons = () => {
     if (currentView === "waveform" && sound) {
       return (
-          <View style={styles.btnContainer}>
-            <Button
-              icon={isPlaying ? "pause" : "play"}
-              iconColor="black"
-              onPressIn={togglePlayback}
-            />
-          </View>
+        <View style={styles.btnContainer}>
+          <Button
+            icon={isPlaying ? "pause" : "play"}
+            iconColor="black"
+            onPressIn={togglePlayback}
+          />
+        </View>
       );
     } else {
       return toggleButton();
@@ -359,33 +344,6 @@ export default function App() {
     return `${minutesDisplay}:${secondsDisplay}`;
   }
 
-  const handleOpenSpotifyLink = () => {
-    const spotifyLink = spotifyTrack?.external_urls.spotify;
-    Linking.canOpenURL(spotifyLink)
-      .then((supported) => {
-        if (supported) {
-          Linking.openURL(spotifyLink);
-        } else {
-          console.log("Don't know how to open URI: " + spotifyLink);
-        }
-      })
-      .catch((err) => console.error("An error occurred", err));
-  };
-
-  const renderSmallPlayPause = () => {
-    if (spotifyTrack) {
-      return (
-        <View style={styles.smallPlayPause}>
-          <Button
-            icon={isPlaying ? "pause" : "play"}
-            iconColor="white"
-            onPressIn={togglePlayback}
-          />
-        </View>
-      );
-    }
-  };
-
   const renderSlider = () => {
     switch (currentView) {
       case "waveform":
@@ -393,33 +351,16 @@ export default function App() {
           <>
             <View style={styles.sliderContainer}>
               <>
-                {sound && (
-                  <TextInput
-                    style={styles.input}
-                    value={name}
-                    onChangeText={(value) => setName(value)}
-                    placeholder="Recording"
-                  />
-                )}
                 <SoundBar
                   duration={duration}
                   playbackPosition={playbackPosition}
                   barData={soundLevels}
-                  onSeek={async (position) => {
-                    await sound.setPositionAsync(position); // Assuming 'sound' is your sound object
-                    setPlaybackPosition(position);
+                  onSeek={(position) => {
+                    onSliderValueChange(position);
                   }}
                   isRecording={isRecording}
                 />
-                {/* <Slider
-            style={{ width: 300, height: 50 }}
-            minimumValue={0}
-            maximumValue={duration || 1}
-            value={playbackPosition}
-            onSlidingComplete={onSliderValueChange}
-            minimumTrackTintColor="#ccc"
-            maximumTrackTintColor="#444"
-          /> */}
+
                 {sound && (
                   <View style={styles.duration}>
                     <CustomText style={{ fontSize: 14 }}>
@@ -445,79 +386,23 @@ export default function App() {
                       />
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={toggleLooping}>
-                    <View style={styles.trashIcon}>
-                      <Icon
-                        name="loopIcon"
-                        style={{
-                          color: isLooping ? "#6D55FF" : "#fff",
-                        }}
-                      />
-                    </View>
-                  </TouchableOpacity>
                 </View>
               </>
             )}
           </>
         );
+
       case "spotify":
         return (
-          <View style={styles.sliderContainer}>
-            {spotifyTrack && (
-              <View style={styles.spotifyLinkContainer}>
-                <View style={{ paddingBottom: 10 }}>
-                  <CustomText style={styles.spotifySongHeader}>
-                    {spotifyTrack?.name}
-                  </CustomText>
-                  <CustomText style={styles.spotifySongArtist}>
-                    {spotifyTrack.artists
-                      .map((artist) => artist.name)
-                      .join(", ")}
-                  </CustomText>
-                </View>
-
-                <TouchableOpacity onPress={clearSpotifyTrack}>
-                  <View style={styles.trashIcon}>
-                    <Icon
-                      name="trashIcon"
-                      style={{
-                        color: "#F25219",
-                      }}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-            {spotifyTrack && (
-              <>
-                <Slider
-                  style={{ width: 270, height: 50 }}
-                  minimumValue={0}
-                  maximumValue={duration || 1}
-                  value={playbackPosition}
-                  onSlidingComplete={onSliderValueChange}
-                  minimumTrackTintColor="#ccc"
-                  maximumTrackTintColor="#444"
-                />
-
-                <View style={styles.spotifyImage}>
-                  <TouchableOpacity onPress={handleOpenSpotifyLink}>
-                    <Image
-                      source={{ uri: spotifyTrack?.album.images[2].url }}
-                      style={{ width: 50, height: 50 }} // Adjust the size as needed
-                    />
-                  </TouchableOpacity>
-                </View>
-
-                <View style={styles.durationSpotify}>
-                  {renderSmallPlayPause()}
-                  <CustomText style={{ fontSize: 14 }}>
-                    {getDurationFormatted(playbackPosition)}
-                  </CustomText>
-                </View>
-              </>
-            )}
-          </View>
+          <SpotifyPlayer
+            spotifyTrack={spotifyTrack}
+            playbackPosition={playbackPosition}
+            isPlaying={isPlaying}
+            togglePlayback={togglePlayback}
+            clearSpotifyTrack={clearSpotifyTrack}
+            duration={duration}
+            onSliderValueChange={onSliderValueChange}
+          />
         );
     }
   };
@@ -531,12 +416,11 @@ export default function App() {
         zIndex: 1,
       }}
     >
+      {toggleButton()}
       <View style={styles.buttonSlider}>
         {rederPlayerButtons()}
         {renderSlider()}
       </View>
-
-
     </View>
   );
 }
@@ -547,13 +431,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     bottom: -5,
-    left: -10
+    left: -10,
+  },
+  durationSpotify: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "absolute",
+    alignItems: "center",
+    bottom: -35,
+    width: 265,
+    zIndex: 1,
   },
   spotifyImage: {
     position: "absolute",
     right: -30,
     top: -5,
   },
+  trashIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: "#222222",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  spotifySongHeader: { fontSize: 16, color: "#fff", marginBottom: 2 },
+  spotifySongArtist: { fontSize: 14, color: "#777" },
+
   spotifyLinkContainer: {
     left: 3,
     position: "absolute",
@@ -564,8 +468,7 @@ const styles = StyleSheet.create({
     width: 275,
     justifyContent: "space-between",
   },
-  spotifySongHeader: { fontSize: 16, color: "#fff", marginBottom: 2 },
-  spotifySongArtist: { fontSize: 14, color: "#777" },
+
   trashLoop: {
     gap: 5,
   },
@@ -577,24 +480,13 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     height: 100,
   },
-  sliderContainer: {
-    width: 300,
-  },
-  durationSpotify: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    position: "absolute",
-    alignItems: "center",
-    bottom: -35,
-    width: 265,
-    zIndex: 1
-  },
+
   duration: {
     flexDirection: "row",
     justifyContent: "space-between",
     position: "absolute",
     bottom: -20,
-    width: 300,
+    width: "100%",
   },
   startRec: {
     width: 20,
@@ -628,12 +520,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 100,
   },
-  trashIcon: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
   input: {
     height: 30,
@@ -662,3 +548,16 @@ const styles = StyleSheet.create({
     margin: 16,
   },
 });
+
+// const makePulse = () => {
+//   dispatch(
+//     uploadAudio({
+//       blob,
+//       duration,
+//       callback: async (data) => {
+//         pulse(data);
+//       },
+//     })
+//   );
+//   setName("Recording");
+// };

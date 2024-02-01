@@ -8,9 +8,11 @@ const SoundBar = ({
   playbackPosition,
   onSeek,
   isRecording,
+  canvasWidth,
+  disabled,
 }) => {
   // Constants for canvas size and calculation
-  const canvasWidth = 300;
+
   const canvasHeight = 50;
   const barWidth = 3; // Width of the bars
   const gap = 2; // Space between bars
@@ -24,16 +26,17 @@ const SoundBar = ({
 
   const playbackPercentage = (playbackPosition / duration) * 100;
   return (
-    <TouchableOpacity activeOpacity={1} onPress={handlePress}>
+    <TouchableOpacity
+      disabled={isRecording || disabled}
+      activeOpacity={1}
+      onPress={handlePress}
+    >
       <View
         style={{
           borderRadius: 10,
-          overflow: "hidden",
+          width: canvasWidth,
 
-          width: 300,
-
-          height: 50,
-          backgroundColor: "#000",
+          // backgroundColor: "rgba(255, 255, 255, 0.03)",
         }}
       >
         <Canvas
@@ -42,28 +45,27 @@ const SoundBar = ({
             height: canvasHeight,
           }}
         >
-          {barData
-            .slice()
-            .reverse()
-            .map((data, index) => {
+          {(isRecording ? barData.slice().reverse() : barData).map(
+            (data, index) => {
               // Ensure the value is non-negative
 
               const absoluteValue = Math.max(data.rawValue + 45, 1);
-              console.log(absoluteValue);
 
               const normalizedValue = (absoluteValue / 40) * canvasHeight; // 40 is the max value expected
 
               // Calculate the height of the bar relative to the canvasHeight
               const barHeight = Math.max(normalizedValue, 1) * 0.7; // Ensure a minimum height
 
-              const xPos = index * (barWidth + gap) + 2; // Modified this line
+              const xPos = index * (barWidth + gap) - 3; // Modified this line
 
               const barIndexPercentage = (index / barData.length) * 100;
-              const barColor = isRecording
+              const barColor = disabled
+                ? "#112619"
+                : isRecording
                 ? "#FFB945"
                 : barIndexPercentage <= playbackPercentage
-                ? "#fff"
-                : "#555"; // #fff is active, #555 is inactive
+                ? "#29FF7F"
+                : "#112619"; // #fff is active, #555 is inactive
 
               return (
                 <Line
@@ -76,7 +78,8 @@ const SoundBar = ({
                   lineCap="round"
                 />
               );
-            })}
+            }
+          )}
         </Canvas>
       </View>
     </TouchableOpacity>

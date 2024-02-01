@@ -11,16 +11,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "jsEngine": "hermes",
     "ios": {
       "jsEngine": "jsc",
       "supportsTablet": true,
-      "bundleIdentifier": "com.pulllse.expoejected"
+      "bundleIdentifier": "com.pulllse.expoejected",
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"]
+      }
     },
     "android": {
+      "permissions": ["WAKE_LOCK"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -31,10 +33,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      
+      
       [
-        "@viro-community/react-viro",
+        "expo-document-picker",
         {
-          "androidXrMode": ["GVR", "AR", "OVR_MOBILE"]
+          "iCloudContainerEnvironment": "Production"
         }
       ]
     ]

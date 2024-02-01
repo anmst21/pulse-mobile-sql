@@ -1,12 +1,24 @@
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
 import { useDispatch } from "react-redux";
 import { deleteAudio } from "../../redux";
+import PulsePlayer from "../../components/pulse_player/pulsePostPlayer";
+import Icon from "../../components/icon";
 
 const UserPosts = ({ storedUserInfo, userId, audioList }) => {
   const [sound, setSound] = useState();
-  const [isPlaying, setIsPlaying] = useState(null);
+  const [playingStatus, setPlayingStatus] = useState({});
+  const [playingNow, setPlayingNow] = useState(null);
+
+  const [playbackPosition, setPlaybackPosition] = useState(0);
   const dispatch = useDispatch();
 
   const setPlayer = async () => {
@@ -18,10 +30,56 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
 
   useEffect(() => {
     setPlayer();
-  }, []);
+    return () => {
+      // This cleanup function will be called when the component unmounts
+      if (sound) {
+        sound.unloadAsync(); // Unload the sound
+      }
+    };
+  }, [sound]);
+
+  useEffect(() => {
+    const onPlaybackStatusUpdate = async (status) => {
+      if (status.didJustFinish) {
+        setPlaybackPosition(0);
+        await sound.setPositionAsync(0);
+        // setPlayingStatus(false);
+      } else {
+        setPlaybackPosition(status.positionMillis);
+      }
+    };
+
+    if (sound) {
+      sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+    }
+  }, [sound]);
+
+  // const onPlaybackStatusUpdate = (status, id) => {
+  //   // No need for the isMounted check here as we'll handle the effect cleanup below
+  //   if (status.isLoaded) {
+  //     if (status.isPlaying) {
+  //       setPlaybackPositions((prevPositions) => ({
+  //         ...prevPositions,
+  //         [id]: status.positionMillis,
+  //       }));
+  //     }
+  //     if (status.didJustFinish) {
+  //       setPlaybackPositions((prevPositions) => ({
+  //         ...prevPositions,
+  //         [id]: 0,
+  //       }));
+  //       setPlayingStatus((prevState) => ({
+  //         ...prevState,
+  //         [id]: false,
+  //       }));
+  //       sound.unloadAsync(); // Unload the sound when finished playing
+  //     }
+  //   }
+  // };
 
   async function toggleSound(id, url) {
-    if (isPlaying === id) {
+    const isCurrentlyPlaying = playingStatus[id] || false;
+    if (isCurrentlyPlaying) {
       await stopSound();
     } else {
       if (sound) {
@@ -29,28 +87,45 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
       }
       await playSound(id, url);
     }
+    setPlayingStatus((prevState) => ({
+      ...prevState,
+      [id]: !isCurrentlyPlaying,
+    }));
   }
 
+  const onPostSliderValueChange = async (id, position) => {
+    // Update the playback position for the specific audio file
+    setPlaybackPosition(position);
+
+    // If the audio file being interacted with is the one that's loaded in the sound object
+    if (sound) {
+      await sound.setPositionAsync(position);
+    }
+  };
+
   async function playSound(id, url) {
-    const { sound } = await Audio.Sound.createAsync({ uri: url });
-    setSound(sound);
-    setIsPlaying(id);
+    setPlaybackPosition(0);
+    if (sound) {
+      await sound.unloadAsync(); // Make sure to unload any previously loaded sound
+    }
+    const { sound: newSound } = await Audio.Sound.createAsync({ uri: url });
+    setSound(newSound);
+    setPlayingStatus((prevState) => ({
+      ...prevState,
+      [id]: true,
+    }));
 
-    sound.setOnPlaybackStatusUpdate(async (playbackStatus) => {
-      if (playbackStatus.didJustFinish) {
-        await sound.unloadAsync();
-        setSound(null);
-        setIsPlaying(null);
-      }
-    });
-
-    await sound.playAsync();
+    await newSound.playAsync();
   }
 
   async function stopSound() {
     await sound.stopAsync();
     setSound(null);
-    setIsPlaying(null);
+    setPlayingStatus((prevState) => {
+      const newState = { ...prevState };
+      Object.keys(newState).forEach((key) => (newState[key] = false));
+      return newState;
+    });
   }
 
   function getDurationFormatted(millis) {
@@ -62,42 +137,45 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
     return `${minutesDisplay}:${secondsDisplay}`;
   }
 
-  const handleDelete = async (audioLink) => {
-    function removeBaseUrl(link) {
-      if (audioList) {
-        const baseUrl =
-          "https://my-audio-bucket-111.s3.us-east-2.amazonaws.com/";
-        return link.replace(baseUrl, "");
-      }
-    }
-    if (audioLink) {
-      const key = removeBaseUrl(audioLink);
-      dispatch(deleteAudio({ key, link: audioLink }));
+  const handleDelete = (id) => {
+    if (id) {
+      dispatch(deleteAudio(id));
     }
   };
+
+  const trash = (id) => (
+    <TouchableOpacity onPress={() => handleDelete(id)}>
+      <View style={styles.trashIcon}>
+        <Icon
+          name="trashIcon"
+          style={{
+            color: "#F25219",
+          }}
+        />
+      </View>
+    </TouchableOpacity>
+  );
   return (
     <View style={{ height: 450 }}>
       <Text>UserPosts</Text>
       <ScrollView>
         {audioList
           ? audioList.map((audio) => (
-              <View key={audio._id} style={styles.postComponent}>
-                <Text>{audio.name}</Text>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    title={isPlaying === audio._id ? "Pause" : "Play"}
-                    onPress={() => toggleSound(audio._id, audio.audioLink)}
-                  />
-                  {storedUserInfo === userId && (
-                    <Button
-                      title="Delete"
-                      onPress={() => handleDelete(audio.audioLink)}
-                    />
-                  )}
-                </View>
-                <Text>Duration: {getDurationFormatted(audio.duration)}</Text>
-              </View>
-            ))
+            <View key={audio._id} style={styles.postComponent}>
+              <PulsePlayer
+                data={audio}
+                toggleSound={toggleSound}
+                playbackPosition={playbackPosition}
+                onPostSliderValueChange={onPostSliderValueChange}
+                sound={sound}
+                // isPlaying={isPlaying}
+                isPlaying={playingStatus[audio._id]}
+                playingNow={playingNow}
+                id={audio._id}
+              />
+              {trash(audio._id)}
+            </View>
+          ))
           : null}
       </ScrollView>
     </View>
@@ -107,12 +185,23 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
 export default UserPosts;
 
 const styles = StyleSheet.create({
+  trashIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+
+    alignItems: "center",
+    justifyContent: "center",
+  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   postComponent: {
-    marginRight: 10,
     marginBottom: 30,
+    flexDirection: "row",
+    marginLeft: 15,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });

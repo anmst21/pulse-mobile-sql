@@ -1,7 +1,7 @@
 import { View, Text, FlatList, Image, Button, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomText from "../../components/text";
-import userApi from "../../redux/axios/userApi";
+import sqlApi from "../../redux/axios/sqlApi";
 import { useSelector } from "react-redux";
 
 import Animated, {
@@ -23,10 +23,10 @@ const Notifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await userApi.get(
-          `/fetchNotifications?userId=${storedUserInfo._id}`
+        const response = await sqlApi.get(
+          `/notifications/fetch?userId=${storedUserInfo.id}`
         );
-
+        console.log("fetchNotifications", response.data)
         setNotifications(response.data);
       } catch (error) {
         console.error(error);
@@ -39,7 +39,7 @@ const Notifications = () => {
   const handleAccept = async (userId, targetUserId, postId) => {
     try {
       // Sending a post request to accept the subscription
-      await userApi.post("/acceptSubscription", {
+      await sqlApi.post("/acceptSubscription", {
         userId,
         targetUserId,
         postId,
@@ -57,7 +57,7 @@ const Notifications = () => {
   const handleDecline = async (userId, targetUserId, postId) => {
     try {
       // Sending a post request to accept the subscription
-      await userApi.post("/declineSubscription", {
+      await sqlApi.post("/declineSubscription", {
         userId,
         targetUserId,
         postId,
@@ -74,7 +74,7 @@ const Notifications = () => {
 
   const handleSeen = async (notificationId) => {
     try {
-      await userApi.post("/markNotificationSeen", {
+      await sqlApi.post("/markNotificationSeen", {
         notificationId,
       });
 
@@ -94,7 +94,7 @@ const Notifications = () => {
         return (
           <Button
             title="Mark as seen"
-            onPress={() => handleSeen(item._id)}
+            onPress={() => handleSeen(item.id)}
             color="green"
           />
         );
@@ -104,14 +104,14 @@ const Notifications = () => {
             <Button
               title="Accept"
               onPress={() =>
-                handleAccept(storedUserInfo._id, item.from._id, item._id)
+                handleAccept(storedUserInfo.id, item.from.id, item.id)
               }
               color="green"
             />
             <Button
               title="Decline"
               onPress={() =>
-                handleDecline(storedUserInfo._id, item.from._id, item._id)
+                handleDecline(storedUserInfo.id, item.from.id, item.id)
               }
               color="red"
             />
@@ -124,12 +124,12 @@ const Notifications = () => {
     switch (item.type) {
       case "follow":
         return (
-          <CustomText>{item.from.userName} is now following you</CustomText>
+          <CustomText>{item.username} is now following you</CustomText>
         );
       case "subscription_request":
         return (
           <CustomText>
-            {item.from.userName} sent you a subscription request
+            {item.username} sent you a subscription request
           </CustomText>
         );
     }
@@ -156,7 +156,7 @@ const Notifications = () => {
   const NotificationItem = ({ item }) => (
     <View style={styles.notificationContainer}>
       <View style={styles.userIconWithTextContainer}>
-        <Image source={{ uri: item.from.imageLink }} style={styles.userImage} />
+        <Image source={{ uri: item.image_link }} style={styles.userImage} />
         <View style={styles.textContainer}>{textSwitch(item)}</View>
       </View>
       <View style={styles.buttonContainer}>{buttonSwitch(item)}</View>

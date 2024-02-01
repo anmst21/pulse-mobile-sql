@@ -7,6 +7,7 @@ import { pulseReducer } from "./slices/pulseSlice";
 import { tabReducer } from "./slices/tabSlice";
 import { appReducer } from "./slices/appSlice";
 import { playerReducer } from "./slices/playerSlice";
+import { pulseRecordingReducer } from "./slices/pulseRecordingSlice";
 import { signout } from "./thunks/userThunk";
 import reduxFlipper from "redux-flipper";
 
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   tab: tabReducer,
   pulse: pulseReducer,
   player: playerReducer,
+  pulseRecording: pulseRecordingReducer,
 });
 
 const resettableReducer = (state, action) => {
@@ -56,11 +58,30 @@ export * from "./thunks/audioThunk";
 export * from "./thunks/followSubscribeThunk";
 export * from "./thunks/imageThunk";
 export * from "./thunks/pulseThunk";
+export * from "./thunks/pulseRecordingThunk";
 
 export { clearErrorMessage } from "./slices/userSlice";
-export { addRecording } from "./slices/recordingsSlice";
+export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";
 export { addImage } from "./slices/imageSlice";
-export { switchTab, togglePlayer, resetScroll, toggleMap  } from "./slices/tabSlice";
+export {
+  addPulseRecording,
+  resetPulseRecording,
+  setIsPlaying,
+  setPlaybackPosition,
+  setSound,
+  setDuration,
+  setIsLooping,
+  addSoundLevel,
+  setSoundLevels,
+  setExtencionFilename,
+  setBpm,
+} from "./slices/pulseRecordingSlice";
+export {
+  switchTab,
+  togglePlayer,
+  resetScroll,
+  toggleMap,
+} from "./slices/tabSlice";
 export { toggleDrawer, toggleNotification } from "./slices/appSlice";
 
 export {
@@ -69,5 +90,5 @@ export {
   setOriginalPulse,
   clearPlayer,
   setPulseTitle,
-  setPulseAudioSourceType
+  setPulseAudioSourceType,
 } from "./slices/playerSlice";

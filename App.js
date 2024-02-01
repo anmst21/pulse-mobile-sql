@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store, fetchUserInfo, fetchUserAudios } from "./src/redux";
+import { getAccessToken } from "./src/utils/initializeSpotifyApp";
+// import MapboxGL from "@rnmapbox/maps";
 
 import {
   Dimensions,
@@ -9,7 +11,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Keyboard
+  Keyboard,
 } from "react-native";
 
 import { useFonts } from "expo-font";
@@ -33,9 +35,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 import Overlay from "./src/components/drawer/overlay";
 import Notification from "./src/components/notification";
 
-
 const App = () => {
-
   const [showView, setShowView] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -49,7 +49,7 @@ const App = () => {
 
     if (userIdFromStorage) {
       dispatch(fetchUserInfo({ userId: userIdFromStorage }));
-      dispatch(fetchUserAudios({ userId: userIdFromStorage }));
+      // dispatch(fetchUserAudios({ userId: userIdFromStorage }));
     }
   };
 
@@ -79,12 +79,20 @@ const App = () => {
   //   socketConnection(socket);
   //   return () => socket.disconnect();
   // }, []);
+  // useEffect(() => {
+  //   MapboxGL.setAccessToken("YOUR_MAPBOX_ACCESS_TOKEN");
+  // }, []);
 
   useEffect(() => {
     fetchUserDetails();
+    // getAccessToken();
+    const intervalId = setInterval(getAccessToken, 50 * 60 * 1000);
     const socket = io(config.apiURL);
     socketConnection(socket);
-    return () => socket.disconnect();
+    return () => {
+      clearInterval(intervalId);
+      socket.disconnect();
+    };
   }, [storedUserInfo._id]);
 
   useEffect(() => {
@@ -116,20 +124,19 @@ const App = () => {
       }
       ref.current.scrollTo(destination);
     } else {
-      if(ref && ref.current){
+      if (ref && ref.current) {
         ref.current.scrollTo(0);
       }
     }
   }, [app.drawerOpen]);
 
-
   useEffect(() => {
     // Set up keyboard show listener
     const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
+      "keyboardDidShow",
       () => {
-        console.log('Keyboard is shown');
-        if(ref && ref.current){
+        console.log("Keyboard is shown");
+        if (ref && ref.current) {
           ref.current.scrollTo(-SCREEN_HEIGHT / 1.6, true);
         }
         // Your action here
@@ -195,10 +202,9 @@ const App = () => {
           />
         )}
 
-        {app.drawerOpen && <Overlay/> }
+        {app.drawerOpen && <Overlay />}
         <Drawer ref={ref} />
         <Notification />
-
 
         <MainFlow />
       </GestureHandlerRootView>
