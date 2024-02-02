@@ -127,6 +127,11 @@ const Notifications = () => {
 
 
 
+  const [activeItemId, setActiveItemId] = useState(null);
+
+  const handleSetActiveItem = (id) => {
+    setActiveItemId(id);
+  };
 
 
 
@@ -138,7 +143,10 @@ const Notifications = () => {
       </View>
       <FlatList
         data={notifications}
-        renderItem={({ item }) => <NotificationItem storedUserInfo={storedUserInfo} handleAccept={handleAccept} handleDecline={handleDecline} handleSeen={handleSeen} item={item} />}
+        renderItem={({ item }) => <NotificationItem
+          isActive={activeItemId === item.id}
+          setActiveItem={handleSetActiveItem}
+          storedUserInfo={storedUserInfo} handleAccept={handleAccept} handleDecline={handleDecline} handleSeen={handleSeen} item={item} />}
         keyExtractor={(item) => item.id}
       />
     </View>

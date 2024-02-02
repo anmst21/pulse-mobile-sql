@@ -1,4 +1,4 @@
-import { StyleSheet, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, Button, TouchableOpacity, View } from "react-native";
 import {
   followUser,
   unfollowUser,
@@ -18,7 +18,7 @@ const FollowUnfollowButton = ({ item, results, setResults }) => {
   const handleUnfollow = async (userId) => {
     dispatch(unfollowUser(userId));
     const updatedResults = results.map((result) =>
-      result.id === userId ? { ...result, follows: "false" } : result
+      result.id === userId ? { ...result, follows: "false", subscribed: "pending" } : result
     );
     await setResults(updatedResults);
   };
@@ -93,8 +93,10 @@ const FollowUnfollowButton = ({ item, results, setResults }) => {
         //   onPress={() => handleUnfollow(item.id)}
         // />
         <TouchableOpacity onPress={() => handleUnfollow(item.id)}>
-          <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
-          <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+          <View style={{ flexDirection: "row" }}>
+            <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+            <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+          </View>
         </TouchableOpacity>
       ) : item.follows === "true" ? (
         <>

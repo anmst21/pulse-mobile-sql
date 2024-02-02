@@ -24,7 +24,7 @@ const signup = createAsyncThunk(
         password: password.toString(),
         userName: userName.toString(),
       });
-      console.log("signup response", response);
+      console.log("signup response", response.data);
 
       // Set the token in AsyncStorage
       await AsyncStorage.setItem("token", response.data.token);
@@ -34,7 +34,7 @@ const signup = createAsyncThunk(
       navigation.goBack();
       console.log("response.data.token", response.data.token);
       // Return the token for further processing or usage in reducers
-      return response.data.token;
+      return response.data;
     } catch (err) {
       console.log(err);
       throw new Error("Something went wrong with sign up");

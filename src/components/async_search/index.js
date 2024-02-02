@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, TextInput, StyleSheet } from "react-native";
-import userApi from "../../redux/axios/userApi";
+import userApi from "../../redux/axios/sqlApi";
 import throttle from "lodash/throttle";
 import UsersList from "../user_list";
 
 const AsyncSearch = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  console.log("resultsresults", results);
 
   const throttledSearch = useCallback(
     throttle(async (searchQuery) => {
@@ -28,7 +29,7 @@ const AsyncSearch = () => {
     try {
       const loggedInUserId = await AsyncStorage.getItem("userId");
       let response = await userApi.get(
-        `/searchUser/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
+        `/search/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
       );
       setResults(response.data);
     } catch (error) {

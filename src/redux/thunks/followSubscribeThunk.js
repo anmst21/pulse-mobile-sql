@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import userApi from "../axios/userApi";
+import userApi from "../axios/sqlApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const followUser = createAsyncThunk(

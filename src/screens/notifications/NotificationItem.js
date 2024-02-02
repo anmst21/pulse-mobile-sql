@@ -8,7 +8,7 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withSpring,
-
+    runOnJS,
     useAnimatedGestureHandler,
 } from "react-native-reanimated";
 
@@ -19,15 +19,23 @@ import Icon from "../../components/icon";
 
 
 
-const NotificationItem = ({ item, handleAccept, handleDecline, handleSeen, storedUserInfo }) => {
+const NotificationItem = ({ setActiveItem, isActive, item, handleAccept, handleDecline, handleSeen, storedUserInfo }) => {
     const calcWidth = item.type === "subscription_request" ? 255 : 150
     const translateX = useSharedValue(0);
+    console.log("NotificationItem", isActive)
 
-    console.log("NotificationItem", item)
+
+    useEffect(() => {
+        if (!isActive) { translateX.value = withSpring(0) }
+
+    }, [isActive])
+
     const panGestureEvent = useAnimatedGestureHandler({
         onStart: (_, ctx) => {
             ctx.startX = translateX.value;
-            // runOnJS(setActive)(item.id)
+            runOnJS(setActiveItem)(item.id)
+            // activeItemId.value = item.id
+            // console.log(activeItemId.value)
         },
         onActive: (event, ctx) => {
 
@@ -108,7 +116,7 @@ const NotificationItem = ({ item, handleAccept, handleDecline, handleSeen, store
                     <Icon name="markSeenIcon" />
                 </TouchableOpacity>
                 {item.type === "subscription_request" &&
-                    <TouchableOpacity onPress={() => { handleDecline(storedUserInfo.id, item.from_user_id, item.id) }}>
+                    <TouchableOpacity onPress={() => { handleAccept(storedUserInfo.id, item.from_user_id, item.id) }}>
                         <Icon name="acceptSubIcon" />
                     </TouchableOpacity>}
 

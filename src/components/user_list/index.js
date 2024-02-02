@@ -78,11 +78,15 @@ const styles = StyleSheet.create({
 
   },
   followUnfollow: {
+
     width: 80,
-    // backgroundColor: "blue",
+    //  backgroundColor: "blue",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginRight: 5
+    marginRight: 5,
+    height: 20,
+    alignItems: "center",
+    flexWrap: "nowrap"
   },
   itemText: {
     fontSize: 18,
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 15,
     // marginHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    //backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 5
     // paddingTop: 5,
 

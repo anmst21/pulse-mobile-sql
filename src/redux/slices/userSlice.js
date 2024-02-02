@@ -65,7 +65,7 @@ const userSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(uploadImage.fulfilled, (state, action) => {
-        state.userInfo.imageLink = action.payload; // Set the image link
+        state.userInfo.image_link = action.payload; // Set the image link
         state.isLoading = false;
       })
       .addCase(uploadImage.rejected, (state, action) => {
@@ -78,8 +78,8 @@ const userSlice = createSlice({
       .addCase(deleteImage.fulfilled, (state, action) => {
         state.isLoading = false;
 
-        if (state.userInfo.imageLink === action.payload) {
-          state.userInfo.imageLink = null; // Clear the image or set to any default value
+        if (state.userInfo.image_link === action.payload) {
+          state.userInfo.image_link = null; // Clear the image or set to any default value
         }
       })
       .addCase(deleteImage.rejected, (state, action) => {
@@ -92,7 +92,9 @@ const userSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.userInfo = action.payload.userInfo;
+
       })
       .addCase(signup.rejected, (state, action) => {
         state.isLoading = false;

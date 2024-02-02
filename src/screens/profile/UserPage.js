@@ -9,6 +9,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import UserWall from "./UserWall";
 import Icon from "../../components/icon";
 
+
 const UserPage = () => {
   const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
@@ -17,8 +18,19 @@ const UserPage = () => {
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   console.log("storedUserInfo", storedUserInfo)
   const audioList = useSelector((state) => state.audio.recordings);
-  console.log("storedUserInfo._id", storedUserInfo._id);
+  console.log("storedUserInfo._id", storedUserInfo.id);
 
+
+  const fetchUserDetails = async () => {
+    const userIdFromStorage = await AsyncStorage.getItem("userId");
+
+    if (userIdFromStorage) {
+      dispatch(fetchUserInfo({ userId: userIdFromStorage }));
+      // dispatch(fetchUserAudios({ userId: userIdFromStorage }));
+    }
+  };
+
+  useEffect(() => { fetchUserDetails() }, [])
   return (
     <View style={styles.container}>
 
