@@ -1,8 +1,10 @@
-import { View, Text, FlatList, Image, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, Image, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomText from "../../components/text";
 import sqlApi from "../../redux/axios/sqlApi";
 import { useSelector } from "react-redux";
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import NotificationItem from "./NotificationItem";
 
 import Animated, {
   useSharedValue,
@@ -10,6 +12,7 @@ import Animated, {
   withSpring,
   withTiming,
   Easing,
+  useAnimatedGestureHandler, runOnJS, runOnUI
 } from "react-native-reanimated";
 
 import Theme from "../../styles/theme";
@@ -19,7 +22,7 @@ import Icon from "../../components/icon";
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const storedUserInfo = useSelector((state) => state.user.userInfo);
-  console.log("storedUserInfo", storedUserInfo._id);
+  console.log("storedUserInfo", storedUserInfo.id);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -37,36 +40,36 @@ const Notifications = () => {
     fetchNotifications();
   }, []);
 
-  const handleAccept = async (userId, targetUserId, postId) => {
+  const handleAccept = async (leaderId, followerId, notificationId) => {
     try {
       // Sending a post request to accept the subscription
-      await sqlApi.post("/acceptSubscription", {
-        userId,
-        targetUserId,
-        postId,
+      await sqlApi.post("/user/acceptSubscriptionRequest", {
+        leaderId,
+        followerId,
+        notificationId,
       });
 
       // Updating the notifications state by filtering out the accepted notification
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification._id !== postId)
+        prevNotifications.filter((notification) => notification.id !== notificationId)
       );
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleDecline = async (userId, targetUserId, postId) => {
+  const handleDecline = async (leaderId, followerId, notificationId) => {
     try {
       // Sending a post request to accept the subscription
-      await sqlApi.post("/declineSubscription", {
-        userId,
-        targetUserId,
-        postId,
+      await sqlApi.post("/user/declineSubscriptionRequest", {
+        leaderId,
+        followerId,
+        notificationId,
       });
 
       // Updating the notifications state by filtering out the accepted notification
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification._id !== postId)
+        prevNotifications.filter((notification) => notification.id !== notificationId)
       );
     } catch (error) {
       console.error(error);
@@ -75,13 +78,13 @@ const Notifications = () => {
 
   const handleSeen = async (notificationId) => {
     try {
-      await sqlApi.post("/markNotificationSeen", {
+      await sqlApi.post("/notifications/markSeen", {
         notificationId,
       });
 
       setNotifications((prevNotifications) =>
         prevNotifications.filter(
-          (notification) => notification._id !== notificationId
+          (notification) => notification.id !== notificationId
         )
       );
     } catch (error) {
@@ -105,14 +108,14 @@ const Notifications = () => {
             <Button
               title="Accept"
               onPress={() =>
-                handleAccept(storedUserInfo.id, item.from.id, item.id)
+                handleAccept(storedUserInfo.id, item.from_user_id, item.id)
               }
               color="green"
             />
             <Button
               title="Decline"
               onPress={() =>
-                handleDecline(storedUserInfo.id, item.from.id, item.id)
+                handleDecline(storedUserInfo.id, item.from_user_id, item.id)
               }
               color="red"
             />
@@ -121,60 +124,12 @@ const Notifications = () => {
     }
   };
 
-  const textSwitch = (item) => {
-    switch (item.type) {
-      case "follow":
-        return (<View style={styles.textComponent}>
-          <CustomText>{item.username}</CustomText>
-          <CustomText style={styles.textMessage}>Now following you</CustomText>
-        </View>
-        );
-      case "subscription_request":
-        return (
-          <View style={styles.textComponent}>
-            <CustomText>{item.username}</CustomText>
-            <CustomText style={styles.textMessage}>
-              Sent you a subscription request
-            </CustomText>
-          </View>
-        );
-    }
-  };
-
-  const humanReadableDate = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-
-    yesterday.setDate(today.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return "today";
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "yesterday";
-    } else {
-      // Here, you can format the date as desired for dates other than today and yesterday
-      // For simplicity, this example returns the date in the format 'DD/MM/YYYY'
-      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-    }
-  };
-
-  const NotificationItem = ({ item }) => (
-    <View style={styles.notificationContainer}>
-      <View style={styles.userIconWithTextContainer}>
-        {item.image_link ? <Image source={{ uri: item.image_link }} style={styles.userImage} /> : <Icon name="profileIcon" style={{ width: 40, height: 40, color: "#808080" }} />}
 
 
-        {textSwitch(item)}
-      </View>
-      {/* <View style={styles.buttonContainer}>{buttonSwitch(item)}</View> */}
-      <View style={styles.textContainer}>
-        <CustomText style={styles.dateText}>
-          {humanReadableDate(item.date)}
-        </CustomText>
-      </View>
-    </View>
-  );
+
+
+
+
 
   return (
     <View style={{ backgroundColor: "black", flex: 1, paddingTop: 130 }}>
@@ -183,8 +138,8 @@ const Notifications = () => {
       </View>
       <FlatList
         data={notifications}
-        renderItem={({ item }) => <NotificationItem item={item} />}
-        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => <NotificationItem storedUserInfo={storedUserInfo} handleAccept={handleAccept} handleDecline={handleDecline} handleSeen={handleSeen} item={item} />}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );
@@ -193,6 +148,29 @@ const Notifications = () => {
 export default Notifications;
 
 const styles = StyleSheet.create({
+
+  ctaBtn: {
+    position: "absolute",
+    left: "100%",
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    gap: 50,
+    // width: 255,
+    //  backgroundColor: "red",
+    justifyContent: "center",
+    height: "100%",
+    alignItems: "center"
+
+  },
+  slidingContainer: {
+    // position: "absolute",
+    // flex: 1,
+    // transform: "translateX(-100 %)"
+    //left: -250,
+
+    justifyContent: "center",
+
+  },
   textMessage: {
     color: "rgba(255, 255, 255, 0.7)",
     fontSize: 14,
@@ -220,11 +198,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-end"
   },
   notificationContainer: {
+    position: "relative",
+    //  backgroundColor: "blue",
     paddingHorizontal: 20,
-    marginBottom: 20,
-    paddingBottom: 20,
+    paddingVertical: 15,
     borderBottomColor: "rgba(250, 251, 254, 0.20)",
-    borderWidth: 1
+    borderWidth: 1,
+
   },
   buttonContainer: {
     flexDirection: "row",
@@ -241,5 +221,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
+
   },
 });

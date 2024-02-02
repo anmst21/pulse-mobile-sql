@@ -15,7 +15,7 @@ import Logo from "../../components/icon/logo";
 
 import CustomText from "../../components/text";
 
-const NotificationHeader = () => {
+const NotificationHeader = ({ arrowBack }) => {
   const navigation = useNavigation();
 
   return (

@@ -35,11 +35,20 @@ import ProfileIcon from "./profileIcon"
 import LoaderIcon from "./loaderIcon"
 import FollowIcon from "./followIcon"
 import SubscribeIcon from "./subscribeIcon"
+import AcceptSubIcon from "./acceptSubIcon"
+import DeclineSubIcon from "./declineSubIcon"
+import MarkSeenIcon from "./markSeenIcon"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "waveForm":
       return <WaveForm style={style} />;
+    case "markSeenIcon":
+      return <MarkSeenIcon style={style} />;
+    case "declineSubIcon":
+      return <DeclineSubIcon style={style} />;
+    case "acceptSubIcon":
+      return <AcceptSubIcon style={style} />;
     case "subscribeIcon":
       return <SubscribeIcon style={style} />;
     case "followIcon":

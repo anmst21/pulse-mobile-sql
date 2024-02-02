@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import UsersList from "../../components/user_list";
 import userApi from "../../redux/axios/userApi";
 import { useSelector } from "react-redux";
 import CustomText from "../../components/text";
+import Icon from "../../components/icon";
 
 import Animated, {
   useSharedValue,
@@ -16,6 +17,9 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import Tab from "../../components/tab";
+import { useNavigation } from "@react-navigation/native";
+import NotificationHeader from "./SignUpHeader";
+
 
 
 const UserListScreen = ({ route }) => {
@@ -26,7 +30,7 @@ const UserListScreen = ({ route }) => {
   const opacity = useSharedValue(0);
   const scrollY = useSharedValue(0);
   console.log("pagepagepage", page)
-
+  const navigation = useNavigation();
   // const LoaderSkeleton = (<View style={styles.userElementLoader}></View>)
 
   const renderLoaderSkeletons = (count) => {
@@ -106,6 +110,9 @@ const UserListScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        {/* <NotificationHeader /> */}
+      </View>
       {/* <CustomText style={styles.header}>{page}</CustomText> */}
       <View style={styles.list}>
 
@@ -113,7 +120,18 @@ const UserListScreen = ({ route }) => {
           <Tab tabs={tabs} onTabChange={(position) => { tabSwitch(position, listType); console.log(position, listType) }} />
         </View>
 
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={{ width: 22 }}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Icon name="arrow_back" />
+          </TouchableOpacity>
 
+
+        </View>
 
         {/* {listType === "subscribers" && <View style={styles.pageSwitch}>
           <Button
@@ -143,6 +161,19 @@ const UserListScreen = ({ route }) => {
 export default UserListScreen;
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: 60,
+    paddingHorizontal: 20,
+    position: "absolute",
+    top: 25,
+    left: 0,
+    right: 0,
+    zIndex: 9999,
+
+  },
   userListContainer: {
     marginTop: 70
   },
@@ -173,9 +204,9 @@ const styles = StyleSheet.create({
 
 
   },
-  header: {
-    color: "black"
-  },
+  // header: {
+  //   color: "black"
+  // },
   userElementLoader: {
     height: 50,
     flexDirection: "row",

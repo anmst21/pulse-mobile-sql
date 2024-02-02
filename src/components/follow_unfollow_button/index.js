@@ -106,7 +106,7 @@ const FollowUnfollowButton = ({ item, results, setResults }) => {
           {item.subscribed === "pending" ? (
             <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#FFAB1F" }} />
           ) : item.subscribed === "declined" ? (
-            <Button title="Declined" />
+            <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#F53535" }} />
           ) : (
             // <Button
             //   title="Subscribe"
