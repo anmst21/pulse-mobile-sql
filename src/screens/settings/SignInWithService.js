@@ -47,7 +47,7 @@ const SignInWithService = () => {
           </View>
         </TouchableOpacity>
       </View> */}
-      {!spotifyState ? (
+      {spotifyState ? (
         <View style={styles.container}>
           <CustomText style={{ fontSize: 24 }}>
             Successfully signed in

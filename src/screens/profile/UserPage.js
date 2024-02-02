@@ -18,7 +18,7 @@ const UserPage = () => {
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   console.log("storedUserInfo", storedUserInfo)
   const audioList = useSelector((state) => state.audio.recordings);
-  console.log("storedUserInfo._id", storedUserInfo.id);
+  console.log("storedUserInfo._id", audioList);
 
 
   const fetchUserDetails = async () => {
@@ -26,7 +26,7 @@ const UserPage = () => {
 
     if (userIdFromStorage) {
       dispatch(fetchUserInfo({ userId: userIdFromStorage }));
-      // dispatch(fetchUserAudios({ userId: userIdFromStorage }));
+      dispatch(fetchUserAudios({ userId: userIdFromStorage }));
     }
   };
 

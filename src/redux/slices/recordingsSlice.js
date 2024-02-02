@@ -60,7 +60,7 @@ const recordingsSlice = createSlice({
       .addCase(deleteAudio.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.recordings = state.recordings.filter(
-          (recording) => recording._id !== action.payload
+          (recording) => recording.id !== action.payload
         );
       })
       .addCase(deleteAudio.rejected, (state, action) => {

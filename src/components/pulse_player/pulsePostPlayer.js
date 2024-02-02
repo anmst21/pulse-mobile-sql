@@ -30,8 +30,8 @@ const PulsePlayer = ({
     name = "";
     deepLink = "";
   }
-  const { duration, soundLevels, type, extension, fileName, audioLink } = data;
-  console.log("isPlaying", isPlaying)
+  const { duration, sound_levels: soundLevels, type, extension, file_name: fileName, audio_link: audioLink } = data;
+  console.log("isPlaying", data.track)
   const [waveWidth, setWaveWidth] = useState(100);
 
   const onEditorRightLayout = (event) => {
@@ -57,7 +57,7 @@ const PulsePlayer = ({
         icon={isPlaying ? "pause" : "play"}
         iconColor="black"
         onPressIn={() => {
-          toggleSound(data._id, audioLink);
+          toggleSound(data.id, audioLink);
         }}
       />
     </View>
@@ -70,7 +70,7 @@ const PulsePlayer = ({
       playbackPosition={playbackPosition}
       barData={soundLevels}
       onSeek={(position) => {
-        onPostSliderValueChange(data._id, position);
+        onPostSliderValueChange(data.id, position);
       }}
       isRecording={false}
       disabled={!isPlaying}
@@ -99,7 +99,7 @@ const PulsePlayer = ({
   );
   const imageToggle = (
     <>
-      <TouchableOpacity onPress={() => toggleSound(data._id, audioLink)}>
+      <TouchableOpacity onPress={() => toggleSound(data.id, audioLink)}>
         <Image
           source={{ uri: imgUri }}
           style={styles.image} // Adjust the size as needed

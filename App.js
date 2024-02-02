@@ -50,7 +50,7 @@ const App = () => {
 
     if (userIdFromStorage) {
       dispatch(fetchUserInfo({ userId: userIdFromStorage }));
-      // dispatch(fetchUserAudios({ userId: userIdFromStorage }));
+      dispatch(fetchUserAudios({ userId: userIdFromStorage }));
     }
   };
 
@@ -86,7 +86,7 @@ const App = () => {
 
   useEffect(() => {
     fetchUserDetails();
-    // getAccessToken();
+    getAccessToken();
     const intervalId = setInterval(getAccessToken, 50 * 60 * 1000);
     const socket = io(config.apiURL);
     socketConnection(socket);
@@ -96,40 +96,40 @@ const App = () => {
     };
   }, [storedUserInfo.id]);
 
-  // useEffect(() => {
-  //   if (app.drawerOpen && ref && ref.current) {
-  //     const isActive = ref.current.isActive();
-  //     if (isActive) {
-  //       ref.current.scrollTo(0);
-  //     } else {
-  //       ref.current.scrollTo(-SCREEN_HEIGHT / 2);
-  //     }
+  useEffect(() => {
+    if (app.drawerOpen && ref && ref.current) {
+      const isActive = ref.current.isActive();
+      if (isActive) {
+        ref.current.scrollTo(0);
+      } else {
+        ref.current.scrollTo(-SCREEN_HEIGHT / 2);
+      }
 
-  //     let destination;
+      let destination;
 
-  //     switch (app.drawerHeight) {
-  //       case "halfScreen":
-  //         destination = -SCREEN_HEIGHT / 2;
-  //         break;
-  //       case "fullScreen":
-  //         destination = -SCREEN_HEIGHT + 50;
-  //         break;
-  //       case "expanded":
-  //         destination = -SCREEN_HEIGHT / 1.222;
-  //         break;
-  //       default:
-  //         if (typeof app.drawerHeight === "number") {
-  //           destination = -app.drawerHeight;
-  //         }
-  //         break;
-  //     }
-  //     ref.current.scrollTo(destination);
-  //   } else {
-  //     if (ref && ref.current) {
-  //       ref.current.scrollTo(0);
-  //     }
-  //   }
-  // }, [app.drawerOpen]);
+      switch (app.drawerHeight) {
+        case "halfScreen":
+          destination = -SCREEN_HEIGHT / 2;
+          break;
+        case "fullScreen":
+          destination = -SCREEN_HEIGHT + 50;
+          break;
+        case "expanded":
+          destination = -SCREEN_HEIGHT / 1.222;
+          break;
+        default:
+          if (typeof app.drawerHeight === "number") {
+            destination = -app.drawerHeight;
+          }
+          break;
+      }
+      ref.current.scrollTo(destination);
+    } else {
+      if (ref && ref.current) {
+        ref.current.scrollTo(0);
+      }
+    }
+  }, [app.drawerOpen]);
 
   useEffect(() => {
     // Set up keyboard show listener

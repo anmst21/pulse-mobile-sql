@@ -161,7 +161,7 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
       <ScrollView>
         {audioList
           ? audioList.map((audio) => (
-            <View key={audio._id} style={styles.postComponent}>
+            <View key={audio.id} style={styles.postComponent}>
               <PulsePlayer
                 data={audio}
                 toggleSound={toggleSound}
@@ -169,18 +169,20 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
                 onPostSliderValueChange={onPostSliderValueChange}
                 sound={sound}
                 // isPlaying={isPlaying}
-                isPlaying={playingStatus[audio._id]}
+                isPlaying={playingStatus[audio.id]}
                 playingNow={playingNow}
-                id={audio._id}
+                id={audio.id}
               />
-              {trash(audio._id)}
+              {trash(audio.id)}
             </View>
+
           ))
           : null}
       </ScrollView>
     </View>
   );
 };
+
 
 export default UserPosts;
 
