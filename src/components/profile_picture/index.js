@@ -10,8 +10,9 @@ import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTim
 const ProfilePicture = ({ imageLink, userId }) => {
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
+  const { status } = useSelector((state) => state.image);
   const [isLoading, setIsLoading] = useState(false);
-  console.log("isLoading", isLoading);
+  console.log("isLoading", status);
 
 
   const rotation = useSharedValue(0);

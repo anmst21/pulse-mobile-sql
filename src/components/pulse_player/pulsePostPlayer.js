@@ -115,7 +115,7 @@ const PulsePlayer = ({
       <View style={{ paddingLeft: 12 }}>
         {type === "spotify" ? (
           <>
-            <CustomText style={styles.spotifySongHeader}>{name}</CustomText>
+            <Text numberOfLines={1} ellipsizeMode='tail' style={styles.spotifySongHeader}>{name}</Text>
             <CustomText style={styles.spotifySongArtist}>{artist}</CustomText>
             {isPlaying && lineBar}
           </>
@@ -131,7 +131,7 @@ const PulsePlayer = ({
           </>
         )}
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -151,7 +151,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
   },
-  spotifySongHeader: { fontSize: 18, color: "#fff", marginBottom: 2 },
+  spotifySongHeader: {
+    fontSize: 18,
+    color: "#fff",
+    marginBottom: 2,
+    // backgroundColor: "blue",
+    width: 250
+  },
   spotifySongArtist: { fontSize: 14, color: "#777" },
   line: {
     left: 10,

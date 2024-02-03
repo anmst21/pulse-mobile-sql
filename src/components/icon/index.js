@@ -38,9 +38,26 @@ import SubscribeIcon from "./subscribeIcon"
 import AcceptSubIcon from "./acceptSubIcon"
 import DeclineSubIcon from "./declineSubIcon"
 import MarkSeenIcon from "./markSeenIcon"
+import DownvoteIcon from "./downvoteIcon"
+import UpvoteIcon from "./upvoteIcon"
+import MessageIcon from "./messageIcon"
+import BookMark from "./bookMark"
+import DotMenu from "./dotMenu"
 
 const Icon = ({ name, style }) => {
   switch (name) {
+    case "dotMenu":
+      return <DotMenu style={style} />;
+    case "bookMark":
+      return <BookMark style={style} />;
+    case "messageIcon":
+      return <MessageIcon style={style} />;
+    case "messageIcon":
+      return <MessageIcon style={style} />;
+    case "downvoteIcon":
+      return <DownvoteIcon style={style} />;
+    case "upvoteIcon":
+      return <UpvoteIcon style={style} />;
     case "waveForm":
       return <WaveForm style={style} />;
     case "markSeenIcon":

@@ -4,22 +4,29 @@ import {
   View,
   ScrollView,
   Button,
+  Image,
   TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteAudio } from "../../redux";
 import PulsePlayer from "../../components/pulse_player/pulsePostPlayer";
 import Icon from "../../components/icon";
+import CustomText from "../../components/text";
+import { useNavigation } from "@react-navigation/native";
+import UpvoteDownvote from "../../components/unvote_downvote";
 
-const UserPosts = ({ storedUserInfo, userId, audioList }) => {
+
+
+const UserPosts = ({ userId, audioList }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
-
+  const navigation = useNavigation();
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const dispatch = useDispatch();
+  const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
 
   const setPlayer = async () => {
     await Audio.setAudioModeAsync({
@@ -155,27 +162,52 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
       </View>
     </TouchableOpacity>
   );
+
   return (
-    <View style={{ height: 450 }}>
+    <View style={{ height: "100%", paddingBottom: 60 }}>
       <Text>UserPosts</Text>
       <ScrollView>
         {audioList
           ? audioList.map((audio) => (
-            <View key={audio.id} style={styles.postComponent}>
-              <PulsePlayer
-                data={audio}
-                toggleSound={toggleSound}
-                playbackPosition={playbackPosition}
-                onPostSliderValueChange={onPostSliderValueChange}
-                sound={sound}
-                // isPlaying={isPlaying}
-                isPlaying={playingStatus[audio.id]}
-                playingNow={playingNow}
-                id={audio.id}
-              />
-              {trash(audio.id)}
-            </View>
 
+            <View style={styles.outerPost}>
+              <TouchableOpacity
+                onPress={() => {
+                  storedUserInfo.id !== audio.user_id
+                    ? navigation.push("UserProfileScreen", {
+                      id: audio.user_id,
+                      item,
+                    })
+                    : navigation.dispatch(StackActions.popToTop());
+                }}
+              >
+                <View style={styles.postHeader}>
+                  <Image
+                    source={{ uri: audio.image_link }}
+                    style={{ width: 25, height: 25, borderRadius: 1000, }}
+                  />
+                  <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
+                </View>
+              </TouchableOpacity>
+              <View key={audio.id} style={styles.postComponent}>
+
+                <PulsePlayer
+                  data={audio}
+                  toggleSound={toggleSound}
+                  playbackPosition={playbackPosition}
+                  onPostSliderValueChange={onPostSliderValueChange}
+                  sound={sound}
+                  // isPlaying={isPlaying}
+                  isPlaying={playingStatus[audio.id]}
+                  playingNow={playingNow}
+                  id={audio.id}
+                />
+                {audio.user_id === storedUserInfo && trash(audio.id)}
+              </View>
+              <View style={styles.upvoteDownvote}>
+                <UpvoteDownvote dateCreated={audio.date_created} />
+              </View>
+            </View>
           ))
           : null}
       </ScrollView>
@@ -187,6 +219,22 @@ const UserPosts = ({ storedUserInfo, userId, audioList }) => {
 export default UserPosts;
 
 const styles = StyleSheet.create({
+  upvoteDownvote: {
+    position: "absolute",
+    bottom: -10
+  },
+  postHeader: {
+
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  outerPost: {
+    gap: 20,
+    marginBottom: 70,
+    borderTopColor: "rgba(255,255,255,0.1)",
+    paddingTop: 20,
+    borderWidth: 1
+  },
   trashIcon: {
     width: 50,
     height: 50,
@@ -202,7 +250,7 @@ const styles = StyleSheet.create({
   postComponent: {
     marginBottom: 30,
     flexDirection: "row",
-    marginLeft: 15,
+
     justifyContent: "space-between",
     alignItems: "center",
   },

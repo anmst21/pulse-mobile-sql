@@ -67,7 +67,8 @@ const signout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("userId");
-
+    await AsyncStorage.removeItem("accessToken");
+    await AsyncStorage.removeItem("refreshToken");
     return null;
   }
 );

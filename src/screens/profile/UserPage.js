@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { signout } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo, fetchUserAudios } from "../../redux";
 import { useFocusEffect } from "@react-navigation/native";
@@ -41,12 +40,7 @@ const UserPage = () => {
         storedUserInfo={storedUserInfo.id}
       />
 
-      <Button
-        title="Sign Out"
-        onPress={() => {
-          dispatch(signout());
-        }}
-      />
+
     </View>
   );
 };

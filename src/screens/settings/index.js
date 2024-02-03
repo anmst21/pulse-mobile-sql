@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import customMapStyle from "../../components/map/mapStyle";
 import AsyncSearch from "../../components/async_search";
@@ -8,6 +8,9 @@ import SettingsHeader from "../../components/header/settingsHeader";
 import PlayerComponent from "../player/PlayerComponent";
 import InAppBrowser from "react-native-inappbrowser-reborn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { signout } from "../../redux";
+
 
 import SignInWithService from "./SignInWithService";
 
@@ -15,7 +18,7 @@ const Settings = ({ route }) => {
   console.log(route.params?.access_token);
   console.log(route.params?.refresh_token);
   console.log("expires_in", route.params?.expires_in);
-
+  const dispatch = useDispatch()
   const setSpotifyStorage = async ({ access, refresh, expires_in }) => {
     if (access) {
       await AsyncStorage.setItem("accessToken", access);
@@ -46,6 +49,12 @@ const Settings = ({ route }) => {
       </View>
 
       <SignInWithService />
+      <Button
+        title="Sign Out"
+        onPress={() => {
+          dispatch(signout());
+        }}
+      />
     </View>
   );
 };

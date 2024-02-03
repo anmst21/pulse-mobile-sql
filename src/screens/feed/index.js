@@ -16,11 +16,14 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import List from "../../components/list"
+import sqlApi from "../../redux/axios/sqlApi"
 
 import Tab from "../../components/tab";
 import Map from "../map";
 import CustomText from "../../components/text";
 import MapContainer from "../map";
+import UserPosts from "../profile/UserPosts";
+import { fetchUserAudios } from "../../redux";
 
 const FeedScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -30,9 +33,20 @@ const FeedScreen = ({ navigation }) => {
   const opacity = useSharedValue(0);
   const scrollY = useSharedValue(0);
   const feedOpacity = useSharedValue(0);
+  const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
 
+  const [audios, setAudios] = useState([])
+  console.log("audiosaudiosaudios", audios)
+  const fetchUserDetails = async () => {
+
+
+    const { data } = await sqlApi.get("/audios")
+    setAudios(data)
+
+  };
 
   useEffect(() => {
+    fetchUserDetails()
     showInitialAnimation();
     setInitialAnimation(false);
   }, []);
@@ -107,29 +121,31 @@ const FeedScreen = ({ navigation }) => {
   const renderContent = () => {
     if (activeTab.map) {
       return (<MapContainer />)
-      // } else {
-      //   return (
-      //       // <List
-      //       //   url="/feed/fetchFeed"
-      //       //   limit={2}
-      //       //   listItem="post"
-      //       //   paddingTop={185}
-      //       //   paddingBottom={270}
-      //       //   onScrollEvent={(value) => {
-      //       //     if (!activeTab.player) {
-      //       //       scrollY.value = value;
-      //       //       if (opacity.value <= 0) {
-      //       //         isMenuVisible.value = false;
-      //       //       } else {
-      //       //         isMenuVisible.value = true;
-      //       //       }
-      //       //     }
-      //       //   }}
-      //       // />
-      //   )
+    } else {
+      return (
+        <View style={styles.userPostContainer}>
+          <UserPosts audioList={audios} />
+        </View>
+      )
     }
   }
-
+  // <List
+  //   url="/feed/fetchFeed"
+  //   limit={2}
+  //   listItem="post"
+  //   paddingTop={185}
+  //   paddingBottom={270}
+  //   onScrollEvent={(value) => {
+  //     if (!activeTab.player) {
+  //       scrollY.value = value;
+  //       if (opacity.value <= 0) {
+  //         isMenuVisible.value = false;
+  //       } else {
+  //         isMenuVisible.value = true;
+  //       }
+  //     }
+  //   }}
+  // />
   return (
     <View style={{ backgroundColor: "black", position: "relative" }}>
       {renderTab()}
@@ -147,6 +163,10 @@ const FeedScreen = ({ navigation }) => {
 export default FeedScreen;
 
 const styles = StyleSheet.create({
+  userPostContainer: {
+    paddingTop: 150,
+    paddingHorizontal: 10
+  },
   tabContainer: {
     position: "absolute",
     top: 120,

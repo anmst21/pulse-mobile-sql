@@ -14,6 +14,7 @@ import Animated, {
   withDelay,
   withSpring,
   withTiming,
+  withRepeat,
   Easing,
 } from "react-native-reanimated";
 import Tab from "../../components/tab";
@@ -33,11 +34,31 @@ const UserListScreen = ({ route }) => {
   const navigation = useNavigation();
   // const LoaderSkeleton = (<View style={styles.userElementLoader}></View>)
 
-  const renderLoaderSkeletons = (count) => {
-    return <View style={{ marginTop: 20 }}>{Array.from({ length: count }, (_, index) => (
-      <View key={index} style={styles.userElementLoader} />
 
-    ))}
+  const opacity1 = useSharedValue(0);
+
+  // Animated style to interpolate the opacity
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity1.value,
+    };
+  });
+
+  useEffect(() => {
+    // Start the looped animation
+    opacity1.value = withRepeat(
+      withTiming(1, { duration: 1000, easing: Easing.linear }), // Fade in
+      -1, // Repeat indefinitely
+      true // Reverse the animation on each iteration
+    );
+  }, []);
+
+
+  const renderLoaderSkeletons = (count) => {
+    return <View style={{ marginTop: 20 }}>
+      {Array.from({ length: count }, (_, index) => (
+        <Animated.View key={index} style={[styles.userElementLoader, animatedStyle]} />
+      ))}
     </View>
   }
   const noResults = <View style={styles.noResults}><CustomText>No Records Found</CustomText></View>
