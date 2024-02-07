@@ -124,7 +124,8 @@ const FeedScreen = ({ navigation }) => {
     } else {
       return (
         <View style={styles.userPostContainer}>
-          <UserPosts audioList={audios} />
+          <UserPosts userId={storedUserInfo} setAudioList={setAudios} audioList={audios} />
+
         </View>
       )
     }

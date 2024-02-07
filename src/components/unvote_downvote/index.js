@@ -1,12 +1,24 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React, { useEffect } from 'react'
 import CustomText from '../text'
 import Icon from '../icon'
+import sqlApi from "../../redux/axios/sqlApi"
 
+//setOpenComments
 const humanReadableDate = (dateString) => {
     const date = new Date(dateString);
     const today = new Date();
     const yesterday = new Date(today);
+
+
+
+
+
+
+
+
+
+
 
     yesterday.setDate(today.getDate() - 1);
 
@@ -22,22 +34,88 @@ const humanReadableDate = (dateString) => {
 };
 
 
-const UpvoteDownvote = ({ dateCreated }) => {
+const UpvoteDownvote = ({ userId, setAudioList, id, dateCreated, setOpenComments, toggleIsActive, upvotes, downvotes }) => {
+
+
+    const postVote = async (user_id, post_id, vote_type) => {
+        try {
+            const response = await sqlApi.post(`/vote`, { user_id, post_id, vote_type });
+            const responseVoteType = response.data.vote_type;
+            const action = response.data.action
+
+            setAudioList((prevAudioList) => {
+                return prevAudioList.map((audio) => {
+                    // Find the audio record by post_id
+
+
+                    if (audio.id === post_id) {
+                        let updatedAudio = { ...audio };
+
+                        if (responseVoteType === true && action === "add") {
+                            // If vote_type was true, increment upvotes
+                            updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
+                        } else if (responseVoteType === true && action === "update") {
+                            // If vote_type was true, increment upvotes
+                            updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
+                            updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
+                        } else if (responseVoteType === false && action === "add") {
+                            // If vote_type was false, increment downvotes
+                            updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
+                        } else if (responseVoteType === false && action === "update") {
+                            // If vote_type was false, increment downvotes
+                            updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
+                            updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
+                        } else if (responseVoteType === null) {
+                            // If vote was removed, decrement the previously voted type
+                            if (vote_type === true) {
+                                // If original vote was an upvote, decrement upvotes
+                                updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
+                            } else if (vote_type === false) {
+                                // If original vote was a downvote, decrement downvotes
+                                updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
+                            }
+                        }
+                        return updatedAudio;
+                    }
+                    return audio;
+                });
+            });
+        } catch (error) {
+            console.error("Error posting vote:", error);
+            // Handle error appropriately
+        }
+    };
+
+
+
+
     return (
         <View style={styles.container}>
-            <View style={styles.minibox}>
-                <Icon name="upvoteIcon" />
-                <CustomText style={styles.text}>14</CustomText>
-            </View>
+            <TouchableOpacity onPress={() => postVote(userId, id, true)}>
+                <View style={styles.minibox}>
+
+                    <Icon name="upvoteIcon" />
+                    <CustomText style={styles.text}>{upvotes}</CustomText>
+
+                </View>
+            </TouchableOpacity>
             <View style={styles.lineHorizontal} />
-            <View style={styles.minibox}>
-                <Icon name="downvoteIcon" />
-                <CustomText style={styles.text}>14</CustomText>
-            </View >
-            <View style={styles.message}>
-                <Icon name="messageIcon" />
+            <TouchableOpacity onPress={() => postVote(userId, id, true)}>
+                <View style={styles.minibox}>
+                    <Icon name="downvoteIcon" />
+                    <CustomText style={styles.text}>{downvotes}</CustomText>
+                </View >
+            </TouchableOpacity>
+
+
+            <View style={styles.message} >
+                <TouchableOpacity onPress={() => { toggleIsActive(id); setOpenComments(prev => !prev) }}>
+                    <Icon name="messageIcon" />
+                </TouchableOpacity>
 
             </View>
+
+
             {/* <View style={styles.bookMark}>
                 <Icon name="bookMark" />
 
@@ -50,7 +128,7 @@ const UpvoteDownvote = ({ dateCreated }) => {
                 <CustomText style={styles.date}>{humanReadableDate(dateCreated)}</CustomText>
 
             </View>
-        </View>
+        </View >
     )
 }
 
@@ -112,7 +190,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#2D2B32",
         height: 40
     },
-    minibox: { flexDirection: "row", alignItems: "center", },
+    minibox: { flexDirection: "row", alignItems: "center" },
     text: { fontSize: 14 },
     container: {
         width: 120,
