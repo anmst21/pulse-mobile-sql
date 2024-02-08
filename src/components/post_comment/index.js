@@ -1,18 +1,49 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Image } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import sqlApi from "../../redux/axios/sqlApi"
 import CustomText from "../../components/text";
 import Icon from '../icon';
+import Button from "../../components/button";
+import { useDispatch, useSelector } from "react-redux";
+
+
+
+const humanReadableDate = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+        return "today";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return "yesterday";
+    } else {
+        // Here, you can format the date as desired for dates other than today and yesterday
+        // For simplicity, this example returns the date in the format 'DD/MM/YYYY'
+        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    }
+};
 
 
 
 const PostComment = ({ isActive, openComments, userId, audio }) => {
     const [comments, setComments] = useState([]);
     const [inputValue, setInputValue] = useState('');
+    const [editValue, setEditValue] = useState("")
+    const [isEdited, setIdEdited] = useState(false)
+    const [isActiveComment, setIsActiveComment] = useState(null)
+
+
+
+    const storedUserInfo = useSelector((state) => state.user?.userInfo);
 
 
     useEffect(() => { fetchComments(isActive, userId) }, [isActive])
+    // useEffect(() => {
+    //     if (!isEdited) { translateX.value = withSpring(0) }
 
+    // }, [isActiveComment])
 
 
     const handleSubmit = (contents, user_id, post_id) => {
@@ -76,18 +107,40 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
     return (
         <>{openComments && isActive === audio.id &&
             <View style={styles.comments}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter a comment..."
-                    value={inputValue}
-                    onChangeText={text => setInputValue(text)} // Update the state on input change
-                /><Button
-                    title="Submit Comment"
-                    onPress={() => handleSubmit(inputValue, audio.user_id, audio.id)} // Call handleSubmit when the button is pressed
-                />
-
-
                 <ScrollView>
+                    <View style={styles.commentContainer}>
+                        <View style={styles.postHeader}>
+                            <Image
+                                source={{ uri: storedUserInfo.image_link }}
+                                style={{ width: 25, height: 25, borderRadius: 1000 }}
+                            />
+                            <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{storedUserInfo.username}</CustomText>
+
+                        </View>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter a comment..."
+                            value={inputValue}
+                            onChangeText={text => setInputValue(text)} // Update the state on input change
+                            placeholderTextColor="gray"
+                            multiline
+                            maxLength={240}
+                        />
+                        <View style={styles.btnContainer}>
+                            <CustomText style={styles.counter}>
+                                {inputValue.length} / 240
+                            </CustomText>
+                            <Button
+                                label="Post"
+                                iconRight="arrow_right"
+
+                                purple={true}
+                                // status={player.edited}
+                                // loading={saving}
+                                onPressIn={() => handleSubmit(inputValue, userId, audio.id)}
+                            />
+                        </View>
+                    </View>
                     {comments.map((comment) => (
                         <View key={comment.id} style={styles.commentContainer}>
                             {/* <TouchableOpacity
@@ -126,10 +179,72 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                                     </TouchableOpacity>
                                     <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>
                                 </View>
+                                {userId === comment.user_id &&
+                                    <View style={styles.edit}>
+                                        {isActive ? <TouchableOpacity onPress={() => {
+                                            setIdEdited(true);
+                                            setEditValue(comment.contents);
+                                            setIsActiveComment(comment.id)
+                                        }
+                                        }>
+                                            <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
+                                        </TouchableOpacity>
+                                            : <TouchableOpacity onPress={() => {
+                                                setIdEdited(false);
+                                                setEditValue("");
+                                                setIsActiveComment(null)
+                                            }
+                                            }>
+                                                <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
+                                            </TouchableOpacity>}
+                                        {/* <TouchableOpacity onPress={() => {
+                                            setIdEdited(false);
+                                            setEditValue("");
+                                            setIsActiveComment(null)
+                                        }
+                                        }>
+                                            <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
+                                        </TouchableOpacity> */}
+                                    </View>
+                                }
+
                             </View>
                             {/* </TouchableOpacity> */}
-                            <CustomText >{comment.contents}</CustomText>
-                            <CustomText>Posted on: {new Date(comment.created_at).toLocaleDateString()} at {new Date(comment.created_at).toLocaleTimeString()}</CustomText>
+
+                            {
+                                isEdited && isActiveComment === comment.id ?
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Enter a comment..."
+                                        value={editValue}
+                                        onChangeText={text => setEditValue(text)} // Update the state on input change
+                                        placeholderTextColor="gray"
+                                        multiline
+                                        maxLength={240}
+                                    />
+                                    :
+
+                                    <CustomText style={{ fontSize: 17, marginVertical: 13 }}>{comment.contents}</CustomText>
+                            }
+                            {/* <CustomText style={{
+                                fontSize: 14,
+                                color: "rgba(225,255,255, 0.3)"
+                            }}>{humanReadableDate(comment.created_at)}</CustomText> */}
+                            <View style={styles.btnContainer}>
+                                <CustomText style={styles.counter}>
+                                    {humanReadableDate(comment.created_at)}
+                                </CustomText>
+                                {isEdited && isActiveComment === comment.id && <Button
+                                    label="Post"
+                                    iconRight="arrow_right"
+
+                                    purple={true}
+                                    // status={player.edited}
+                                    // loading={saving}
+                                    onPressIn={() => console.log("pressed")}
+                                />}
+
+                            </View>
                         </View>
                     ))}</ScrollView>
             </View>
@@ -142,13 +257,30 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
 export default PostComment
 
 const styles = StyleSheet.create({
+    edit: {
+        position: "absolute",
+        right: 100,
+        top: 4
+    },
+    counter: {
+        color: "grey",
+        fontSize: 14,
+
+    },
+    btnContainer: {
+        //  backgroundColor: "blue",
+        justifyContent: 'space-between',
+        flexDirection: "row",
+        alignItems: "center"
+    },
     input: {
-        height: 40,
-        margin: 12,
+        fontSize: 16,
+        marginVertical: 10,
+
         borderWidth: 1,
-        padding: 10,
-        width: '80%',
-        borderColor: 'gray',
+
+        //   width: '100%',
+
         color: "white"
     },
     like: { position: "absolute", right: 10, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },

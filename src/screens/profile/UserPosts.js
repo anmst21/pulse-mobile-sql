@@ -22,69 +22,14 @@ import PostComment from "../../components/post_comment"
 
 
 
+
 const UserPosts = ({ userId, audioList, setAudioList }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
   const [openComments, setOpenComments] = useState(false);
-  // const [comments, setComments] = useState([]);
   const [isActive, setIsActive] = useState(null);
-  // const [inputValue, setInputValue] = useState('');
 
-  // const postVote = async (user_id, post_id, vote_type) => {
-  //   try {
-  //     const response = await sqlApi.post(`/vote`, { user_id, post_id, vote_type });
-  //     const responseVoteType = response.data.vote_type;
-  //     const action = response.data.action
-
-  //     setAudioList((prevAudioList) => {
-  //       return prevAudioList.map((audio) => {
-  //         // Find the audio record by post_id
-
-
-  //         if (audio.id === post_id) {
-  //           let updatedAudio = { ...audio };
-
-  //           if (responseVoteType === true && action === "add") {
-  //             // If vote_type was true, increment upvotes
-  //             updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
-  //           } else if (responseVoteType === true && action === "update") {
-  //             // If vote_type was true, increment upvotes
-  //             updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
-  //             updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
-  //           } else if (responseVoteType === false && action === "add") {
-  //             // If vote_type was false, increment downvotes
-  //             updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
-  //           } else if (responseVoteType === false && action === "update") {
-  //             // If vote_type was false, increment downvotes
-  //             updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
-  //             updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
-  //           } else if (responseVoteType === null) {
-  //             // If vote was removed, decrement the previously voted type
-  //             if (vote_type === true) {
-  //               // If original vote was an upvote, decrement upvotes
-  //               updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
-  //             } else if (vote_type === false) {
-  //               // If original vote was a downvote, decrement downvotes
-  //               updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
-  //             }
-  //           }
-  //           return updatedAudio;
-  //         }
-  //         return audio;
-  //       });
-  //     });
-  //   } catch (error) {
-  //     console.error("Error posting vote:", error);
-  //     // Handle error appropriately
-  //   }
-  // };
-
-
-
-
-
-  // console.log("openComments", comments);
   const navigation = useNavigation();
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const dispatch = useDispatch();
@@ -123,28 +68,6 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
     }
   }, [sound]);
 
-  // const onPlaybackStatusUpdate = (status, id) => {
-  //   // No need for the isMounted check here as we'll handle the effect cleanup below
-  //   if (status.isLoaded) {
-  //     if (status.isPlaying) {
-  //       setPlaybackPositions((prevPositions) => ({
-  //         ...prevPositions,
-  //         [id]: status.positionMillis,
-  //       }));
-  //     }
-  //     if (status.didJustFinish) {
-  //       setPlaybackPositions((prevPositions) => ({
-  //         ...prevPositions,
-  //         [id]: 0,
-  //       }));
-  //       setPlayingStatus((prevState) => ({
-  //         ...prevState,
-  //         [id]: false,
-  //       }));
-  //       sound.unloadAsync(); // Unload the sound when finished playing
-  //     }
-  //   }
-  // };
 
   async function toggleSound(id, url) {
     const isCurrentlyPlaying = playingStatus[id] || false;
@@ -163,10 +86,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
   }
 
   const onPostSliderValueChange = async (id, position) => {
-    // Update the playback position for the specific audio file
     setPlaybackPosition(position);
-
-    // If the audio file being interacted with is the one that's loaded in the sound object
     if (sound) {
       await sound.setPositionAsync(position);
     }
@@ -211,64 +131,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
   const toggleComments = () => {
     setOpenComments(!openComments);
   };
-  // const handleSubmit = (contents, user_id, post_id) => {
-  //   postComment(contents, user_id, post_id);
-  //   setInputValue(''); // Clear the input after submission
-  // };
 
-  // const fetchComments = async (post_id, user_id) => {
-  //   const response = await sqlApi.get(`/comments/${post_id}/${user_id}`);
-  //   console.log("fetchComments", response.data.comments)
-
-  //   setComments(response.data.comments)
-  // }
-
-
-  // const postComment = async (contents, user_id, post_id) => {
-  //   const response = await sqlApi.post(`/comments`, { contents, user_id, post_id });
-  //   console.log("fetchComments", response.data)
-
-  //   setComments(prev => [response.data, ...prev])
-  // }
-
-  // const deleteComment = async (comment_id) => {
-  //   try {
-  //     // Sending a DELETE request to the server to delete a comment
-  //     await sqlApi.delete(`/comments/${comment_id}`);
-
-  //     // Update the comments state to remove the deleted comment
-  //     setComments(prevComments => prevComments.filter(comment => comment.id !== comment_id));
-  //   } catch (error) {
-  //     console.error("Error deleting the comment:", error);
-  //     // Handle the error appropriately, e.g., show an error message to the user
-  //   }
-  // };
-
-
-  // const likeComment = async (user_id, comment_id) => {
-  //   try {
-  //     // Sending a POST request to the server to like/unlike a comment
-  //     const response = await sqlApi.post(`/comments/like`, { user_id, comment_id });
-  //     const { action } = response.data;
-
-  //     // Update the comments state based on the response
-  //     setComments(prevComments => prevComments.map(comment => {
-  //       if (comment.id === comment_id) {
-  //         if (action === 'like') {
-  //           return { ...comment, liked: true, likes_count: comment.likes_count + 1 };
-  //         } else if (action === 'unlike') {
-  //           return { ...comment, liked: false, likes_count: Math.max(comment.likes_count - 1, 0) }; // Avoid negative counts
-  //         }
-  //       }
-  //       return comment;
-  //     }));
-  //   } catch (error) {
-  //     console.error("Error liking/unliking the comment:", error);
-  //     // Handle the error appropriately
-  //   }
-  // };
-
-  // useEffect(() => { fetchComments(isActive, userId) }, [isActive])
 
   const handleDelete = (id) => {
     if (id) {
@@ -334,6 +197,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
               </View>
               <View style={styles.upvoteDownvote}>
                 <UpvoteDownvote
+
                   setAudioList={setAudioList}
                   upvotes={audio.upvotes}
                   downvotes={audio.downvotes}
@@ -341,16 +205,18 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
                   dateCreated={audio.date_created}
                   setOpenComments={toggleComments}
                   toggleIsActive={toggleIsActive}
-                  userId={userId}
+                  userId={storedUserInfo}
+                  audio={audio}
                 />
 
               </View>
               < PostComment
                 openComments={openComments}
                 isActive={isActive}
-                userId={userId}
+                userId={storedUserInfo}
                 audio={audio}
               />
+
 
 
             </View>
@@ -367,32 +233,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
 export default UserPosts;
 
 const styles = StyleSheet.create({
-  // likeText: { fontSize: 16 },
-  // like: { position: "absolute", right: 10, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
-  // commentContainer: {
-  //   marginBottom: 10,
-  //   padding: 10,
-  //   borderWidth: 1,
-  //   borderColor: '#ddd',
-  //   borderRadius: 5,
-  // },
-  // input: {
-  //   height: 40,
-  //   margin: 12,
-  //   borderWidth: 1,
-  //   padding: 10,
-  //   width: '80%',
-  //   borderColor: 'gray', 
-  //   color: "white"
-  // },
-  // comments: {
-  //   height: 400,
-  //   // backgroundColor: "blue",
-  //   bottom: -40
-  // },
-
   postHeader: {
-
     flexDirection: "row",
     alignItems: "center"
   },
@@ -404,21 +245,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: "column"
   },
-  // commentsTrashIcon: {
-  //   zIndex: 9999,
-  //   right: 70,
-  //   top: 13,
-  //   borderRadius: 10,
 
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   position: "absolute"
-  // },
   trashIcon: {
     width: 50,
     height: 50,
     borderRadius: 10,
-
     alignItems: "center",
     justifyContent: "center",
   },
@@ -427,9 +258,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   postComponent: {
-
     flexDirection: "row",
-
     justifyContent: "space-between",
     alignItems: "center",
   },

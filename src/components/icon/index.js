@@ -44,11 +44,14 @@ import MessageIcon from "./messageIcon"
 import BookMark from "./bookMark"
 import DotMenu from "./dotMenu"
 import HeartIcon from "./heartIcon"
+import PencilEdit from "./pencilEdit"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "dotMenu":
       return <DotMenu style={style} />;
+    case "pencilEdit":
+      return <PencilEdit style={style} />;
     case "heartIcon":
       return <HeartIcon style={style} />;
     case "bookMark":

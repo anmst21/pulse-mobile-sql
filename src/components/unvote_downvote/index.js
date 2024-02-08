@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomText from '../text'
 import Icon from '../icon'
 import sqlApi from "../../redux/axios/sqlApi"
@@ -11,16 +11,8 @@ const humanReadableDate = (dateString) => {
     const yesterday = new Date(today);
 
 
-
-
-
-
-
-
-
-
-
     yesterday.setDate(today.getDate() - 1);
+
 
     if (date.toDateString() === today.toDateString()) {
         return "today";
@@ -34,8 +26,10 @@ const humanReadableDate = (dateString) => {
 };
 
 
-const UpvoteDownvote = ({ userId, setAudioList, id, dateCreated, setOpenComments, toggleIsActive, upvotes, downvotes }) => {
+const UpvoteDownvote = ({ audio, userId, setAudioList, id, dateCreated, setOpenComments, toggleIsActive, upvotes, downvotes }) => {
+    const [voteType, setVoteType] = useState(audio.vote_type)
 
+    //useEffect(() => { setVoteType(audio.vote_type) }, [])
 
     const postVote = async (user_id, post_id, vote_type) => {
         try {
@@ -46,35 +40,35 @@ const UpvoteDownvote = ({ userId, setAudioList, id, dateCreated, setOpenComments
             setAudioList((prevAudioList) => {
                 return prevAudioList.map((audio) => {
                     // Find the audio record by post_id
-
-
                     if (audio.id === post_id) {
                         let updatedAudio = { ...audio };
 
+                        // Update upvotes/downvotes based on the action and responseVoteType
                         if (responseVoteType === true && action === "add") {
-                            // If vote_type was true, increment upvotes
                             updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
+                            setVoteType(true); // Set vote_type to true for upvote
                         } else if (responseVoteType === true && action === "update") {
-                            // If vote_type was true, increment upvotes
                             updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
                             updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
+                            setVoteType(true); // Update vote_type to true for upvote
                         } else if (responseVoteType === false && action === "add") {
-                            // If vote_type was false, increment downvotes
                             updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
+                            setVoteType(false); // Set vote_type to false for downvote
                         } else if (responseVoteType === false && action === "update") {
-                            // If vote_type was false, increment downvotes
                             updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
                             updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
+                            setVoteType(false); // Update vote_type to false for downvote
                         } else if (responseVoteType === null) {
-                            // If vote was removed, decrement the previously voted type
+                            // Remove vote
                             if (vote_type === true) {
-                                // If original vote was an upvote, decrement upvotes
                                 updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
                             } else if (vote_type === false) {
-                                // If original vote was a downvote, decrement downvotes
                                 updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
                             }
+                            setVoteType(null)
+
                         }
+
                         return updatedAudio;
                     }
                     return audio;
@@ -87,23 +81,35 @@ const UpvoteDownvote = ({ userId, setAudioList, id, dateCreated, setOpenComments
     };
 
 
-
+    console.log("audio.userVoteStatus", audio.vote_type)
 
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => postVote(userId, id, true)}>
-                <View style={styles.minibox}>
-
-                    <Icon name="upvoteIcon" />
+                <View style={[styles.minibox, {
+                    borderTopLeftRadius: 100,
+                    borderBottomLeftRadius: 100,
+                    backgroundColor: voteType === true ? "grey" : "transparent"
+                }]}>
+                    <View style={styles.arrowIcon}>
+                        <Icon name="upvoteIcon" />
+                    </View>
                     <CustomText style={styles.text}>{upvotes}</CustomText>
 
                 </View>
             </TouchableOpacity>
             <View style={styles.lineHorizontal} />
-            <TouchableOpacity onPress={() => postVote(userId, id, true)}>
-                <View style={styles.minibox}>
-                    <Icon name="downvoteIcon" />
+            <TouchableOpacity onPress={() => postVote(userId, id, false)}>
+                <View style={[styles.minibox, {
+                    borderTopRightRadius: 100,
+                    borderBottomRightRadius: 100,
+                    backgroundColor: voteType === false ? "grey" : "transparent"
+                }]}>
+                    <View style={styles.arrowIcon}>
+                        <Icon name="downvoteIcon" />
+                    </View>
                     <CustomText style={styles.text}>{downvotes}</CustomText>
+
                 </View >
             </TouchableOpacity>
 
@@ -135,6 +141,11 @@ const UpvoteDownvote = ({ userId, setAudioList, id, dateCreated, setOpenComments
 export default UpvoteDownvote
 
 const styles = StyleSheet.create({
+
+    arrowIcon: {
+        right: 30,
+        position: "absolute"
+    },
     dateContainer: {
 
         position: "absolute",
@@ -190,17 +201,30 @@ const styles = StyleSheet.create({
         backgroundColor: "#2D2B32",
         height: 40
     },
-    minibox: { flexDirection: "row", alignItems: "center" },
+    minibox: {
+        position: "relative",
+        flexDirection: "row",
+        alignItems: "center",
+        //  backgroundColor: "blue",
+
+        paddingLeft: 10,
+        flex: 1,
+        width: 60,
+        justifyContent: "center",
+        height: 40
+    },
     text: { fontSize: 14 },
     container: {
-        width: 120,
+
+
+        width: 121,
         height: 40,
         borderColor: "#2D2B32",
         borderWidth: 2,
         justifyContent: "space-between",
         borderRadius: 100,
         flexDirection: "row",
-        paddingHorizontal: 12,
+        // paddingHorizontal: 12,
         alignItems: "center"
     },
 })
