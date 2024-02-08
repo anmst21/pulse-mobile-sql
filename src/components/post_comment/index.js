@@ -5,6 +5,7 @@ import CustomText from "../../components/text";
 import Icon from '../icon';
 import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
+import { lowerFirst } from 'lodash';
 
 
 
@@ -65,6 +66,31 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
 
         setComments(prev => [response.data, ...prev])
     }
+
+    const putComment = async (post_id, contents) => {
+        try {
+            // Assuming the API response includes the updated comment object
+            const response = await sqlApi.put(`/comments/${post_id}/${contents}`);
+            const updatedComment = response.data.updatedComment; // Assuming this is the updated comment object
+            console.log("updatedComment", updatedComment)
+            setIdEdited(false);
+            setEditValue("");
+            setIsActiveComment(null)
+            // Update the comments state
+            setComments((prevComments) => {
+                return prevComments.map((comment) => {
+                    if (comment.id === updatedComment.id) {
+                        // Update the specific comment with new contents and updated_at
+                        return { ...comment, contents: updatedComment.contents, updated_at: updatedComment.updated_at };
+                    }
+                    return comment; // Return all other comments unchanged
+                });
+            });
+        } catch (error) {
+            console.error("Error updating comment:", error);
+            // Handle error appropriately
+        }
+    };
 
 
     const deleteComment = async (comment_id) => {
@@ -179,9 +205,18 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                                     </TouchableOpacity>
                                     <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>
                                 </View>
+                                {userId !== comment.user_id && <View style={styles.repost}>
+                                    <TouchableOpacity onPress={() => likeComment(userId, comment.id)}>
+
+                                        <Icon name="repostIcon" />
+
+                                    </TouchableOpacity>
+
+                                </View>}
+
                                 {userId === comment.user_id &&
                                     <View style={styles.edit}>
-                                        {isActive ? <TouchableOpacity onPress={() => {
+                                        {!isActiveComment ? <TouchableOpacity onPress={() => {
                                             setIdEdited(true);
                                             setEditValue(comment.contents);
                                             setIsActiveComment(comment.id)
@@ -226,14 +261,15 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
 
                                     <CustomText style={{ fontSize: 17, marginVertical: 13 }}>{comment.contents}</CustomText>
                             }
-                            {/* <CustomText style={{
-                                fontSize: 14,
-                                color: "rgba(225,255,255, 0.3)"
-                            }}>{humanReadableDate(comment.created_at)}</CustomText> */}
+
                             <View style={styles.btnContainer}>
                                 <CustomText style={styles.counter}>
                                     {humanReadableDate(comment.created_at)}
                                 </CustomText>
+                                {comment.created_at !== comment.updated_at && !isEdited && <CustomText style={styles.counter}>
+                                    edited
+                                </CustomText>}
+
                                 {isEdited && isActiveComment === comment.id && <Button
                                     label="Post"
                                     iconRight="arrow_right"
@@ -241,7 +277,7 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                                     purple={true}
                                     // status={player.edited}
                                     // loading={saving}
-                                    onPressIn={() => console.log("pressed")}
+                                    onPressIn={() => putComment(comment.id, editValue)}
                                 />}
 
                             </View>
@@ -284,6 +320,7 @@ const styles = StyleSheet.create({
         color: "white"
     },
     like: { position: "absolute", right: 10, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
+    repost: { position: "absolute", right: 140, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
     likeText: { fontSize: 16 },
     comments: {
         height: 400,

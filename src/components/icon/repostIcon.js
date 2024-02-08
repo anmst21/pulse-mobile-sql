@@ -1,8 +1,3 @@
-
-
-
-
-
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import { View } from 'react-native';
@@ -21,13 +16,14 @@ const Icon = ({ style }) => {
                 viewBox="0 0 24 24"
             >
                 <Path
-                    fill={style.color}
-                    d="M11.646 8.754l-5.992 5.992a.5.5 0 00.353.854h11.986a.5.5 0 00.353-.854l-5.992-5.992a.5.5 0 00-.708 0z"
+                    stroke="#fff"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6.954 4.8L2.4 9.415m0 0l4.554 4.616M2.4 9.415h15.2a4 4 0 014 4V15.2a4 4 0 01-4 4H12"
                 ></Path>
             </Svg>
-
-
-        </View >
+        </View>
     )
 }
 

@@ -20,6 +20,36 @@ import UpvoteDownvote from "../../components/unvote_downvote";
 import sqlApi from "../../redux/axios/sqlApi"
 import PostComment from "../../components/post_comment"
 
+import { PanGestureHandler } from 'react-native-gesture-handler';
+
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+  useAnimatedGestureHandler,
+} from "react-native-reanimated";
+
+
+const humanReadableDate = (dateString) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(today);
+
+
+  yesterday.setDate(today.getDate() - 1);
+
+
+  if (date.toDateString() === today.toDateString()) {
+    return "today";
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return "yesterday";
+  } else {
+    // Here, you can format the date as desired for dates other than today and yesterday
+    // For simplicity, this example returns the date in the format 'DD/MM/YYYY'
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  }
+};
 
 
 
@@ -29,6 +59,11 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
   const [playingNow, setPlayingNow] = useState(null);
   const [openComments, setOpenComments] = useState(false);
   const [isActive, setIsActive] = useState(null);
+  const [isOpenMenu, setIsOpenMenu] = useState(false)
+
+  useEffect(() => {
+    if (!isOpenMenu) { setOpenComments(false) }
+  }, [isOpenMenu]);
 
   const navigation = useNavigation();
   const [playbackPosition, setPlaybackPosition] = useState(0);
@@ -171,6 +206,13 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
                 }}
               >
                 <View style={styles.postHeader}>
+
+                  <View style={styles.dotMenu}>
+                    <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
+                      <Icon name="dotMenu" />
+
+                    </TouchableOpacity>
+                  </View>
                   <Image
                     source={{ uri: audio.image_link }}
                     style={{ width: 25, height: 25, borderRadius: 1000, }}
@@ -208,6 +250,17 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
                   userId={storedUserInfo}
                   audio={audio}
                 />
+                <View style={styles.message} >
+
+                  <TouchableOpacity onPress={() => { toggleIsActive(audio.id); setOpenComments(prev => !prev) }}>
+                    <Icon name="messageIcon" />
+                  </TouchableOpacity>
+
+                </View>
+                <View style={styles.dateContainer}>
+                  <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
+
+                </View>
 
               </View>
               < PostComment
@@ -233,6 +286,48 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
 export default UserPosts;
 
 const styles = StyleSheet.create({
+  message: {
+    width: 40,
+    height: 40,
+
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#2D2B32",
+    borderWidth: 2,
+    borderRadius: 100,
+  },
+  upvoteDownvote: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 15
+  },
+  date: {
+    fontSize: 14,
+    color: "rgba(225,255,255, 0.3)"
+  },
+  dateContainer: {
+
+    position: "absolute",
+    right: 10,
+
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#2D2B32",
+
+    borderRadius: 100,
+  },
+  dotMenu: {
+    right: 10,
+    width: 40,
+    height: 40,
+    position: "absolute",
+
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#2D2B32",
+
+    borderRadius: 100,
+  },
   postHeader: {
     flexDirection: "row",
     alignItems: "center"
@@ -243,7 +338,8 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255,255,255,0.1)",
     paddingTop: 20,
     borderWidth: 1,
-    flexDirection: "column"
+    flexDirection: "column",
+
   },
 
   trashIcon: {

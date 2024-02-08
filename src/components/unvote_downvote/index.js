@@ -86,13 +86,9 @@ const UpvoteDownvote = ({ audio, userId, setAudioList, id, dateCreated, setOpenC
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => postVote(userId, id, true)}>
-                <View style={[styles.minibox, {
-                    borderTopLeftRadius: 100,
-                    borderBottomLeftRadius: 100,
-                    backgroundColor: voteType === true ? "grey" : "transparent"
-                }]}>
+                <View style={styles.minibox}>
                     <View style={styles.arrowIcon}>
-                        <Icon name="upvoteIcon" />
+                        <Icon name="upvoteIcon" style={{ color: voteType === true ? "#14AD4D" : "grey" }} />
                     </View>
                     <CustomText style={styles.text}>{upvotes}</CustomText>
 
@@ -100,13 +96,9 @@ const UpvoteDownvote = ({ audio, userId, setAudioList, id, dateCreated, setOpenC
             </TouchableOpacity>
             <View style={styles.lineHorizontal} />
             <TouchableOpacity onPress={() => postVote(userId, id, false)}>
-                <View style={[styles.minibox, {
-                    borderTopRightRadius: 100,
-                    borderBottomRightRadius: 100,
-                    backgroundColor: voteType === false ? "grey" : "transparent"
-                }]}>
+                <View style={styles.minibox}>
                     <View style={styles.arrowIcon}>
-                        <Icon name="downvoteIcon" />
+                        <Icon name="downvoteIcon" style={{ color: voteType === false ? "#F53535" : "grey" }} />
                     </View>
                     <CustomText style={styles.text}>{downvotes}</CustomText>
 
@@ -114,26 +106,18 @@ const UpvoteDownvote = ({ audio, userId, setAudioList, id, dateCreated, setOpenC
             </TouchableOpacity>
 
 
-            <View style={styles.message} >
-                <TouchableOpacity onPress={() => { toggleIsActive(id); setOpenComments(prev => !prev) }}>
-                    <Icon name="messageIcon" />
-                </TouchableOpacity>
 
-            </View>
 
 
             {/* <View style={styles.bookMark}>
                 <Icon name="bookMark" />
 
             </View> */}
-            <View style={styles.dotMenu}>
-                <Icon name="dotMenu" />
 
-            </View>
-            <View style={styles.dateContainer}>
+            {/* <View style={styles.dateContainer}>
                 <CustomText style={styles.date}>{humanReadableDate(dateCreated)}</CustomText>
 
-            </View>
+            </View> */}
         </View >
     )
 }
@@ -184,17 +168,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 100,
     },
-    message: {
-        width: 40,
-        height: 40,
-        position: "absolute",
-        right: -60,
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: "#2D2B32",
-        borderWidth: 2,
-        borderRadius: 100,
-    },
+
 
     lineHorizontal: {
         width: 1,

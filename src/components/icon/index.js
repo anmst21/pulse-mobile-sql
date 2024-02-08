@@ -45,11 +45,14 @@ import BookMark from "./bookMark"
 import DotMenu from "./dotMenu"
 import HeartIcon from "./heartIcon"
 import PencilEdit from "./pencilEdit"
+import RepostIcon from "./repostIcon"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "dotMenu":
       return <DotMenu style={style} />;
+    case "repostIcon":
+      return <RepostIcon style={style} />;
     case "pencilEdit":
       return <PencilEdit style={style} />;
     case "heartIcon":
