@@ -14,9 +14,13 @@ const AsyncSearch = () => {
     throttle(async (searchQuery) => {
       try {
         const loggedInUserId = await AsyncStorage.getItem("userId");
-        let response = await userApi(
-          `/searchUser?q=${searchQuery}&loggedInUserId=${loggedInUserId}`
-        );
+        // Update the URL to use query parameters
+        let response = await userApi.get(`/search/profiles`, {
+          params: {
+            searchQuery: searchQuery,
+            loggedInUserId: loggedInUserId
+          }
+        });
         setResults(response.data);
       } catch (error) {
         console.error("Error searching: ", error);
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     color: "white",
     borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 5,
+
     marginBottom: 10,
     paddingHorizontal: 10,
     backgroundColor: "transparent",

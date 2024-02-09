@@ -20,6 +20,7 @@ const UserPage = () => {
   console.log("storedUserInfo._id", audioList);
 
 
+
   const fetchUserDetails = async () => {
     const userIdFromStorage = await AsyncStorage.getItem("userId");
 

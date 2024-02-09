@@ -18,7 +18,7 @@ const UsersList = ({ results, setResults }) => {
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   console.log("UsersList", results)
   return (
-    <>
+    <View style={{ paddingBottom: 160 }}>
       {results ? (
         <FlatList
           style={styles.list}
@@ -63,7 +63,7 @@ const UsersList = ({ results, setResults }) => {
       ) : (
         <Text>Nothing to fetch</Text>
       )}
-    </>
+    </View>
   );
 };
 

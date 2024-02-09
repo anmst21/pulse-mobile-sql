@@ -1,9 +1,10 @@
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProfilePicture from "../../components/profile_picture";
 import UserPosts from "./UserPosts";
 import { useNavigation } from "@react-navigation/native";
 import CustomText from "../../components/text";
+import sqlApi from "../../redux/axios/sqlApi"
 
 const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
   console.log("userWall", userInfo)
@@ -16,6 +17,21 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
     });
   };
   console.log("userInfo", userInfo);
+
+  const [audios, setAudios] = useState([])
+  console.log("audiosaudiosaudios", audios)
+  const fetchUserDetails = async () => {
+
+
+    const { data } = await sqlApi.get(`/user/${userId}/audios`)
+    setAudios(data)
+
+  };
+
+  useEffect(() => {
+    fetchUserDetails()
+  }, [])
+
 
   return (
     <View style={styles.mainContainer}>
@@ -67,8 +83,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
       </View>
       <UserPosts
-        storedUserInfo={storedUserInfo}
-        audioList={userAudios}
+        setAudioList={setAudios} audioList={audios}
         userId={userId}
       />
     </View>

@@ -7,6 +7,16 @@ import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
 import { lowerFirst } from 'lodash';
 
+import { PanGestureHandler } from 'react-native-gesture-handler';
+
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+    runOnJS,
+    useAnimatedGestureHandler,
+} from "react-native-reanimated";
+
 
 
 const humanReadableDate = (dateString) => {
@@ -41,10 +51,10 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
 
 
     useEffect(() => { fetchComments(isActive, userId) }, [isActive])
-    // useEffect(() => {
-    //     if (!isEdited) { translateX.value = withSpring(0) }
 
-    // }, [isActiveComment])
+
+
+
 
 
     const handleSubmit = (contents, user_id, post_id) => {
@@ -132,7 +142,9 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
 
     return (
         <>{openComments && isActive === audio.id &&
+
             <View style={styles.comments}>
+
                 <ScrollView>
                     <View style={styles.commentContainer}>
                         <View style={styles.postHeader}>
@@ -285,6 +297,7 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                     ))}</ScrollView>
             </View>
 
+
         }
         </>
     )
@@ -312,20 +325,20 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 16,
         marginVertical: 10,
-
-        borderWidth: 1,
+        color: "white"
 
         //   width: '100%',
 
-        color: "white"
+
     },
     like: { position: "absolute", right: 10, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
     repost: { position: "absolute", right: 140, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
     likeText: { fontSize: 16 },
     comments: {
+        // right: 100,
         height: 400,
         // backgroundColor: "blue",
-        bottom: -40
+        // bottom: -40
     },
 
     postHeader: {
@@ -346,9 +359,11 @@ const styles = StyleSheet.create({
     commentContainer: {
         marginBottom: 10,
         padding: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
+
+        backgroundColor: "rgba(31, 32, 34, 0.2)",
+
         borderRadius: 5,
+        //  paddingBottom: 20
     },
 
 })

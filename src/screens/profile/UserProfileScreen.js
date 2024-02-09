@@ -6,22 +6,24 @@ import sqlApi from "../../redux/axios/sqlApi";
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
 import CustomText from "../../components/text";
 
+
 const UserProfileScreen = ({ route }) => {
   const { id, item } = route.params;
   const [userInfo, setUserInfo] = useState({});
   const [userAudios, setUserAudios] = useState();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   const [userButton, setUserButton] = useState([item]);
-  console.log("fetchUserInfo", id)
+  console.log("fetchUserItem", item)
+  console.log("fetchUserInfo", userInfo)
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const response = await sqlApi.get(`/user/${id}`);
-        // const responseAudios = await userApi.get(
-        //   `/api/userAudios?userId=${id}`
-        // );
+        const responseAudios = await sqlApi.get(
+          `/user/${id}/audios`
+        );
 
-        // setUserAudios(responseAudios.data);
+        setUserAudios(responseAudios.data);
         setUserInfo(response.data);
       } catch (error) {
         console.error("An error occurred while fetching the user info:", error);
@@ -59,6 +61,7 @@ const UserProfileScreen = ({ route }) => {
         userAudios={userAudios}
         userInfo={userInfo}
         userId={id}
+
 
       />
 

@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   TextInput
 } from "react-native";
+import { switchTab, togglePlayer } from "../../redux/slices/tabSlice";
+
 import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +17,7 @@ import { deleteAudio } from "../../redux";
 import PulsePlayer from "../../components/pulse_player/pulsePostPlayer";
 import Icon from "../../components/icon";
 import CustomText from "../../components/text";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, StackActions } from "@react-navigation/native";
 import UpvoteDownvote from "../../components/unvote_downvote";
 import sqlApi from "../../redux/axios/sqlApi"
 import PostComment from "../../components/post_comment"
@@ -59,7 +61,8 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
   const [playingNow, setPlayingNow] = useState(null);
   const [openComments, setOpenComments] = useState(false);
   const [isActive, setIsActive] = useState(null);
-  const [isOpenMenu, setIsOpenMenu] = useState(false)
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
 
   useEffect(() => {
     if (!isOpenMenu) { setOpenComments(false) }
@@ -174,6 +177,14 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
     }
   };
 
+  const resetRoutes = () => {
+    if (
+      navigation.getState() &&
+      navigation.getState().routes.length > 1
+    ) {
+      navigation.dispatch(StackActions.popToTop());
+    }
+  }
   const trash = (id) => (
     <TouchableOpacity onPress={() => handleDelete(id)}>
       <View style={styles.trashIcon}>
@@ -186,7 +197,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
       </View>
     </TouchableOpacity>
   );
-
+  // { "created_at": "2024-02-03T01:37:29.090Z", "email": "3", "follows": "true", "id": 3, "image_link": "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/3/dfb97ebd-0010-47ee-8ef6-6bc62a5853b9.png", "subscribed": "pending", "username": "3" }
   return (
     <View style={{ height: "100%", paddingBottom: 60 }}>
 
@@ -195,14 +206,28 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
           ? audioList.map((audio) => (
 
             <View style={styles.outerPost}>
+
               <TouchableOpacity
                 onPress={() => {
-                  storedUserInfo.id !== audio.user_id
+                  userId !== audio.user_id
                     ? navigation.push("UserProfileScreen", {
                       id: audio.user_id,
-                      item,
+                      item: {
+                        created_at: audio.created_at,
+                        email: audio.email,
+                        follows: audio.follows,
+                        id: audio.id,
+                        image_link: audio.image_link,
+                        subscribed: audio.subscribed,
+                        username: audio.username
+                      },
                     })
-                    : navigation.dispatch(StackActions.popToTop());
+                    : dispatch(
+                      switchTab({
+                        name: "profile"
+                      })
+                    );
+                  // resetRoutes();
                 }}
               >
                 <View style={styles.postHeader}>
@@ -263,11 +288,12 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
                 </View>
 
               </View>
-              < PostComment
+              <PostComment
                 openComments={openComments}
                 isActive={isActive}
                 userId={storedUserInfo}
                 audio={audio}
+
               />
 
 
@@ -334,12 +360,13 @@ const styles = StyleSheet.create({
   },
   outerPost: {
     gap: 20,
-    marginBottom: 70,
-    borderTopColor: "rgba(255,255,255,0.1)",
-    paddingTop: 20,
-    borderWidth: 1,
-    flexDirection: "column",
+    paddingVertical: 20,
 
+    paddingHorizontal: 10,
+    flexDirection: "column",
+    backgroundColor: "rgba(31, 32, 34, 0.4)",
+    marginBottom: 30,
+    borderRadius: 10
   },
 
   trashIcon: {
