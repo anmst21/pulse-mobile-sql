@@ -13,7 +13,7 @@ const ProfilePage = () => {
   const { token } = useSelector((state) => state.user);
 
   return (
-    <View style={{ marginTop: 80 }}>
+    <View style={{ flex: 1, }}>
       {token ? <UserPage /> : <SignIn navigate={navigate} />}
     </View>
   );

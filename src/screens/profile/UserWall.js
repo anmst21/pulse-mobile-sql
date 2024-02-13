@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import ProfilePicture from "../../components/profile_picture";
 import UserPosts from "./UserPosts";
@@ -35,48 +35,48 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
 
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <View style={styles.container}>
+          <View style={styles.userNameContainer} >
+            <CustomText >
+              <CustomText style={{ fontSize: 30 }}>
+                {userInfo.username}</CustomText>, {userInfo.id}
+            </CustomText>
+          </View>
+          <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
 
-      <View style={styles.container}>
-        <View style={styles.userNameContainer} >
-          <CustomText >
-            <CustomText style={{ fontSize: 30 }}>
-              {userInfo.username}</CustomText>, {userInfo.id}
-          </CustomText>
-        </View>
-        <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
+          <View style={styles.itemsCenter}>
 
-        <View style={styles.itemsCenter}>
+            <View style={styles.infoContainer}>
 
-          <View style={styles.infoContainer}>
-
-            {/* <TouchableOpacity onPress={() => handlePress("fetchFollowing")}>
+              {/* <TouchableOpacity onPress={() => handlePress("fetchFollowing")}>
               <View style={styles.lilBox}>
                 <CustomText>Following:</CustomText>
                 <CustomText>{userInfo.followingCount}</CustomText>
               </View>
             </TouchableOpacity> */}
-            <View style={[styles.lilBox, { left: -10 }]}>
-              <Icon name="waveFormProfile" style={styles.actionIcon} />
-              <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
+              <View style={[styles.lilBox, { left: -10 }]}>
+                <Icon name="waveFormProfile" style={styles.actionIcon} />
+                <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
+              </View>
+
+              <TouchableOpacity onPress={() => handlePress("followers")}>
+                <View style={styles.lilBox}>
+
+                  <Icon name="followIcon" style={styles.actionIcon} />
+                  <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handlePress("subscribers")}>
+                <View style={[styles.lilBox, { left: -20 }]}>
+                  <Icon name="subscribeIcon" style={styles.actionIcon} />
+                  <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
+                </View>
+              </TouchableOpacity>
+
             </View>
-
-            <TouchableOpacity onPress={() => handlePress("followers")}>
-              <View style={styles.lilBox}>
-
-                <Icon name="followIcon" style={styles.actionIcon} />
-                <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handlePress("subscribers")}>
-              <View style={[styles.lilBox, { left: -20 }]}>
-                <Icon name="subscribeIcon" style={styles.actionIcon} />
-                <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
-              </View>
-            </TouchableOpacity>
-
-          </View>
-          {/* <View style={styles.infoContainer}>
+            {/* <View style={styles.infoContainer}>
             <TouchableOpacity onPress={() => handlePress("fetchSubscribing")}>
               <View style={styles.lilBox}>
                 <CustomText>Subscribing:</CustomText>
@@ -85,15 +85,16 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
             </TouchableOpacity>
 
           </View> */}
+          </View>
+
         </View>
 
+        <UserPosts
+          setAudioList={setAudios} audioList={audios}
+          userId={userId}
+        />
       </View>
-
-      <UserPosts
-        setAudioList={setAudios} audioList={audios}
-        userId={userId}
-      />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -132,7 +133,9 @@ const styles = StyleSheet.create({
 
   },
   mainContainer: {
-    top: -25,
+    paddingTop: 50,
+    paddingBottom: 30,
+    // top: -25,
     flexDirection: "column",
     marginHorizontal: 10
   },
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 40,
 
-    marginBottom: 25,
+    marginBottom: 30,
   },
   itemsCenter: {
     alignSelf: "center",

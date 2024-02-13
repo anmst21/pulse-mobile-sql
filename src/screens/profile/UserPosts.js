@@ -201,109 +201,108 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
   return (
     <View style={{ height: "100%", paddingBottom: 60 }}>
 
-      <ScrollView>
-        {audioList
-          ? audioList.map((audio) => (
 
-            <View style={styles.outerPost}>
+      {audioList
+        ? audioList.map((audio) => (
 
-              <TouchableOpacity
-                onPress={() => {
-                  userId !== audio.user_id
-                    ? navigation.push("UserProfileScreen", {
-                      id: audio.user_id,
-                      item: {
-                        created_at: audio.created_at,
-                        email: audio.email,
-                        follows: audio.follows,
-                        id: audio.id,
-                        image_link: audio.image_link,
-                        subscribed: audio.subscribed,
-                        username: audio.username
-                      },
+          <View style={styles.outerPost}>
+
+            <TouchableOpacity
+              onPress={() => {
+                userId !== audio.user_id
+                  ? navigation.push("UserProfileScreen", {
+                    id: audio.user_id,
+                    item: {
+                      created_at: audio.created_at,
+                      email: audio.email,
+                      follows: audio.follows,
+                      id: audio.id,
+                      image_link: audio.image_link,
+                      subscribed: audio.subscribed,
+                      username: audio.username
+                    },
+                  })
+                  : dispatch(
+                    switchTab({
+                      name: "profile"
                     })
-                    : dispatch(
-                      switchTab({
-                        name: "profile"
-                      })
-                    );
-                  // resetRoutes();
-                }}
-              >
-                <View style={styles.postHeader}>
+                  );
+                // resetRoutes();
+              }}
+            >
+              <View style={styles.postHeader}>
 
-                  <View style={styles.dotMenu}>
-                    <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
-                      <Icon name="dotMenu" />
+                <View style={styles.dotMenu}>
+                  <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
+                    <Icon name="dotMenu" />
 
-                    </TouchableOpacity>
-                  </View>
-                  <Image
-                    source={{ uri: audio.image_link }}
-                    style={{ width: 25, height: 25, borderRadius: 1000, }}
-                  />
-                  <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
-                </View>
-              </TouchableOpacity>
-              <View key={audio.id} style={styles.postComponent}>
-
-                <PulsePlayer
-                  data={audio}
-                  toggleSound={toggleSound}
-                  playbackPosition={playbackPosition}
-                  onPostSliderValueChange={onPostSliderValueChange}
-                  sound={sound}
-                  // isPlaying={isPlaying}
-                  isPlaying={playingStatus[audio.id]}
-                  playingNow={playingNow}
-                  id={audio.id}
-                />
-
-                {audio.user_id === storedUserInfo && trash(audio.id)}
-
-              </View>
-              <View style={styles.upvoteDownvote}>
-                <UpvoteDownvote
-
-                  setAudioList={setAudioList}
-                  upvotes={audio.upvotes}
-                  downvotes={audio.downvotes}
-                  id={audio.id}
-                  dateCreated={audio.date_created}
-                  setOpenComments={toggleComments}
-                  toggleIsActive={toggleIsActive}
-                  userId={storedUserInfo}
-                  audio={audio}
-                />
-                <View style={styles.message} >
-
-                  <TouchableOpacity onPress={() => { toggleIsActive(audio.id); setOpenComments(prev => !prev) }}>
-                    <Icon name="messageIcon" />
                   </TouchableOpacity>
-
                 </View>
-                <View style={styles.dateContainer}>
-                  <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
-
-                </View>
-
+                <Image
+                  source={{ uri: audio.image_link }}
+                  style={{ width: 25, height: 25, borderRadius: 1000, }}
+                />
+                <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
               </View>
-              <PostComment
-                openComments={openComments}
-                isActive={isActive}
-                userId={storedUserInfo}
-                audio={audio}
+            </TouchableOpacity>
+            <View key={audio.id} style={styles.postComponent}>
 
+              <PulsePlayer
+                data={audio}
+                toggleSound={toggleSound}
+                playbackPosition={playbackPosition}
+                onPostSliderValueChange={onPostSliderValueChange}
+                sound={sound}
+                // isPlaying={isPlaying}
+                isPlaying={playingStatus[audio.id]}
+                playingNow={playingNow}
+                id={audio.id}
               />
 
-
+              {audio.user_id === storedUserInfo && trash(audio.id)}
 
             </View>
+            <View style={styles.upvoteDownvote}>
+              <UpvoteDownvote
 
-          ))
-          : null}
+                setAudioList={setAudioList}
+                upvotes={audio.upvotes}
+                downvotes={audio.downvotes}
+                id={audio.id}
+                dateCreated={audio.date_created}
+                setOpenComments={toggleComments}
+                toggleIsActive={toggleIsActive}
+                userId={storedUserInfo}
+                audio={audio}
+              />
+              <View style={styles.message} >
 
-      </ScrollView>
+                <TouchableOpacity onPress={() => { toggleIsActive(audio.id); setOpenComments(prev => !prev) }}>
+                  <Icon name="messageIcon" />
+                </TouchableOpacity>
+
+              </View>
+              <View style={styles.dateContainer}>
+                <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
+
+              </View>
+
+            </View>
+            <PostComment
+              openComments={openComments}
+              isActive={isActive}
+              userId={storedUserInfo}
+              audio={audio}
+
+            />
+
+
+
+          </View>
+
+        ))
+        : null}
+
     </View>
   );
 };

@@ -49,8 +49,8 @@ const UserPage = () => {
 export default UserPage;
 
 const styles = StyleSheet.create({
-  // container: {
-  //   backgroundColor: "black",
-  //   flex: 1
-  // }
+  container: {
+    // backgroundColor: "green",
+    flex: 1
+  }
 });
