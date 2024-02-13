@@ -46,11 +46,14 @@ import DotMenu from "./dotMenu"
 import HeartIcon from "./heartIcon"
 import PencilEdit from "./pencilEdit"
 import RepostIcon from "./repostIcon"
+import WaveFormProfile from "./waveFormProfile"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "dotMenu":
       return <DotMenu style={style} />;
+    case "waveFormProfile":
+      return <WaveFormProfile style={style} />;
     case "repostIcon":
       return <RepostIcon style={style} />;
     case "pencilEdit":

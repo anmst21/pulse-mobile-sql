@@ -5,6 +5,7 @@ import UserPosts from "./UserPosts";
 import { useNavigation } from "@react-navigation/native";
 import CustomText from "../../components/text";
 import sqlApi from "../../redux/axios/sqlApi"
+import Icon from "../../components/icon"
 
 const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
   console.log("userWall", userInfo)
@@ -35,14 +36,18 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
   return (
     <View style={styles.mainContainer}>
+
       <View style={styles.container}>
+        <View style={styles.userNameContainer} >
+          <CustomText >
+            <CustomText style={{ fontSize: 30 }}>
+              {userInfo.username}</CustomText>, {userInfo.id}
+          </CustomText>
+        </View>
         <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
 
         <View style={styles.itemsCenter}>
-          <CustomText >
-            <CustomText style={{ fontSize: 25 }}>
-              {userInfo.username}</CustomText>, {userInfo.id}
-          </CustomText>
+
           <View style={styles.infoContainer}>
 
             {/* <TouchableOpacity onPress={() => handlePress("fetchFollowing")}>
@@ -51,21 +56,22 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 <CustomText>{userInfo.followingCount}</CustomText>
               </View>
             </TouchableOpacity> */}
-            <View style={styles.lilBox}>
-              <CustomText style={{ fontSize: 14 }}>Posts:</CustomText>
-              <CustomText style={{ fontSize: 18 }}>{userInfo.postsCount}</CustomText>
+            <View style={[styles.lilBox, { left: -20 }]}>
+              <Icon name="waveFormProfile" style={styles.actionIcon} />
+              <CustomText style={styles.number}>{userInfo.postsCount}</CustomText>
             </View>
 
             <TouchableOpacity onPress={() => handlePress("followers")}>
               <View style={styles.lilBox}>
-                <CustomText style={{ fontSize: 14 }}>Followers:</CustomText>
-                <CustomText style={{ fontSize: 18 }}>{userInfo.followersCount}</CustomText>
+
+                <Icon name="followIcon" style={styles.actionIcon} />
+                <CustomText style={styles.number}>{userInfo.followersCount}</CustomText>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePress("subscribers")}>
-              <View style={styles.lilBox}>
-                <CustomText style={{ fontSize: 14 }}>Subs:</CustomText>
-                <CustomText style={{ fontSize: 18 }}>{userInfo.subscribersCount}</CustomText>
+              <View style={[styles.lilBox, { left: -20 }]}>
+                <Icon name="subscribeIcon" style={styles.actionIcon} />
+                <CustomText style={styles.number}>{userInfo.subscribersCount}</CustomText>
               </View>
             </TouchableOpacity>
 
@@ -82,6 +88,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
         </View>
 
       </View>
+
       <UserPosts
         setAudioList={setAudios} audioList={audios}
         userId={userId}
@@ -93,8 +100,41 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 export default UserWall;
 
 const styles = StyleSheet.create({
+  userNameContainer: {
+
+    backgroundColor: "rgba(31, 32, 34, 0.8)",
+    position: "absolute",
+    paddingHorizontal: 25,
+
+    justifyContent: "center",
+    paddingBottom: 5,
+    paddingTop: 3,
+    borderRadius: 100,
+    top: 20,
+    left: 10,
+    zIndex: 9999,
+
+
+  },
+  actionIcon: {
+
+    height: 40,
+    width: 40,
+    color: "#FFFFFF",
+
+  },
+  number: {
+    fontSize: 18,
+    position: "absolute",
+    right: 0,
+    top: -10,
+    color: "#fff"
+
+  },
   mainContainer: {
-    flexDirection: "column"
+    top: -25,
+    flexDirection: "column",
+    marginHorizontal: 10
   },
   h1: {
     fontSize: 32,
@@ -105,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   lilBox: {
-    backgroundColor: "#3B3B3B",
+    // backgroundColor: "#3B3B3B",
     height: 40,
     alignItems: "center",
     width: 70,
@@ -113,8 +153,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
+
     flexDirection: "row",
-    marginLeft: 10,
+    marginLeft: 0,
+    backgroundColor: "rgba(31, 32, 34, 0.4)",
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    paddingVertical: 20,
 
     marginBottom: 25,
   },
@@ -131,9 +176,9 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     marginTop: 10,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    gap: 5,
+    gap: 30,
     borderWidth: 1,
     borderColor: "black",
     borderRightWidth: 0,

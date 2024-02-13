@@ -85,7 +85,7 @@ const ProfilePicture = ({ imageLink, userId }) => {
         {imageLink ? (
           <Image
             source={{ uri: imageLink }}
-            style={{ width: 100, height: 100, borderRadius: 1000 }}
+            style={{ width: 250, height: 250, borderRadius: 1000 }}
             //  onLoadStart={() => setIsLoading(true)} // Handle load start
             onLoadStart={() => { setIsLoading(true) }} // Handle load end
             onLoad={() => { setIsLoading(false); console.log("ended") }}
@@ -108,8 +108,8 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    width: 100,
-    height: 100,
+    width: 250,
+    height: 250,
     borderRadius: 1000,
 
     overflow: "hidden",

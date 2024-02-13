@@ -6,7 +6,7 @@ import { Linking, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import config from "../../../config";
-import LineSoundBar from "../soundbar/lineSoundbar";
+import LineSoundBar from "../soundbar/lineSoundbar copy";
 import * as Clipboard from "expo-clipboard";
 
 import {
@@ -192,8 +192,8 @@ const RecordingEditor = () => {
                 err
                   ? "Error"
                   : deepLink && !err
-                  ? deepLink
-                  : "Paste track URL here...."
+                    ? deepLink
+                    : "Paste track URL here...."
               }
               placeholderTextColor="rgba(255, 255, 255, 0.5)"
               onFocus={handleFocus}
