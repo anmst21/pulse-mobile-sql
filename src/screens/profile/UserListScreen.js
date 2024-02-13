@@ -131,9 +131,9 @@ const UserListScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        {/* <NotificationHeader /> */}
-      </View>
+      {/* <View style={styles.header}>
+        <NotificationHeader />
+      </View> */}
       {/* <CustomText style={styles.header}>{page}</CustomText> */}
       <View style={styles.list}>
 
@@ -150,8 +150,9 @@ const UserListScreen = ({ route }) => {
           >
             <Icon name="arrow_back" />
           </TouchableOpacity>
-
-          <Tab tabs={tabs} onTabChange={(position) => { tabSwitch(position, listType); console.log(position, listType) }} />
+          <View style={styles.tabs}>
+            <Tab tabs={tabs} onTabChange={(position) => { tabSwitch(position, listType); console.log(position, listType) }} />
+          </View>
         </View>
 
         {/* {listType === "subscribers" && <View style={styles.pageSwitch}>
@@ -182,10 +183,12 @@ const UserListScreen = ({ route }) => {
 export default UserListScreen;
 
 const styles = StyleSheet.create({
+  tabs: { flex: 1, height: 20, justifyContent: 'center', alignItems: 'center', marginRight: 22 },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+
     alignItems: "center",
+
     height: 60,
     paddingHorizontal: 20,
     position: "absolute",

@@ -56,22 +56,22 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 <CustomText>{userInfo.followingCount}</CustomText>
               </View>
             </TouchableOpacity> */}
-            <View style={[styles.lilBox, { left: -20 }]}>
+            <View style={[styles.lilBox, { left: -10 }]}>
               <Icon name="waveFormProfile" style={styles.actionIcon} />
-              <CustomText style={styles.number}>{userInfo.postsCount}</CustomText>
+              <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
             </View>
 
             <TouchableOpacity onPress={() => handlePress("followers")}>
               <View style={styles.lilBox}>
 
                 <Icon name="followIcon" style={styles.actionIcon} />
-                <CustomText style={styles.number}>{userInfo.followersCount}</CustomText>
+                <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePress("subscribers")}>
               <View style={[styles.lilBox, { left: -20 }]}>
                 <Icon name="subscribeIcon" style={styles.actionIcon} />
-                <CustomText style={styles.number}>{userInfo.subscribersCount}</CustomText>
+                <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
               </View>
             </TouchableOpacity>
 
@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
   number: {
     fontSize: 18,
     position: "absolute",
-    right: 0,
-    top: -10,
+    right: -10,
+    top: 0,
     color: "#fff"
 
   },
@@ -145,11 +145,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   lilBox: {
-    // backgroundColor: "#3B3B3B",
-    height: 40,
+    // backgroundColor: "rgba(31, 32, 34, 1)",
+    height: 60,
     alignItems: "center",
-    width: 70,
-    borderRadius: 5,
+    width: 60,
+    borderRadius: 100,
     justifyContent: "center",
   },
   container: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(31, 32, 34, 0.4)",
     paddingHorizontal: 10,
     borderRadius: 10,
-    paddingVertical: 20,
+    paddingVertical: 40,
 
     marginBottom: 25,
   },
@@ -178,9 +178,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: "column",
     justifyContent: "space-between",
-    gap: 30,
-    borderWidth: 1,
-    borderColor: "black",
+    gap: 15,
+
     borderRightWidth: 0,
   },
 });
