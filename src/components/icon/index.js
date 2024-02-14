@@ -49,9 +49,18 @@ import RepostIcon from "./repostIcon"
 import WaveFormProfile from "./waveFormProfile"
 import ViewStyleWindows from "./viewStyleWindows"
 import ViewStyleList from "./viewStyleList"
+import BookmarkIcon from "./bookmarkIcon"
+import LinkIcon from "./linkIcon"
+import ZapIcon from "./zapIcon"
 
 const Icon = ({ name, style }) => {
   switch (name) {
+    case "linkIcon":
+      return <LinkIcon style={style} />;
+    case "zapIcon":
+      return <ZapIcon style={style} />;
+    case "bookmarkIcon":
+      return <BookmarkIcon style={style} />;
     case "viewStyleList":
       return <ViewStyleList style={style} />;
     case "viewStyleWindows":

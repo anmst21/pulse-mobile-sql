@@ -240,7 +240,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
                 </View>
                 <Image
                   source={{ uri: audio.image_link }}
-                  style={{ width: 25, height: 25, borderRadius: 1000, }}
+                  style={{ width: 40, height: 40, borderRadius: 1000, }}
                 />
                 <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
               </View>
@@ -361,10 +361,11 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingVertical: 20,
 
+
     paddingHorizontal: 10,
     flexDirection: "column",
     backgroundColor: "rgba(31, 32, 34, 0.4)",
-    marginBottom: 30,
+    marginBottom: 20,
     borderRadius: 10
   },
 

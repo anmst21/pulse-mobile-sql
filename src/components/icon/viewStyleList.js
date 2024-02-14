@@ -1,21 +1,4 @@
-{/* <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="32"
-    fill="none"
-    viewBox="0 0 24 32"
->
-    <rect width="24" height="32" fill="#222" rx="3"></rect>
-    <rect
-        width="14"
-        height="22"
-        x="5"
-        y="5"
-        stroke="#fff"
-        strokeWidth="2"
-        rx="2"
-    ></rect>
-</svg> */}
+
 
 
 import React from 'react';
@@ -31,21 +14,24 @@ const Icon = ({ style }) => {
             <Svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
-                height="32"
+                height="24"
                 fill="none"
-                viewBox="0 0 24 32"
+                viewBox="0 0 24 24"
             >
-                <Rect width="24" height="32" fill={style.background} rx="3"></Rect>
-                <Rect
-                    width="14"
-                    height="22"
-                    x="5"
-                    y="5"
+                <Path
+                    fill={style.background}
+                    d="M21 19c0 1.105-.883 2-1.973 2H4.973C3.883 21 3 20.105 3 19v-3c0-1.105.883-2 1.973-2h14.054c1.09 0 1.973.895 1.973 2v3zM21 5c0-1.105-.883-2-1.973-2H4.973C3.883 3 3 3.895 3 5v3c0 1.105.883 2 1.973 2h14.054C20.117 10 21 9.105 21 8V5z"
+                ></Path>
+                <Path
                     stroke={style.stroke}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     strokeWidth="2"
-                    rx="2"
-                ></Rect>
+                    d="M21 19c0 1.105-.883 2-1.973 2H4.973C3.883 21 3 20.105 3 19v-3c0-1.105.883-2 1.973-2h14.054c1.09 0 1.973.895 1.973 2v3zM21 5c0-1.105-.883-2-1.973-2H4.973C3.883 3 3 3.895 3 5v3c0 1.105.883 2 1.973 2h14.054C20.117 10 21 9.105 21 8V5z"
+                ></Path>
             </Svg>
+
+
 
         </View>
     )

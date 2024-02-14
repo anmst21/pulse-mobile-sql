@@ -22,13 +22,13 @@ const ProfileHeader = () => {
         {/* <Icon name="map" /> */}
       </View>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.navigate("Settings");
         }}
       >
         <Icon name="cog" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

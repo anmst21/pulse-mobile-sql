@@ -47,27 +47,39 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
             </CustomText>
           </View>
 
-          <View style={{
 
-            position: "absolute",
-            bottom: 10,
-            right: 20,
-            flexDirection: "column",
-            gap: 5,
-            backgroundColor: "rgba(31, 32, 34, 0.4)",
-            paddingHorizontal: 5,
-            borderRadius: 5,
-            paddingVertical: 5,
-            height: 75,
-          }}>
+          <View style={styles.bio}>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 7
+            }}>
 
-            <Icon name="viewStyleList" style={{ stroke: "white", background: "#414141" }} />
-
-            <Icon name="viewStyleWindows" style={{ stroke: "white", background: null }} />
-
-
+              <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20 }} />
+              <CustomText style={{ fontSize: 16 }}>Spotify</CustomText>
+            </View>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 7,
+              width: 250,
+              paddingRight: 20,
+            }}>
+              <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20 }} />
+              <CustomText style={{ fontSize: 16 }}>Data Scientist, Python & Finance Buff</CustomText>
+            </View>
+            <View style={{
+              position: "absolute", right: -80
+            }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Settings");
+                }}
+              >
+                <Icon name="cog" />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.bio}></View>
 
           <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
 
@@ -112,7 +124,28 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
           </View> */}
           </View>
         </View>
+        <View style={styles.sortBar}>
+          <View style={styles.sort}>
+            <CustomText style={{ fontSize: 16 }}>New</CustomText>
+            <View style={{ top: 2 }}>
+              <Icon name="downvoteIcon" style={{ color: "white" }} />
+            </View>
+          </View>
+          <View style={styles.sortRight}>
+            <View>
+              <Icon name="bookmarkIcon" style={{ stroke: "white", background: null }} />
 
+            </View>
+            <View style={styles.viewStyle}>
+
+              <Icon name="viewStyleList" style={{ stroke: "white", background: "white" }} />
+
+              <Icon name="viewStyleWindows" style={{ stroke: "white", background: null }} />
+
+
+            </View>
+          </View>
+        </View>
         <UserPosts
           setAudioList={setAudios} audioList={audios}
           userId={userId}
@@ -125,6 +158,39 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 export default UserWall;
 
 const styles = StyleSheet.create({
+  viewStyle: {
+
+    flexDirection: "row",
+    gap: 5,
+    backgroundColor: "rgba(31, 32, 34, 0.7)",
+    paddingHorizontal: 5,
+    borderRadius: 5,
+    paddingVertical: 5,
+    height: 35,
+    alignItems: "center"
+  },
+  sortRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15
+  },
+  sort: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5
+  },
+  sortBar: {
+    backgroundColor: "blue",
+    height: 50,
+    marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(31, 32, 34, 0.4)",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    paddingHorizontal: 20
+
+  },
   userNameContainer: {
 
     backgroundColor: "rgba(31, 32, 34, 0.8)",
@@ -180,15 +246,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   bio: {
-
+    padding: 5,
+    gap: 7,
     height: 75,
-    backgroundColor: "rgba(31, 32, 34, 0.8)",
+
 
     position: "absolute",
     bottom: 10,
     left: 10,
     zIndex: 10,
-    width: 250
+    width: 250,
+    justifyContent: "center"
   },
 
   container: {
@@ -198,10 +266,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(31, 32, 34, 0.4)",
     paddingHorizontal: 10,
     borderRadius: 10,
-    paddingVertical: 40,
-    paddingBottom: 70,
+    paddingVertical: 20,
+    paddingBottom: 100,
 
-    marginBottom: 30,
+    marginBottom: 20,
   },
   itemsCenter: {
     alignSelf: "center",
