@@ -36,18 +36,18 @@ const UserProfileScreen = ({ route }) => {
   return (
 
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
 
 
-        {/* {storedUserInfo.id === id && (
+        {storedUserInfo.id === id && (
           <Button
             title="Add Friends"
             onPress={() => {
               navigate("AddFriendsScreen");
             }}
           />
-        )} */}
-      </View>
+        )}
+      </View> */}
       <View style={styles.btnInteraction}>
         <FollowUnfollowButton
           item={userButton[0]}
@@ -74,6 +74,7 @@ export default UserProfileScreen;
 
 const styles = StyleSheet.create({
   btnInteraction: {
+    zIndex: 9999,
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",

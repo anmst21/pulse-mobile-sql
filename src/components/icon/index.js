@@ -47,9 +47,15 @@ import HeartIcon from "./heartIcon"
 import PencilEdit from "./pencilEdit"
 import RepostIcon from "./repostIcon"
 import WaveFormProfile from "./waveFormProfile"
+import ViewStyleWindows from "./viewStyleWindows"
+import ViewStyleList from "./viewStyleList"
 
 const Icon = ({ name, style }) => {
   switch (name) {
+    case "viewStyleList":
+      return <ViewStyleList style={style} />;
+    case "viewStyleWindows":
+      return <ViewStyleWindows style={style} />;
     case "dotMenu":
       return <DotMenu style={style} />;
     case "waveFormProfile":

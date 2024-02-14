@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   View,
+  ScrollView
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -124,7 +125,11 @@ const FeedScreen = ({ navigation }) => {
     } else {
       return (
         <View style={styles.userPostContainer}>
-          <UserPosts userId={storedUserInfo} setAudioList={setAudios} audioList={audios} />
+          <ScrollView>
+            <View style={{ paddingTop: 170 }}>
+              <UserPosts userId={storedUserInfo} setAudioList={setAudios} audioList={audios} />
+            </View>
+          </ScrollView>
 
         </View>
       )
@@ -165,7 +170,7 @@ export default FeedScreen;
 
 const styles = StyleSheet.create({
   userPostContainer: {
-    paddingTop: 150,
+
     paddingHorizontal: 10
   },
   tabContainer: {

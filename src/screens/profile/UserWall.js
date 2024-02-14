@@ -44,6 +44,22 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 {userInfo.username}</CustomText>, {userInfo.id}
             </CustomText>
           </View>
+          <View style={{
+
+            position: "absolute",
+            bottom: 10,
+            right: 20,
+            flexDirection: "row",
+            gap: 15,
+            backgroundColor: "rgba(31, 32, 34, 0.8)",
+
+            borderRadius: 5,
+            padding: 5
+          }}>
+            <Icon name="viewStyleList" style={{ stroke: "white", background: "#414141" }} />
+            <Icon name="viewStyleWindows" style={{ stroke: "white", background: null }} />
+
+          </View>
           <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
 
           <View style={styles.itemsCenter}>
