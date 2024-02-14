@@ -37,29 +37,38 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
+
         <View style={styles.container}>
+
           <View style={styles.userNameContainer} >
             <CustomText >
               <CustomText style={{ fontSize: 30 }}>
                 {userInfo.username}</CustomText>, {userInfo.id}
             </CustomText>
           </View>
+
           <View style={{
 
             position: "absolute",
             bottom: 10,
             right: 20,
-            flexDirection: "row",
-            gap: 15,
-            backgroundColor: "rgba(31, 32, 34, 0.8)",
-
+            flexDirection: "column",
+            gap: 5,
+            backgroundColor: "rgba(31, 32, 34, 0.4)",
+            paddingHorizontal: 5,
             borderRadius: 5,
-            padding: 5
+            paddingVertical: 5,
+            height: 75,
           }}>
+
             <Icon name="viewStyleList" style={{ stroke: "white", background: "#414141" }} />
+
             <Icon name="viewStyleWindows" style={{ stroke: "white", background: null }} />
 
+
           </View>
+          <View style={styles.bio}></View>
+
           <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
 
           <View style={styles.itemsCenter}>
@@ -102,7 +111,6 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
           </View> */}
           </View>
-
         </View>
 
         <UserPosts
@@ -171,6 +179,18 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
   },
+  bio: {
+
+    height: 75,
+    backgroundColor: "rgba(31, 32, 34, 0.8)",
+
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    zIndex: 10,
+    width: 250
+  },
+
   container: {
 
     flexDirection: "row",
@@ -179,6 +199,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     paddingVertical: 40,
+    paddingBottom: 70,
 
     marginBottom: 30,
   },
