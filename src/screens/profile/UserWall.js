@@ -66,19 +66,21 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
               paddingRight: 20,
             }}>
               <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20 }} />
-              <CustomText style={{ fontSize: 16 }}>Data Scientist, Python & Finance Buff</CustomText>
+              <CustomText style={{ fontSize: 16 }}>Data Scientist, Python & Finance Buff, Data Scientist, Python & Finance Buff</CustomText>
             </View>
-            <View style={{
-              position: "absolute", right: -80
-            }}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Settings");
-                }}
-              >
-                <Icon name="cog" />
-              </TouchableOpacity>
-            </View>
+            {storedUserInfo === userInfo.id &&
+              <View style={{
+                position: "absolute", right: -80
+              }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Settings");
+                  }}
+                >
+                  <Icon name="cog" />
+                </TouchableOpacity>
+              </View>}
+
           </View>
 
           <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
@@ -252,7 +254,7 @@ const styles = StyleSheet.create({
 
 
     position: "absolute",
-    bottom: 10,
+    bottom: 20,
     left: 10,
     zIndex: 10,
     width: 250,
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     paddingVertical: 20,
-    paddingBottom: 100,
+    paddingBottom: 120,
 
     marginBottom: 20,
   },

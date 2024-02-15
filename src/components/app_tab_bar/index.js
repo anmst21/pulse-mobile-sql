@@ -164,7 +164,7 @@ const AppTabBar = () => {
         content={
           <Icon
             name="search"
-            style={{ strokeWidth: activeTab.name === "search" ? "2" : "1" }}
+            style={{ strokeWidth: activeTab.name === "search" ? "2" : "1", width: 24 }}
           />
         }
         onPress={() => {

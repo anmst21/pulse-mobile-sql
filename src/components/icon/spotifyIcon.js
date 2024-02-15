@@ -2,12 +2,12 @@ import React from "react";
 import Svg, { Path, Defs, ClipPath, Rect } from "react-native-svg";
 import { View } from "react-native";
 
-const CustomIcon = (props) => {
+const CustomIcon = ({ style }) => {
   return (
     <View>
       <Svg
-        width={props.style.width}
-        height={props.style.height}
+        width={style.width}
+        height={style.width}
         viewBox="0 0 24 24"
         fill="none"
       >

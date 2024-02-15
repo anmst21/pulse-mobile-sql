@@ -8,7 +8,7 @@ const SignIn = ({ navigate }) => {
   const { errorMessage } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   return (
-    <View>
+    <View style={{ paddingTop: 120 }}>
       <AuthForm
         userShow={false}
         headerText="Sing In To Your Account"

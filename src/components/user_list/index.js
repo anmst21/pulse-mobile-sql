@@ -18,8 +18,9 @@ const UsersList = ({ results, setResults }) => {
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   console.log("UsersList", results)
   return (
-    <View style={{ paddingBottom: 160 }}>
+    <View style={{ paddingBottom: 125 }}>
       {results ? (
+
         <FlatList
           style={styles.list}
           data={results}
@@ -60,6 +61,7 @@ const UsersList = ({ results, setResults }) => {
             </TouchableOpacity>
           )}
         />
+
       ) : (
         <Text>Nothing to fetch</Text>
       )}
@@ -102,17 +104,17 @@ const styles = StyleSheet.create({
     // backgroundColor: "red"
   },
   list: {
-    marginTop: 20,
+    // marginTop: 20,
     height: "100%",
   },
   userElement: {
-
+    // paddingTop: 20,
     height: 50,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     flex: 1,
-    marginBottom: 15,
+    marginTop: 15,
     // marginHorizontal: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 5

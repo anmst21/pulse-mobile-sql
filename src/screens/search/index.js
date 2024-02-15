@@ -22,21 +22,21 @@ const SearchScreen = () => {
                 >
                 </MapView>
             </View> */}
-      <AsyncSearch />
+      <AsyncSearch search={false} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    // ...StyleSheet.absoluteFillObject,
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
   },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
+  // map: {
+  //   ...StyleSheet.absoluteFillObject,
+  // },
 });
 
 export default SearchScreen;

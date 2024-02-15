@@ -5,6 +5,7 @@ import Icon from "../../components/icon";
 import InAppBrowser from "react-native-inappbrowser-reborn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from "../../../config";
+import Button from "../../components/button";
 
 const SignInWithService = () => {
   const [spotifyState, setSpotifyState] = useState(false);
@@ -26,12 +27,29 @@ const SignInWithService = () => {
     });
   };
 
+
+  // <TouchableOpacity
+  //   onPress={() => {
+  //     openUrl(
+  //       config.apiURL + "spotify/login"
+  //     );
+  //     // openUrl("https://google.com");
+  //   }}
+  // >
+
   const checkSpotifyLogin = async () => {
     const accessToken = await AsyncStorage.getItem("accessToken");
     const refreshToken = await AsyncStorage.getItem("refreshToken");
     if (accessToken && refreshToken) {
       setSpotifyState(true);
     }
+  };
+  const logOutSpotify = async () => {
+    await AsyncStorage.removeItem("accessToken");
+    await AsyncStorage.removeItem("refreshToken");
+
+    setSpotifyState(false);
+
   };
   useEffect(() => {
     checkSpotifyLogin();
@@ -47,33 +65,35 @@ const SignInWithService = () => {
           </View>
         </TouchableOpacity>
       </View> */}
-      {spotifyState ? (
-        <View style={styles.container}>
-          <CustomText style={{ fontSize: 24 }}>
-            Successfully signed in
+
+      <View style={styles.container}>
+        <View style={styles.left}>
+          <CustomText style={{ fontSize: 20 }}>
+            Spotify
           </CustomText>
 
           <View style={styles.viewSpoty}>
-            <Icon name="spotifyIcon" style={{ width: 50, height: 50 }} />
+            <Icon name="spotifyIcon" style={{ width: 24, height: 24 }} />
           </View>
         </View>
-      ) : (
-        <View style={styles.container}>
-          <CustomText style={{ fontSize: 24 }}>Sign In With Spotify</CustomText>
-          <TouchableOpacity
-            onPress={() => {
+        <Button
+          label={spotifyState ? "Disconnect" : "Connect"}
+          // iconRight="arrow_right"
+
+          grey
+          // status={player.edited}
+          // loading={saving}
+          onPressIn={() => {
+            spotifyState ? logOutSpotify() :
               openUrl(
                 config.apiURL + "spotify/login"
               );
-              // openUrl("https://google.com");
-            }}
-          >
-            <View style={styles.viewSpoty}>
-              <Icon name="spotifyIcon" style={{ width: 50, height: 50 }} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      )}
+            setSpotifyState(true)
+            // openUrl("https://google.com");
+          }}
+        />
+      </View>
+
     </View>
   );
 };
@@ -81,13 +101,10 @@ const SignInWithService = () => {
 export default SignInWithService;
 
 const styles = StyleSheet.create({
-  viewSpoty: {
-    borderRadius: 20,
-    width: 70,
-    height: 70,
-    backgroundColor: "white",
-    justifyContent: "center",
+  left: {
+    flexDirection: "row",
     alignItems: "center",
+    gap: 15
   },
   viewApple: {
     borderRadius: 20,
@@ -99,16 +116,14 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   container: {
-    marginTop: 50,
-    height: 100,
     flexDirection: "row",
-    gap: 20,
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#fff",
-    paddingHorizontal: 10,
+    marginLeft: 0,
+    backgroundColor: "rgba(31, 32, 34, 0.4)",
+    paddingHorizontal: 15,
     borderRadius: 10,
+    paddingVertical: 5,
+
+    justifyContent: "space-between",
     marginBottom: 20,
   },
 });

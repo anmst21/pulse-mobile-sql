@@ -52,11 +52,17 @@ import ViewStyleList from "./viewStyleList"
 import BookmarkIcon from "./bookmarkIcon"
 import LinkIcon from "./linkIcon"
 import ZapIcon from "./zapIcon"
+import ChevronDown from "./chevronDown"
+import SearchBar from "./searchBar"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "linkIcon":
       return <LinkIcon style={style} />;
+    case "searchBar":
+      return <SearchBar style={style} />;
+    case "chevronDown":
+      return <ChevronDown style={style} />;
     case "zapIcon":
       return <ZapIcon style={style} />;
     case "bookmarkIcon":

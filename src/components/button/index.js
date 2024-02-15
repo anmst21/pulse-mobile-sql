@@ -35,6 +35,7 @@ const Button = ({
   purple,
   iconColor,
   small,
+  grey
 }) => {
   const opacity = useSharedValue(0);
   const top = useSharedValue(0);
@@ -231,6 +232,11 @@ const Button = ({
       return <View style={styles.purpleBackground} />;
     }
   };
+  const renderGreyBackground = () => {
+    if (grey) {
+      return <View style={styles.greyBackground} />;
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -256,6 +262,7 @@ const Button = ({
         {renderStatusIcon()}
         {renderActiveBackground()}
         {renderPurpleBackground()}
+        {renderGreyBackground()}
       </View>
     </TouchableOpacity>
   );
@@ -312,6 +319,16 @@ const styles = StyleSheet.create({
     bottom: -10,
     right: -10,
     backgroundColor: Theme.purple,
+    position: "absolute",
+    zIndex: -1,
+    borderRadius: 6,
+  },
+  greyBackground: {
+    top: -10,
+    left: -10,
+    bottom: -10,
+    right: -10,
+    backgroundColor: "#4F4D55",
     position: "absolute",
     zIndex: -1,
     borderRadius: 6,
