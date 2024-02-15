@@ -22,7 +22,7 @@ const SearchScreen = () => {
                 >
                 </MapView>
             </View> */}
-      <AsyncSearch search={false} />
+      <AsyncSearch search />
     </View>
   );
 };

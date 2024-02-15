@@ -3,6 +3,7 @@ import React from 'react'
 import Button from '../../components/button'
 import CustomText from '../../components/text'
 import Icon from '../../components/icon'
+import AsyncSearch from '../../components/async_search'
 
 const GenrePreferences = () => {
     return (
@@ -11,6 +12,7 @@ const GenrePreferences = () => {
                 <CustomText>Genre Preferences</CustomText>
                 <View style={styles.chevron}><Icon name="chevronDown" style={{ width: 35 }} /></View>
             </View>
+            <AsyncSearch search={false} />
 
         </View>
     )
@@ -21,9 +23,11 @@ export default GenrePreferences
 const styles = StyleSheet.create({
     topContiner: {
         height: 300,
-        backgroundColor: "blue",
+        // backgroundColor: "blue",
         borderRadius: 10,
         marginBottom: 20,
+        backgroundColor: "rgba(31, 32, 34, 0.8)",
+
 
     },
     chevron: {
@@ -37,7 +41,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         marginLeft: 0,
-        backgroundColor: "rgba(31, 32, 34, 0.4)",
+        backgroundColor: "rgba(31, 32, 34, 0.6)",
         paddingHorizontal: 15,
         borderRadius: 10,
         paddingVertical: 5,

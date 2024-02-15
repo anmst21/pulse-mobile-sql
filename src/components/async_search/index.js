@@ -10,6 +10,7 @@ import GenresList from "../genres_list"
 const AsyncSearch = ({ search }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [list, setList] = useState([])
   console.log("resultsresults", results);
 
   const throttledSearch = useCallback(
@@ -45,9 +46,17 @@ const AsyncSearch = ({ search }) => {
   const fetchInitialProfiles = async () => {
     try {
       const loggedInUserId = await AsyncStorage.getItem("userId");
-      let response = await userApi.get(
-        `/search/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
-      );
+      let response
+      if (search) {
+        response = await userApi.get(
+          `/search/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
+        );
+      } else {
+        response = await userApi.get(
+          `/fetch/genres`
+        );
+        setList(response.data)
+      }
       setResults(response.data);
     } catch (error) {
       console.error("Error fetching initial profiles: ", error);
@@ -103,12 +112,13 @@ const AsyncSearch = ({ search }) => {
           }
           value={query}
           onChangeText={handleTextChange}
-          placeholder="Enter a Username"
+          placeholder={"Enter a " + (search ? "Username" : "Genre")}
           placeholderTextColor="rgba(137, 137, 137, 0.5)"
         //onFocus={fetchInitialProfiles}
         />
       </View>
       {search && <UsersList results={results} setResults={setResults} />}
+      {!search && <GenresList results={query.length !== 0 ? results : list} setResults={setResults} />}
     </View>
   );
 };
