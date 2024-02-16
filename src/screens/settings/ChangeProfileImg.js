@@ -7,16 +7,42 @@ import sqlApi from "../../redux/axios/sqlApi"
 import Icon from "../../components/icon"
 import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
+import {
+    editLink,
+    closeLink,
+    editBio,
+    closeBio,
+    editUserName,
+    closeUserName
+} from "../../redux"
 
 
 const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
-    const [userName, setUserName] = useState("")
+    const { id, image_link, username } = useSelector((state) => state.user.userInfo);
+
+    const [userName, setUserName] = useState(username)
     const [linkName, setLinkName] = useState("")
     const [link, setLink] = useState("")
     const [userBio, setUserInfo] = useState("")
 
 
-    const { id, image_link } = useSelector((state) => state.user.userInfo);
+    const { userNameEdit, linkEdit, bioEdit } = useSelector((state) => state.settings.profileEditState);
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        return () => {
+            if (userNameEdit) {
+                dispatch(closeUserName());
+            }
+            if (linkEdit) {
+                dispatch(closeLink());
+            }
+            if (bioEdit) {
+                dispatch(closeBio());
+            }
+        }
+    }, [])
 
     return (
 
@@ -41,12 +67,18 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                         placeholderTextColor="gray"
                         multiline
                         maxLength={16}
+                        editable={userNameEdit}
+
                     />
                     <CustomText style={styles.counter}>
                         {userName.length} / 16
                     </CustomText>
                 </View>
-                <Icon name="pencilEdit" style={{ fill: "transparent", width: 16 }} />
+                <TouchableOpacity onPress={() => {
+                    userNameEdit ? dispatch(closeUserName()) : dispatch(editUserName())
+                }}>
+                    <Icon name="pencilEdit" style={{ fill: userNameEdit ? "#fff" : "transparent", width: 16 }} />
+                </TouchableOpacity>
 
             </View>
             <View style={styles.link}>
@@ -75,6 +107,7 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                                 placeholderTextColor="gray"
                                 multiline
                                 maxLength={14}
+                                editable={linkEdit}
                             />
                             <CustomText style={styles.counter}>
                                 {linkName.length} / 14
@@ -91,13 +124,18 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                                 placeholderTextColor="gray"
                                 multiline
                                 maxLength={30}
+                                editable={linkEdit}
                             />
                             <CustomText style={styles.counter}>
                                 {link.length} / 30
                             </CustomText>
                         </View>
                     </View>
-                    <Icon name="pencilEdit" style={{ fill: "transparent", width: 16 }} />
+                    <TouchableOpacity onPress={() => {
+                        linkEdit ? dispatch(closeLink()) : dispatch(editLink())
+                    }}>
+                        <Icon name="pencilEdit" style={{ fill: linkEdit ? "#fff" : "transparent", width: 16 }} />
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={{
@@ -113,22 +151,55 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                         Bio
                     </CustomText>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { flex: 1 }]}
                         placeholder="Bio..."
                         value={userBio}
                         onChangeText={text => setUserInfo(text)} // Update the state on input change
                         placeholderTextColor="gray"
                         multiline
-                        maxLength={60}
+                        maxLength={90}
+                        editable={bioEdit}
                     />
                     <CustomText style={styles.counter}>
-                        {userBio.length} / 60
+                        {userBio.length} / 90
                     </CustomText>
                 </View>
-                <Icon name="pencilEdit" style={{ fill: "transparent", width: 16 }} />
+                <TouchableOpacity onPress={() => {
+                    bioEdit ? dispatch(closeBio()) : dispatch(editBio())
+                }}>
+                    <Icon name="pencilEdit" style={{ fill: bioEdit ? "#fff" : "transparent", width: 16 }} />
+                </TouchableOpacity>
 
             </View>
+            {(bioEdit || linkEdit || userNameEdit) &&
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    paddingHorizontal: 20,
+                    //   backgroundColor: "blue"
+                }}>
+                    <Button
+                        label={"Undo"}
 
+                        onPressIn={() => {
+                            dispatch(closeBio())
+                            dispatch(closeLink())
+                            dispatch(closeUserName())
+                            setUserName(username)
+
+                        }}
+                    />
+                    <Button
+                        label={"Save"}
+                        grey
+                        onPressIn={() => {
+                            //dispatch(fetchGenres());
+                            console.log()
+
+                        }}
+                    />
+                </View>
+            }
         </View >
 
 
@@ -167,7 +238,7 @@ const styles = StyleSheet.create({
         lineHeight: 22, color: "white",
         alignItems: "center",
         //   width: '100%',
-        top: 2
+        top: 2,
 
     },
     commentContainer: {
@@ -189,11 +260,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         flexDirection: "column",
         marginLeft: 0,
-        backgroundColor: "rgba(31, 32, 34, 0.4)",
+        backgroundColor: "rgba(31, 32, 34, 0.6)",
         // paddingHorizontal: 10,
         borderRadius: 10,
         paddingVertical: 20,
-        paddingBottom: 40,
+        paddingBottom: 35,
 
         marginBottom: 20,
     },

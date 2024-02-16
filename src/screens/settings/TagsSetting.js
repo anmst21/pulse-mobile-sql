@@ -28,12 +28,11 @@ const TagsSettings = () => {
 
         <View style={styles.container}>
             <View style={styles.left}>
+                <Icon name="tagsIcon" style={{ color: tags ? "#fff" : "transparent" }} />
                 <CustomText style={{ fontSize: 20 }}>
                     Tags
                 </CustomText>
-                <View style={styles.viewSpoty}>
-                    <Icon name="tagsIcon" style={{ color: tags ? "#fff" : "transparent" }} />
-                </View>
+
 
             </View>
             <Switch bool={tags} callback={() => dispatch(toggleTags())} />

@@ -8,6 +8,11 @@ import {
 
 
 const initialState = {
+    profileEditState: {
+        userNameEdit: false,
+        linkEdit: false,
+        bioEdit: false
+    },
     notificationsState: {
         posts: true,
         follows: true,
@@ -30,6 +35,24 @@ const settingsSlice = createSlice({
     reducers: {
 
 
+        editLink: (state, action) => {
+            state.profileEditState.linkEdit = true;
+        },
+        closeLink: (state, action) => {
+            state.profileEditState.linkEdit = false;
+        },
+        editBio: (state, action) => {
+            state.profileEditState.bioEdit = true;
+        },
+        closeBio: (state, action) => {
+            state.profileEditState.bioEdit = false;
+        },
+        editUserName: (state, action) => {
+            state.profileEditState.userNameEdit = true;
+        },
+        closeUserName: (state, action) => {
+            state.profileEditState.userNameEdit = false;
+        },
         openReport: (state, action) => {
             state.reportOpen = true;
         },
@@ -132,7 +155,13 @@ export const { openGenre,
     toggleReplies,
     toggleMentions,
     openReport,
-    closeReport
+    closeReport,
+    editLink,
+    closeLink,
+    editBio,
+    closeBio,
+    editUserName,
+    closeUserName
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

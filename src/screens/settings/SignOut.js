@@ -25,6 +25,8 @@ const SignOut = () => {
 
         <View style={styles.container}>
             <View style={styles.left}>
+                <Icon name="logOutIcon" style={{ width: 24, height: 24, lineWidth: 2, }} />
+
                 <CustomText style={{ fontSize: 20 }}>
                     Log Out
                 </CustomText>

@@ -31,7 +31,15 @@ const ReportBug = () => {
             }}>
 
                 <View style={[styles.container]}>
-                    <CustomText>Report a Bug</CustomText>
+                    <View style={styles.left}>
+
+                        <Icon name="bugIcon" style={{ width: 24, height: 24 }} />
+
+                        <CustomText style={{ fontSize: 20 }}>
+                            Report a Bug
+                        </CustomText>
+                    </View>
+
                     <View style={[styles.chevron, reportOpen && {
                         transform: [{ rotate: '180deg' }]
                     }]}><Icon name="chevronDown" style={{ width: 35 }} />
@@ -105,6 +113,11 @@ const ReportBug = () => {
 export default ReportBug
 
 const styles = StyleSheet.create({
+    left: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 15
+    },
     counter: {
         color: "rgba(31, 32, 34, 1)",
         fontSize: 12,

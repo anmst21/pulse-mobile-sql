@@ -57,9 +57,21 @@ import SearchBar from "./searchBar"
 import TagsIcon from "./tagsIcon"
 import PulseIcon from "./pulseIcon"
 import HashtagIcon from "./hashtagIcon"
+import StarIcon from "./starIcon"
+import KeyIcon from "./keyIcon"
+import LogOutIcon from "./logOutIcon"
+import BugIcon from "./bugIcon"
 
 const Icon = ({ name, style }) => {
   switch (name) {
+    case "starIcon":
+      return <StarIcon style={style} />;
+    case "keyIcon":
+      return <KeyIcon style={style} />;
+    case "logOutIcon":
+      return <LogOutIcon style={style} />;
+    case "bugIcon":
+      return <BugIcon style={style} />;
     case "hashtagIcon":
       return <HashtagIcon style={style} />;
     case "linkIcon":

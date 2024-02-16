@@ -25,7 +25,12 @@ const GenrePreferences = () => {
             }}>
 
                 <View style={[styles.container]}>
-                    <CustomText>Genre Preferences</CustomText>
+
+                    <View style={styles.left}>
+                        <Icon name="starIcon" style={{ width: 24, height: 24, lineWidth: 2, fill: genreOpen && "#fff" }} />
+
+                        <CustomText>Genre Preferences</CustomText>
+                    </View>
                     <View style={[styles.chevron, genreOpen && {
                         transform: [{ rotate: '180deg' }]
                     }]}><Icon name="chevronDown" style={{ width: 35 }} />
@@ -67,6 +72,11 @@ const GenrePreferences = () => {
 export default GenrePreferences
 
 const styles = StyleSheet.create({
+    left: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 15
+    },
     topContiner: {
 
         // backgroundColor: "blue",

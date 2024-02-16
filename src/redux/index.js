@@ -108,6 +108,12 @@ export {
   toggleReplies,
   toggleMentions,
   openReport,
-  closeReport
+  closeReport,
+  editLink,
+  closeLink,
+  editBio,
+  closeBio,
+  editUserName,
+  closeUserName
 
 } from "./slices/settingsSlice";

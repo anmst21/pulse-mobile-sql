@@ -68,13 +68,12 @@ const SignInWithService = () => {
 
       <View style={styles.container}>
         <View style={styles.left}>
-          <CustomText style={{ fontSize: 20 }}>
-            Spotify
-          </CustomText>
-
           <View style={styles.viewSpoty}>
             <Icon name="spotifyIcon" style={{ width: 24, height: 24 }} />
           </View>
+          <CustomText style={{ fontSize: 20 }}>
+            Spotify
+          </CustomText>
         </View>
         <Button
           label={spotifyState ? "Disconnect" : "Connect"}

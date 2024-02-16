@@ -43,7 +43,14 @@ const NotificationsSettings = () => {
             }}>
 
                 <View style={[styles.container]}>
-                    <CustomText>Notifications</CustomText>
+                    <View style={styles.left}>
+
+                        <Icon name="notification" style={{ width: 24, height: 24, lineWidth: 2, fill: notificationsOpen && "#fff" }} />
+
+                        <CustomText style={{ fontSize: 20 }}>
+                            Notifications
+                        </CustomText>
+                    </View>
                     <View style={[styles.chevron, notificationsOpen && {
                         transform: [{ rotate: '180deg' }]
                     }]}><Icon name="chevronDown" style={{ width: 35 }} />
@@ -69,6 +76,11 @@ const NotificationsSettings = () => {
 export default NotificationsSettings
 
 const styles = StyleSheet.create({
+    left: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 15
+    },
     topContiner: {
 
         // backgroundColor: "blue",
