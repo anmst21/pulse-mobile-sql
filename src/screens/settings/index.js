@@ -72,7 +72,7 @@ const Settings = ({ route }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     paddingTop: 120,
-    paddingBottom: 30,
+    paddingBottom: 120,
     // top: -25,
     flexDirection: "column",
     marginHorizontal: 10

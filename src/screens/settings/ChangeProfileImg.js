@@ -6,12 +6,17 @@ import CustomText from "../../components/text";
 import sqlApi from "../../redux/axios/sqlApi"
 import Icon from "../../components/icon"
 import Button from "../../components/button";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
     const [userName, setUserName] = useState("")
     const [linkName, setLinkName] = useState("")
     const [link, setLink] = useState("")
     const [userBio, setUserInfo] = useState("")
+
+
+    const { id, image_link } = useSelector((state) => state.user.userInfo);
 
     return (
 
@@ -23,6 +28,7 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 gap: 10
 
             }}>
+                <ProfilePicture userId={id} imageLink={image_link} width={70} />
                 <View style={[styles.commentContainer, { flex: 1 }]}>
                     <CustomText style={styles.inputLabel}>
                         User Name
@@ -113,10 +119,10 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                         onChangeText={text => setUserInfo(text)} // Update the state on input change
                         placeholderTextColor="gray"
                         multiline
-                        maxLength={240}
+                        maxLength={60}
                     />
                     <CustomText style={styles.counter}>
-                        {userBio.length} / 240
+                        {userBio.length} / 60
                     </CustomText>
                 </View>
                 <Icon name="pencilEdit" style={{ fill: "transparent", width: 16 }} />
@@ -178,8 +184,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        gap: 30,
-        paddingTop: 60,
+        gap: 40,
+        paddingTop: 30,
         paddingHorizontal: 20,
         flexDirection: "column",
         marginLeft: 0,

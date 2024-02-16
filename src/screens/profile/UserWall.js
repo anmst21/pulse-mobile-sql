@@ -83,7 +83,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
           </View>
 
-          <ProfilePicture userId={userId} imageLink={userInfo.image_link} />
+          <ProfilePicture userId={userId} imageLink={userInfo.image_link} width={250} />
 
           <View style={styles.itemsCenter}>
 

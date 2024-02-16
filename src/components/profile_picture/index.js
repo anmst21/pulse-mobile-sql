@@ -7,7 +7,7 @@ import { deleteImage, uploadImage } from "../../redux";
 import Icon from "../icon";
 import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
-const ProfilePicture = ({ imageLink, userId }) => {
+const ProfilePicture = ({ imageLink, userId, width }) => {
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   const { status } = useSelector((state) => state.image);
@@ -77,7 +77,7 @@ const ProfilePicture = ({ imageLink, userId }) => {
       onPress={storedUserInfo.id === userId ? pickImage : null}
       activeOpacity={storedUserInfo.id === userId ? 0.2 : 1}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, { width: width, height: width }]}>
         {isLoading && <Animated.View style={[styles.loader, spinningAnimation]}>
           <Icon name="loaderIcon" />
         </Animated.View>}
@@ -85,7 +85,7 @@ const ProfilePicture = ({ imageLink, userId }) => {
         {imageLink ? (
           <Image
             source={{ uri: imageLink }}
-            style={{ width: 250, height: 250, borderRadius: 1000 }}
+            style={{ width: width, height: width, borderRadius: 1000 }}
             //  onLoadStart={() => setIsLoading(true)} // Handle load start
             onLoadStart={() => { setIsLoading(true) }} // Handle load end
             onLoad={() => { setIsLoading(false); console.log("ended") }}
