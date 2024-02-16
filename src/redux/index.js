@@ -10,6 +10,7 @@ import { playerReducer } from "./slices/playerSlice";
 import { pulseRecordingReducer } from "./slices/pulseRecordingSlice";
 import { signout } from "./thunks/userThunk";
 import reduxFlipper from "redux-flipper";
+import { settingsReducer } from "./slices/settingsSlice";
 
 const rootReducer = combineReducers({
   app: appReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   pulse: pulseReducer,
   player: playerReducer,
   pulseRecording: pulseRecordingReducer,
+  settings: settingsReducer
 });
 
 const resettableReducer = (state, action) => {
@@ -59,6 +61,7 @@ export * from "./thunks/followSubscribeThunk";
 export * from "./thunks/imageThunk";
 export * from "./thunks/pulseThunk";
 export * from "./thunks/pulseRecordingThunk";
+export * from "./thunks/settingsThunk";
 
 export { clearErrorMessage } from "./slices/userSlice";
 export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";
@@ -92,3 +95,6 @@ export {
   setPulseTitle,
   setPulseAudioSourceType,
 } from "./slices/playerSlice";
+export {
+  openGenre, closeGenre, toggleTags
+} from "./slices/settingsSlice";

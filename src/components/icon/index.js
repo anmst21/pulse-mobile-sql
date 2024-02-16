@@ -54,11 +54,14 @@ import LinkIcon from "./linkIcon"
 import ZapIcon from "./zapIcon"
 import ChevronDown from "./chevronDown"
 import SearchBar from "./searchBar"
+import TagsIcon from "./tagsIcon"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "linkIcon":
       return <LinkIcon style={style} />;
+    case "tagsIcon":
+      return <TagsIcon style={style} />;
     case "searchBar":
       return <SearchBar style={style} />;
     case "chevronDown":

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, ScrollView } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import customMapStyle from "../../components/map/mapStyle";
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ChangeProfileImg from "./ChangeProfileImg"
 import SignOut from "./SignOut"
 import GenrePreferences from "./GenrePreferences";
+import TagsSettings from "./TagsSetting";
 
 
 
@@ -22,9 +23,7 @@ import GenrePreferences from "./GenrePreferences";
 import SignInWithService from "./SignInWithService";
 
 const Settings = ({ route }) => {
-  console.log(route.params?.access_token);
-  console.log(route.params?.refresh_token);
-  console.log("expires_in", route.params?.expires_in);
+
   const setSpotifyStorage = async ({ access, refresh, expires_in }) => {
     if (access) {
       await AsyncStorage.setItem("accessToken", access);
@@ -56,6 +55,7 @@ const Settings = ({ route }) => {
       <ScrollView>
         <View style={styles.mainContainer}>
           <ChangeProfileImg />
+          <TagsSettings />
           <GenrePreferences />
           <SignInWithService />
           <SignOut />

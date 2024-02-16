@@ -6,12 +6,17 @@ import throttle from "lodash/throttle";
 import UsersList from "../user_list";
 import Icon from "../icon";
 import GenresList from "../genres_list"
+import { fetchGenres } from "../../redux";
+import { useDispatch, useSelector } from "react-redux";
 
-const AsyncSearch = ({ search }) => {
+
+const AsyncSearch = ({ search, setUserChoice }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [list, setList] = useState([])
-  console.log("resultsresults", results);
+  const { genreList } = useSelector(state => state.settings)
+  console.log("genreListgenreListgenreList", genreList);
+  const dispatch = useDispatch()
 
   const throttledSearch = useCallback(
     throttle(async (searchQuery) => {
@@ -51,13 +56,11 @@ const AsyncSearch = ({ search }) => {
         response = await userApi.get(
           `/search/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
         );
+        setResults(response.data);
       } else {
-        response = await userApi.get(
-          `/fetch/genres`
-        );
-        setList(response.data)
+        dispatch(fetchGenres())
       }
-      setResults(response.data);
+
     } catch (error) {
       console.error("Error fetching initial profiles: ", error);
     }
@@ -118,7 +121,7 @@ const AsyncSearch = ({ search }) => {
         />
       </View>
       {search && <UsersList results={results} setResults={setResults} />}
-      {!search && <GenresList results={query.length !== 0 ? results : list} setResults={setResults} />}
+      {!search && <GenresList setUserChoice={setUserChoice} results={query.length !== 0 ? results : genreList} setResults={setResults} />}
     </View>
   );
 };

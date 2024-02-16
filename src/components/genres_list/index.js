@@ -15,14 +15,14 @@ import Icon from "../icon";
 import CustomText from "../text";
 import GenreItem from "./GenreItem";
 
-const GenresList = ({ results, setResults }) => {
+const GenresList = ({ results, setResults, setUserChoice }) => {
     const storedUserInfo = useSelector((state) => state.user.userInfo);
 
     return (
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
             <View style={styles.itemsContainer}>
                 {results.map((item) => (
-                    <GenreItem key={item.id} item={item} />
+                    <GenreItem key={item.id} item={item} setUserChoice={setUserChoice} />
                 ))}
             </View>
         </ScrollView>

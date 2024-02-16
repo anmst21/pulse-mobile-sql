@@ -8,15 +8,16 @@ import config from "../../../config";
 import Button from "../../components/button";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { signout } from "../../redux";
+import Switch from "../../components/switch";
 
 
 
 
-const SignOut = () => {
+const TagsSettings = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
 
+    const { tags } = useSelector((state) => state.settings)
 
 
 
@@ -26,26 +27,21 @@ const SignOut = () => {
         <View style={styles.container}>
             <View style={styles.left}>
                 <CustomText style={{ fontSize: 20 }}>
-                    Log Out
+                    Tags
                 </CustomText>
-
+                <View style={styles.viewSpoty}>
+                    <Icon name="tagsIcon" style={{ color: tags ? "#fff" : "transparent" }} />
+                </View>
 
             </View>
-            <Button
-                label={"Disconnect"}
-                grey
-                onPressIn={() => {
-                    dispatch(signout());
-                    navigation.goBack();
-                }}
-            />
+            <Switch />
         </View>
 
 
     );
 };
 
-export default SignOut;
+export default TagsSettings;
 
 const styles = StyleSheet.create({
     left: {

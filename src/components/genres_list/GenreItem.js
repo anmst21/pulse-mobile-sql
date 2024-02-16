@@ -5,11 +5,13 @@ import {
     TouchableOpacity
 } from "react-native";
 import React, { useState } from "react";
+import { toggleGenre } from "../../redux";
+import { useDispatch } from "react-redux"
 
-const GenreItem = ({ item }) => {
-    const [active, setActive] = useState(false)
-    return (<TouchableOpacity onPress={() => setActive(!active)}>
-        <View style={[styles.userElement, { backgroundColor: active ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)' }]}>
+const GenreItem = ({ item, setUserChoice }) => {
+    const dispatch = useDispatch()
+    return (<TouchableOpacity onPress={() => { dispatch(toggleGenre({ genreId: item.id })) }}>
+        <View style={[styles.userElement, { backgroundColor: item.active ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)' }]}>
             <Text style={styles.itemText}>{item.name}</Text>
         </View>
     </TouchableOpacity>
