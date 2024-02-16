@@ -1,19 +1,16 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { toggleTags } from "../../redux";
-import { useDispatch, useSelector } from "react-redux";
 
 
 
-const Switch = () => {
-    const dispatch = useDispatch()
-    const { tags } = useSelector((state) => state.settings)
+const Switch = ({ bool, callback }) => {
+
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => dispatch(toggleTags())}>
-                <View style={[styles.switch, { alignItems: tags ? "flex-end" : "flex-start" }]}>
-                    <View style={[styles.circle, { backgroundColor: tags ? "#1ED760" : "#2D2B32" }]} />
+            <TouchableOpacity onPress={callback}>
+                <View style={[styles.switch, { alignItems: bool ? "flex-end" : "flex-start" }]}>
+                    <View style={[styles.circle, { backgroundColor: bool ? "#1ED760" : "#2D2B32" }]} />
 
                 </View>
             </TouchableOpacity>
@@ -31,8 +28,6 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         borderWidth: 1,
         borderColor: "#595E6A",
-        // backgroundColor: "#1ED760",
-        // backgroundColor: "#2D2B32",
 
     },
     container: { height: 50, justifyContent: "center" },
@@ -42,11 +37,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#4F4D55",
         justifyContent: "center",
         borderRadius: 100,
-
-        //  flexDirection: "row",
         paddingHorizontal: 2,
-        // alignItems: "flex-end"
-
     },
 
 })

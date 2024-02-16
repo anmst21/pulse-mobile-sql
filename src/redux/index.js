@@ -96,5 +96,18 @@ export {
   setPulseAudioSourceType,
 } from "./slices/playerSlice";
 export {
-  openGenre, closeGenre, toggleTags
+  openGenre,
+  closeGenre,
+  toggleTags,
+  openNotifications,
+  closeNotifications,
+  togglePosts,
+  toggleFollows,
+  toggleUpvotes,
+  toggleComments,
+  toggleReplies,
+  toggleMentions,
+  openReport,
+  closeReport
+
 } from "./slices/settingsSlice";

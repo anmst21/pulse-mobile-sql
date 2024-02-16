@@ -13,14 +13,16 @@ import ChangeProfileImg from "./ChangeProfileImg"
 import SignOut from "./SignOut"
 import GenrePreferences from "./GenrePreferences";
 import TagsSettings from "./TagsSetting";
-
-
-
-
-
-
-
+import NotificationsSettings from "./NotificationSettings";
+import ReportBug from "./ReportBug";
 import SignInWithService from "./SignInWithService";
+
+
+
+
+
+
+
 
 const Settings = ({ route }) => {
 
@@ -57,6 +59,8 @@ const Settings = ({ route }) => {
           <ChangeProfileImg />
           <TagsSettings />
           <GenrePreferences />
+          <NotificationsSettings />
+          <ReportBug />
           <SignInWithService />
           <SignOut />
         </View >

@@ -9,6 +9,8 @@ import Button from "../../components/button";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import Switch from "../../components/switch";
+import { toggleTags } from "../../redux";
+
 
 
 
@@ -34,7 +36,7 @@ const TagsSettings = () => {
                 </View>
 
             </View>
-            <Switch />
+            <Switch bool={tags} callback={() => dispatch(toggleTags())} />
         </View>
 
 

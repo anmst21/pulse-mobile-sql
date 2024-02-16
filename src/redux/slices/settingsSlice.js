@@ -4,7 +4,20 @@ import {
     toggleGenre
 } from "../thunks/settingsThunk";
 
+
+
+
 const initialState = {
+    notificationsState: {
+        posts: true,
+        follows: true,
+        upvotes: true,
+        comments: true,
+        replies: true,
+        mentions: true
+    },
+    reportOpen: false,
+    notificationsOpen: false,
     tags: false,
     genreOpen: false,
     genreList: [],
@@ -15,14 +28,47 @@ const settingsSlice = createSlice({
     name: "settings",
     initialState,
     reducers: {
-        toggleTags: (state, action) => {
-            state.tags = !state.tags;
+
+
+        openReport: (state, action) => {
+            state.reportOpen = true;
+        },
+        closeReport: (state, action) => {
+            state.reportOpen = false;
         },
         openGenre: (state, action) => {
             state.genreOpen = true;
         },
         closeGenre: (state, action) => {
             state.genreOpen = false;
+        },
+        openNotifications: (state, action) => {
+            state.notificationsOpen = true;
+        },
+        closeNotifications: (state, action) => {
+            state.notificationsOpen = false;
+        },
+        togglePosts: (state, action) => {
+            state.notificationsState.posts = !state.notificationsState.posts;
+        },
+        toggleFollows: (state, action) => {
+            state.notificationsState.follows = !state.notificationsState.follows;
+        },
+        toggleUpvotes: (state, action) => {
+            state.notificationsState.upvotes = !state.notificationsState.upvotes;
+        },
+        toggleComments: (state, action) => {
+            state.notificationsState.comments = !state.notificationsState.comments;
+        },
+        toggleReplies: (state, action) => {
+            state.notificationsState.replies = !state.notificationsState.replies;
+        },
+
+        toggleMentions: (state, action) => {
+            state.notificationsState.mentions = !state.notificationsState.mentions;
+        },
+        toggleTags: (state, action) => {
+            state.tags = !state.tags;
         },
 
     },
@@ -74,6 +120,19 @@ const settingsSlice = createSlice({
     }
 });
 
-export const { openGenre, closeGenre, toggleTags } = settingsSlice.actions;
+export const { openGenre,
+    closeGenre,
+    toggleTags,
+    openNotifications,
+    closeNotifications,
+    togglePosts,
+    toggleFollows,
+    toggleUpvotes,
+    toggleComments,
+    toggleReplies,
+    toggleMentions,
+    openReport,
+    closeReport
+} = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

@@ -2,17 +2,14 @@
 
 
 
-
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import { View } from 'react-native';
 import styles from './indexStyle';
 
-const Icon = ({ style }) => {
+const Icon = (props) => {
     return (
-
         <View>
-
             <Svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -21,13 +18,14 @@ const Icon = ({ style }) => {
                 viewBox="0 0 24 24"
             >
                 <Path
-                    fill={style.color ? style.color : "#fff"}
-                    d="M11.646 8.754l-5.992 5.992a.5.5 0 00.353.854h11.986a.5.5 0 00.353-.854l-5.992-5.992a.5.5 0 00-.708 0z"
+                    stroke="#fff"
+                    strokeLinecap="round"
+                    strokeWidth="2"
+                    d="M20 16H4m16-8H4m2.667 12L9.333 4m5.334 16l2.666-16"
                 ></Path>
             </Svg>
 
-
-        </View >
+        </View>
     )
 }
 
