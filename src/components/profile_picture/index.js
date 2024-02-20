@@ -3,33 +3,30 @@ import { Image, } from "expo-image";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteImage, uploadImage } from "../../redux";
+import { deleteImage, uploadImage, setImageLoader, setImageStatus } from "../../redux";
 import Icon from "../icon";
+import { manipulateAsync } from 'expo-image-manipulator';
+
 import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
 const ProfilePicture = ({ imageLink, userId, width }) => {
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
-  const { status } = useSelector((state) => state.image);
-  const [isLoading, setIsLoading] = useState(false);
-  console.log("isLoading", status);
+  const isLoading = useSelector((state) => state.user.isLoadingImage);
 
 
   const rotation = useSharedValue(0);
 
-  // Define the animated style for the loader icon
   const spinningAnimation = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: `${rotation.value}deg` }],
     };
   });
 
-  // Start the spinning animation
   const startSpinning = () => {
     rotation.value = withRepeat(withTiming(360, { duration: 1000, easing: Easing.linear }), -1, false);
   };
 
-  // Start the spinning animation when isLoading is true
   useEffect(() => {
     if (isLoading) {
       startSpinning();
@@ -50,9 +47,32 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
     });
 
     if (!result.canceled) {
-      const response = await fetch(result.assets[0].uri);
-      const fileContent = await response.arrayBuffer();
+      const sizes = [
+        { width: 500, height: 500, key: 'large' },
+        { width: 120, height: 120, key: 'medium' },
+        { width: 50, height: 50, key: 'small' },
+      ];
 
+      // Initialize the uploadObject with keys for each size, starting with null values
+      let uploadObject = {
+        small: null,
+        medium: null,
+        large: null,
+      };
+
+      // Resize and process images
+      for (const size of sizes) {
+        const resizedImage = await manipulateAsync(
+          result.assets[0].uri,
+          [{ resize: { width: size.width, height: size.height } }],
+          { compress: 1, format: 'jpeg' }
+        );
+        const response = await fetch(resizedImage.uri);
+        const fileContent = await response.arrayBuffer();
+
+        // Assign the file content directly to the corresponding key in uploadObject
+        uploadObject[size.key] = fileContent;
+      }
       function removeBaseUrl(link) {
         if (imageLink) {
           const baseUrl =
@@ -66,7 +86,8 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
       //   setImage(result.assets[0].uri);
       dispatch(
         uploadImage({
-          blob: fileContent,
+          blob: uploadObject,
+          callback: (value) => dispatch(setImageStatus(value))
         })
       );
     }
@@ -74,8 +95,8 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
 
   return (
     <TouchableOpacity
-      onPress={storedUserInfo.id === userId ? pickImage : null}
-      activeOpacity={storedUserInfo.id === userId ? 0.2 : 1}
+      onPress={storedUserInfo.id === userId && width !== 250 ? pickImage : null}
+      activeOpacity={storedUserInfo.id === userId && width !== 250 ? 0.2 : 1}
     >
       <View style={[styles.container, { width: width, height: width }]}>
         {isLoading && <Animated.View style={[styles.loader, spinningAnimation]}>
@@ -83,15 +104,22 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
         </Animated.View>}
         {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
         {imageLink ? (
-          <Image
-            source={{ uri: imageLink }}
-            style={{ width: width, height: width, borderRadius: 1000 }}
-            //  onLoadStart={() => setIsLoading(true)} // Handle load start
-            onLoadStart={() => { setIsLoading(true) }} // Handle load end
-            onLoad={() => { setIsLoading(false); console.log("ended") }}
-          />
+          <View style={{
+            width: width, height: width, backgroundColor: "rgba(31, 32, 34, 0.6)",
+
+          }}>
+            {!isLoading && <Image
+              source={{ uri: imageLink }}
+              style={{ width: width, height: width, borderRadius: 1000 }}
+              //  onLoadStart={() => setIsLoading(true)} // Handle load start
+              onLoadStart={() => { setImageLoader(true) }} // Handle load end
+              onLoad={() => { setImageLoader(false); console.log("ended") }}
+            />}
+          </View>
         ) : (
-          <Icon name="profileIcon" style={{ width: 120, height: 120, color: "#3B3B3B" }} />
+
+          !isLoading && <Icon name="profileIcon" style={{ width: width, height: width, color: "#3B3B3B" }} />
+
         )}
 
       </View>

@@ -4,29 +4,64 @@ import sqlApi from "../axios/sqlApi";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
+
 const uploadImage = createAsyncThunk(
   "image/upload",
-  async ({ blob }, thunkAPI) => {
+  async ({ blob, callback }, thunkAPI) => {
     try {
       const user = await AsyncStorage.getItem("userId");
       // Get the preassigned S3 URL for image
-      const response = await sqlApi.post(`/user/createImage`, { userId: user });
-      const { url, key } = response.data;
+      const imageSmall = await sqlApi.post(`/user/createImage`, { userId: user, size: "small" });
+      const dataSmall = imageSmall.data
+      const imageMedium = await sqlApi.post(`/user/createImage`, { userId: user, size: "medium" });
+      const dataMedium = imageMedium.data
+      const imageLarge = await sqlApi.post(`/user/createImage`, { userId: user, size: "large" });
+      const dataLarge = imageLarge.data
+      callback("10%")
 
-      await axios.put(url, blob, {
+
+      await axios.put(dataSmall.url, blob.small, {
         headers: {
-          "Content-Type": "image/jpeg", // adjust this depending on the image format
+          "Content-Type": "image/jpeg",
         },
       });
-      const finalUrl =
-        "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/" + key;
+      callback("30%")
+      await axios.put(dataMedium.url, blob.medium, {
+        headers: {
+          "Content-Type": "image/jpeg",
+        },
+      });
+      callback("50%")
+
+      await axios.put(dataLarge.url, blob.large, {
+        headers: {
+          "Content-Type": "image/jpeg",
+        },
+      });
+      callback("80%")
+
+
+      const finalUrl = (key) => {
+        return "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/" + key;
+      }
 
       await sqlApi.post("/user/saveImageLink", {
-        imageLink: finalUrl,
+        imageLink: {
+          small: finalUrl(dataSmall.key),
+          medium: finalUrl(dataMedium.key),
+          large: finalUrl(dataLarge.key)
+        },
         userId: user,
       });
+      callback("100%")
+
       console.log("finalUrl", finalUrl);
-      return finalUrl;
+      return {
+        small: finalUrl(dataSmall.key),
+        medium: finalUrl(dataMedium.key),
+        large: finalUrl(dataLarge.key)
+      };
     } catch (error) {
       console.log("Error in uploadImage action:", error);
       return thunkAPI.rejectWithValue(error.response.data);
@@ -37,7 +72,7 @@ const uploadImage = createAsyncThunk(
 const fetchUserImage = createAsyncThunk("image/fetch", async (_, thunkAPI) => {
   try {
     const userId = await AsyncStorage.getItem("userId");
-    const response = await userApi.get(`/api/userImages?userId=${userId}`);
+    const response = await sqlApi.get(`/api/userImages?userId=${userId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -47,7 +82,7 @@ const fetchUserImage = createAsyncThunk("image/fetch", async (_, thunkAPI) => {
 
 const deleteImage = createAsyncThunk("image/delete", async (key, thunkAPI) => {
   try {
-    await userApi.post("/api/deleteImage", { key });
+    await sqlApi.post("/user/deleteImage", { key });
     return key; // return the key of deleted image to handle it in the reducer
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);

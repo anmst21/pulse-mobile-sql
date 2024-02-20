@@ -89,9 +89,9 @@ const AsyncSearch = ({ search, setUserChoice }) => {
       <View style={{
         justifyContent: "center",
         position: "relative", // Ensures absolute positioning is relative to this container
-        borderColor: "rgba(137, 137, 137, 1)",
-        borderWidth: 1,
-        borderRadius: 5,
+        // borderColor: "rgba(137, 137, 137, 1)",
+        // borderWidth: 1,
+        borderRadius: 10,
         //  backgroundColor: "red"
       }}>
         <View style={{
@@ -102,6 +102,8 @@ const AsyncSearch = ({ search, setUserChoice }) => {
           justifyContent: 'center', // Center the icon vertically
           //   backgroundColor: "blue",
           padding: 10, // Add some padding if necessary
+          borderRadius: 10,
+
         }}>
           <Icon
             name="searchBar"
@@ -136,13 +138,15 @@ const styles = StyleSheet.create({
     // backgroundColor: "blue",
   },
   input: {
-    height: 40,
+    borderRadius: 5,
+
+    height: 45,
     color: "white",
 
 
     // marginBottom: 10,
     paddingHorizontal: 10,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(31, 32, 34, 0.5)",
   },
 
 });

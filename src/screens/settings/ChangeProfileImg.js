@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Text, ScrollView, TextInput } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, ScrollView, TextInput, Linking } from "react-native";
 import React, { useState, useEffect } from "react";
 import ProfilePicture from "../../components/profile_picture";
 import { useNavigation } from "@react-navigation/native";
@@ -13,18 +13,36 @@ import {
     editBio,
     closeBio,
     editUserName,
-    closeUserName
+    closeUserName,
+    updateBio,
+    updateUsername,
+    updateLink
 } from "../../redux"
 
 
 const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
-    const { id, image_link, username } = useSelector((state) => state.user.userInfo);
+    const { id, image_link, username, bio, link: stateLink } = useSelector((state) => state.user.userInfo);
+    const initialLinkState = stateLink?.link === undefined ? "" : stateLink?.link
+    const initialLinkNameState = stateLink?.linkName === undefined ? "" : stateLink?.linkName
+    const initialBioState = bio === null ? "" : bio
 
     const [userName, setUserName] = useState(username)
-    const [linkName, setLinkName] = useState("")
-    const [link, setLink] = useState("")
-    const [userBio, setUserInfo] = useState("")
+    const [linkName, setLinkName] = useState(initialLinkNameState)
+    const [link, setLink] = useState(initialLinkState)
+    const [userBio, setUserInfo] = useState(initialBioState)
+    const [error, setError] = useState(false)
 
+    useEffect(() => {
+        let timer;
+        if (error) {
+            timer = setTimeout(() => {
+                setError(false);
+            }, 3000);
+        }
+
+
+        return () => clearTimeout(timer);
+    }, [error]);
 
     const { userNameEdit, linkEdit, bioEdit } = useSelector((state) => state.settings.profileEditState);
 
@@ -44,6 +62,47 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
         }
     }, [])
 
+    const updateUserBio = (bioValue) => {
+        if (bioValue !== bio) {
+            dispatch(updateBio({ bio: bioValue }))
+            console.log("Updated bio!")
+        } else {
+            setError("Everything is up to date")
+        }
+    }
+    const updateUserName = (nameValue) => {
+        if (nameValue !== username) {
+            dispatch(updateUsername({ username: nameValue }))
+            console.log("Updated bio!")
+        } else {
+            setError("Everything is up to date")
+        }
+    }
+    const updateUserLink = (linkValue, linkNameValue) => {
+        if (linkValue !== stateLink?.link && linkNameValue !== stateLink?.linkName) {
+            Linking.canOpenURL(linkValue)
+                .then((supported) => {
+                    if (supported) {
+                        dispatch(updateLink({
+                            link: {
+                                link: linkValue,
+                                linkName: linkNameValue
+                            }
+                        }));
+                        console.log("updateLink")
+                    } else {
+                        setError("Cannot open link");
+                    }
+                })
+                .catch((err) => {
+                    console.log("An error occurred", err);
+                    setError("Invalid link format");
+                });
+        } else {
+            setError("Everything is up to date");
+        }
+    };
+
     return (
 
         <View style={styles.container}>
@@ -54,7 +113,7 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 gap: 10
 
             }}>
-                <ProfilePicture userId={id} imageLink={image_link} width={70} />
+                <ProfilePicture userId={id} imageLink={image_link?.medium} width={70} />
                 <View style={[styles.commentContainer, { flex: 1 }]}>
                     <CustomText style={styles.inputLabel}>
                         User Name
@@ -123,11 +182,11 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                                 onChangeText={text => setLink(text)} // Update the state on input change
                                 placeholderTextColor="gray"
                                 multiline
-                                maxLength={30}
+                                maxLength={100}
                                 editable={linkEdit}
                             />
                             <CustomText style={styles.counter}>
-                                {link.length} / 30
+                                {link.length} / 100
                             </CustomText>
                         </View>
                     </View>
@@ -160,6 +219,12 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                         maxLength={90}
                         editable={bioEdit}
                     />
+                    {error &&
+                        <CustomText style={styles.error}>
+                            {error}
+                        </CustomText>
+                    }
+
                     <CustomText style={styles.counter}>
                         {userBio.length} / 90
                     </CustomText>
@@ -176,6 +241,7 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                     flexDirection: "row",
                     justifyContent: "flex-end",
                     paddingHorizontal: 20,
+                    zIndex: 9999
                     //   backgroundColor: "blue"
                 }}>
                     <Button
@@ -193,8 +259,16 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                         label={"Save"}
                         grey
                         onPressIn={() => {
-                            //dispatch(fetchGenres());
-                            console.log()
+
+                            bioEdit && updateUserBio(userBio)
+                            linkEdit && updateUserLink(link, linkName)
+                            userNameEdit && updateUserName(userName)
+
+                            dispatch(closeBio())
+                            dispatch(closeLink())
+                            dispatch(closeUserName())
+
+
 
                         }}
                     />
@@ -233,12 +307,21 @@ const styles = StyleSheet.create({
         right: 0
 
     },
+    error: {
+        color: "red",
+        fontSize: 12,
+        position: "absolute",
+        bottom: -20,
+        left: 0
+
+    },
     input: {
         fontSize: 14,
         lineHeight: 22, color: "white",
         alignItems: "center",
         //   width: '100%',
         top: 2,
+        //   height: 50
 
     },
     commentContainer: {

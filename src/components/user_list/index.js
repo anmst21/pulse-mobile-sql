@@ -41,7 +41,7 @@ const UsersList = ({ results, setResults }) => {
                 <View style={styles.imageContainer}>
                   {item.image_link ? (
                     <Image
-                      source={{ uri: item.image_link }}
+                      source={{ uri: item.image_link.small }}
                       style={{ width: 40, height: 40, borderRadius: 1000, }}
                     />
                   ) : <Icon name="profileIcon" style={{ width: 40, height: 40, color: "#808080" }} />}

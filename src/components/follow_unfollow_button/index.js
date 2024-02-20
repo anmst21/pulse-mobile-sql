@@ -86,14 +86,24 @@ const FollowUnfollowButton = ({ item, results, setResults }) => {
   // }
 
   return (
-    <>
+    <View style={{
+      flexDirection: "row",
+      width: 70,
+      // backgroundColor: "blue",
+      justifyContent: "space-between"
+    }}>
       {item.subscribed === "true" ? (
         // <Button
         //   title="Unsubscribe and Unfollow"
         //   onPress={() => handleUnfollow(item.id)}
         // />
         <TouchableOpacity onPress={() => handleUnfollow(item.id)}>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{
+            flexDirection: "row", width: 70,
+            //  backgroundColor: "blue",
+            justifyContent: "space-between",
+
+          }}>
             <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
             <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
           </View>
@@ -127,7 +137,7 @@ const FollowUnfollowButton = ({ item, results, setResults }) => {
         </TouchableOpacity>
 
       )}
-    </>
+    </View>
   );
 };
 

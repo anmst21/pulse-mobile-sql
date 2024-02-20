@@ -16,7 +16,7 @@ import TagsSettings from "./TagsSetting";
 import NotificationsSettings from "./NotificationSettings";
 import ReportBug from "./ReportBug";
 import SignInWithService from "./SignInWithService";
-
+import ShadowList from "./ShadowList"
 
 
 
@@ -60,6 +60,7 @@ const Settings = ({ route }) => {
           <TagsSettings />
           <GenrePreferences />
           <NotificationsSettings />
+          <ShadowList />
           <ReportBug />
           <SignInWithService />
           <SignOut />

@@ -78,9 +78,67 @@ const fetchUserInfo = createAsyncThunk(
   async ({ userId }) => {
     // const userId = await AsyncStorage.getItem("userId");
 
-    const response = await userApi.get(`/user/${userId}`);
+    const response = await sqlApi.get(`/user/${userId}`);
     console.log("fetchUserInfo", response.data)
     return response.data;
   }
 );
-export { signin, signout, signup, tryLocalSignIn, fetchUserInfo };
+
+
+const updateBio = createAsyncThunk(
+  "user/updateBio",
+  async ({ bio }, { rejectWithValue }) => {
+    try {
+
+      const response = await sqlApi.put('/users/bio', { bio });
+
+      console.log("updateBio", response.data);
+      return response.data; // Assuming the updated bio is returned by your API
+    } catch (error) {
+      console.error("Error updating bio", error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+const updateUsername = createAsyncThunk(
+  "user/updateUsername",
+  async ({ username }, { rejectWithValue }) => {
+    try {
+
+      const response = await sqlApi.put('/users/username', { username });
+
+      console.log("updateUsername", response.data);
+      return response.data; // Assuming the updated bio is returned by your API
+    } catch (error) {
+      console.error("Error updating bio", error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+const updateLink = createAsyncThunk(
+  "user/updateLink",
+  async ({ link }, { rejectWithValue }) => {
+    try {
+
+      const response = await sqlApi.put('/users/link', { link });
+
+      console.log("updateLink", response.data);
+      return response.data; // Assuming the updated bio is returned by your API
+    } catch (error) {
+      console.error("Error updating bio", error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export {
+  signin,
+  signout,
+  signup,
+  tryLocalSignIn,
+  fetchUserInfo,
+  updateBio,
+  updateUsername,
+  updateLink
+};

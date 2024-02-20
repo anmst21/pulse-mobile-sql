@@ -63,7 +63,7 @@ export * from "./thunks/pulseThunk";
 export * from "./thunks/pulseRecordingThunk";
 export * from "./thunks/settingsThunk";
 
-export { clearErrorMessage } from "./slices/userSlice";
+export { clearErrorMessage, setImageLoader, setImageStatus } from "./slices/userSlice";
 export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";
 export { addImage } from "./slices/imageSlice";
 export {
@@ -114,6 +114,8 @@ export {
   editBio,
   closeBio,
   editUserName,
-  closeUserName
+  closeUserName,
+  closeShadowList,
+  openShadowList
 
 } from "./slices/settingsSlice";

@@ -82,27 +82,23 @@ const ReportBug = () => {
                             {botInputValue.length} / 240
                         </CustomText>
                     </View>
-                    <View style={styles.btnContainer}>
-                        <View style={{
-                            flexDirection: "row",
-                            justifyContent: "flex-end",
-                            // marginBottom: 10,
-                            paddingHorizontal: 20,
-                            flex: 1,
-                            marginTop: 30,
-                            marginBottom: 10
-                        }}>
-                            <Button
-                                label="Submit"
-                                iconRight="arrow_right"
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                        marginBottom: 10,
+                        paddingHorizontal: 20,
+                        left: 5,
+                        marginTop: 40
+                    }}>
 
-                                grey
-                                // status={player.edited}
-                                // loading={saving}
-                                onPressIn={() => console.log()}
-                            />
-                        </View>
+                        <Button
+                            label={"Submit"}
+                            grey
+                            onPressIn={() => {
+                                console.log()
 
+                            }}
+                        />
                     </View>
                 </View>
             }
@@ -127,8 +123,9 @@ const styles = StyleSheet.create({
 
     },
     btnContainer: {
-        //  backgroundColor: "blue",
-        justifyContent: 'space-between',
+        // flex: 1,
+        backgroundColor: "blue",
+        justifyContent: 'flex-end',
         flexDirection: "row",
         alignItems: "center"
     },

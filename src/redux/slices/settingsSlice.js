@@ -21,6 +21,7 @@ const initialState = {
         replies: true,
         mentions: true
     },
+    shadowListOpen: false,
     reportOpen: false,
     notificationsOpen: false,
     tags: false,
@@ -61,6 +62,12 @@ const settingsSlice = createSlice({
         },
         openGenre: (state, action) => {
             state.genreOpen = true;
+        },
+        closeShadowList: (state, action) => {
+            state.shadowListOpen = false;
+        },
+        openShadowList: (state, action) => {
+            state.shadowListOpen = true;
         },
         closeGenre: (state, action) => {
             state.genreOpen = false;
@@ -161,7 +168,9 @@ export const { openGenre,
     editBio,
     closeBio,
     editUserName,
-    closeUserName
+    closeUserName,
+    closeShadowList,
+    openShadowList
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

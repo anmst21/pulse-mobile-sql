@@ -50,7 +50,7 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
     const storedUserInfo = useSelector((state) => state.user?.userInfo);
 
 
-    useEffect(() => { fetchComments(isActive, userId) }, [isActive])
+    useEffect(() => { openComments && fetchComments(isActive, userId) }, [isActive])
 
 
 

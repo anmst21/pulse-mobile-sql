@@ -205,7 +205,7 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
       {audioList
         ? audioList.map((audio) => (
 
-          <View style={styles.outerPost}>
+          <View style={styles.outerPost} key={audio.id}>
 
             <TouchableOpacity
               onPress={() => {

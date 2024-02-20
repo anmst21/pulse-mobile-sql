@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Text, ScrollView } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, ScrollView, Linking } from "react-native";
 import React, { useState, useEffect } from "react";
 import ProfilePicture from "../../components/profile_picture";
 import UserPosts from "./UserPosts";
@@ -34,6 +34,18 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
   }, [])
 
 
+  const handleLinkPress = async (url) => {
+    // Check if the URL can be opened
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      // Open the URL if it's supported
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${url}`);
+    }
+  };
+
+
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
@@ -41,9 +53,8 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
         <View style={styles.container}>
 
           <View style={styles.userNameContainer} >
-            <CustomText >
-              <CustomText style={{ fontSize: 30 }}>
-                {userInfo.username}</CustomText>, {userInfo.id}
+            <CustomText style={{ fontSize: 30 }}>
+              {userInfo.username}
             </CustomText>
           </View>
 
@@ -56,7 +67,21 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
             }}>
 
               <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20 }} />
-              <CustomText style={{ fontSize: 16 }}>Spotify</CustomText>
+              {userInfo.link ?
+                <TouchableOpacity onPress={() => {
+                  handleLinkPress(userInfo.link.link)
+                }}>
+                  <CustomText style={{ fontSize: 16, textDecorationLine: 'underline', }}>{userInfo.link.linkName}</CustomText>
+                </TouchableOpacity>
+                :
+                <View style={{
+                  flex: 0.5,
+                  backgroundColor: "rgba(31, 32, 34, 0.8)",
+                  height: 20,
+                  borderRadius: 3
+                }} />
+              }
+
             </View>
             <View style={{
               flexDirection: "row",
@@ -65,8 +90,18 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
               width: 250,
               paddingRight: 20,
             }}>
+
               <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20 }} />
-              <CustomText style={{ fontSize: 16 }}>Data Scientist, Python & Finance Buff, Data Scientist, Python & Finance Buff</CustomText>
+              {userInfo.bio ?
+                <CustomText style={{ fontSize: 16 }}>{userInfo.bio}</CustomText>
+                :
+                <View style={{
+                  width: "100%",
+                  backgroundColor: "rgba(31, 32, 34, 0.8)",
+                  height: 60,
+                  borderRadius: 3
+                }} />
+              }
             </View>
             {storedUserInfo === userInfo.id &&
               <View style={{
@@ -83,7 +118,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
           </View>
 
-          <ProfilePicture userId={userId} imageLink={userInfo.image_link} width={250} />
+          <ProfilePicture userId={userId} imageLink={userInfo.image_link?.large} width={250} />
 
           <View style={styles.itemsCenter}>
 
@@ -254,7 +289,7 @@ const styles = StyleSheet.create({
 
 
     position: "absolute",
-    bottom: 20,
+    bottom: 25,
     left: 10,
     zIndex: 10,
     width: 250,

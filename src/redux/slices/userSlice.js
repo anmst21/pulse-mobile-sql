@@ -5,6 +5,10 @@ import {
   signout,
   tryLocalSignIn,
   fetchUserInfo,
+  updateBio,
+  updateUsername,
+  updateLink,
+
 } from "../thunks/userThunk";
 
 import { uploadImage, deleteImage } from "../thunks/imageThunk";
@@ -30,6 +34,8 @@ const userSlice = createSlice({
       email: "",
       username: "",
       image_link: null,
+      bio: null,
+      link: null,
       dateCreated: "",
       postsCount: 0,
       followersCount: 0,
@@ -40,15 +46,56 @@ const userSlice = createSlice({
     },
     token: null,
     isLoading: false,
+    isLoadingImage: false,
+    imageStatus: "0%",
     errorMessage: "",
   },
   reducers: {
     clearErrorMessage: (state) => {
       state.errorMessage = "";
     },
+    setImageLoader: (state, action) => {
+      state.isLoadingImage = action.payload
+    },
+    setImageStatus: (state, action) => {
+      state.imageStatus = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
+      .addCase(updateBio.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateBio.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorMessage = action.error.message;
+      })
+      .addCase(updateBio.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userInfo.bio = action.payload;
+      })
+      .addCase(updateLink.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateLink.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorMessage = action.error.message;
+      })
+      .addCase(updateLink.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userInfo.link = action.payload;
+      })
+      .addCase(updateUsername.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUsername.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorMessage = action.error.message;
+      })
+      .addCase(updateUsername.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userInfo.username = action.payload;
+      })
       // .addCase(uploadAudio.fulfilled, (state, action) => {
       //   state.status = "succeeded";
       //   state.userInfo.postsCount += 1;
@@ -62,15 +109,15 @@ const userSlice = createSlice({
         state.userInfo.postsCount -= 1;
       })
       .addCase(uploadImage.pending, (state) => {
-        state.isLoading = true;
+        state.isLoadingImage = true;
       })
       .addCase(uploadImage.fulfilled, (state, action) => {
         state.userInfo.image_link = action.payload; // Set the image link
-        state.isLoading = false;
+        state.isLoadingImage = false;
       })
       .addCase(uploadImage.rejected, (state, action) => {
-        state.isLoading = false;
         state.errorMessage = action.error.message;
+        state.isLoadingImage = false;
       })
       .addCase(deleteImage.pending, (state) => {
         state.isLoading = true;
@@ -155,5 +202,9 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearErrorMessage } = userSlice.actions;
+export const {
+  clearErrorMessage,
+  setImageLoader,
+  setImageStatus
+} = userSlice.actions;
 export const userReducer = userSlice.reducer;
