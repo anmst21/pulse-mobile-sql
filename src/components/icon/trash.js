@@ -3,17 +3,17 @@ import Svg, { Path } from "react-native-svg";
 import { View } from "react-native";
 import styles from "./indexStyle";
 
-const Icon = (props) => {
+const Icon = ({ style }) => {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      width={style.width}
+      height={style.width}
       fill="none"
       viewBox="0 0 24 24"
     >
       <Path
-        stroke={props.style.color}
+        stroke={style.color}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2"

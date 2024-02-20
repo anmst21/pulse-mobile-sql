@@ -70,6 +70,7 @@ const CommentComponent = ({ comment, setComments, userId }) => {
                             name="trashIcon"
                             style={{
                                 color: "#F25219",
+                                width: 24
                             }}
                         />
                     </TouchableOpacity>

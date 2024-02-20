@@ -116,6 +116,6 @@ export {
   editUserName,
   closeUserName,
   closeShadowList,
-  openShadowList
-
+  openShadowList,
+  setImageMenuOpen
 } from "./slices/settingsSlice";

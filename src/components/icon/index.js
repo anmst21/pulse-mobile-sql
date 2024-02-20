@@ -61,11 +61,15 @@ import StarIcon from "./starIcon"
 import KeyIcon from "./keyIcon"
 import LogOutIcon from "./logOutIcon"
 import BugIcon from "./bugIcon"
+import ChangePrpofileIcon from "./changeProfileImg"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "starIcon":
       return <StarIcon style={style} />;
+    case "changeProfileIcon":
+      return <ChangePrpofileIcon style={style} />;
+
     case "keyIcon":
       return <KeyIcon style={style} />;
     case "logOutIcon":

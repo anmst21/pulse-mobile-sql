@@ -124,10 +124,7 @@ const userSlice = createSlice({
       })
       .addCase(deleteImage.fulfilled, (state, action) => {
         state.isLoading = false;
-
-        if (state.userInfo.image_link === action.payload) {
-          state.userInfo.image_link = null; // Clear the image or set to any default value
-        }
+        state.userInfo.image_link = null;
       })
       .addCase(deleteImage.rejected, (state, action) => {
         state.isLoading = false;

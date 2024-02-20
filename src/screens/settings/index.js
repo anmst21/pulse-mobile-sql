@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Button, ScrollView, TouchableWithoutFeedback } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import customMapStyle from "../../components/map/mapStyle";
 import AsyncSearch from "../../components/async_search";
@@ -17,6 +17,8 @@ import NotificationsSettings from "./NotificationSettings";
 import ReportBug from "./ReportBug";
 import SignInWithService from "./SignInWithService";
 import ShadowList from "./ShadowList"
+import { setImageMenuOpen, closeNotifications, closeGenre, closeShadowList, closeReport } from "../../redux";
+
 
 
 
@@ -25,6 +27,7 @@ import ShadowList from "./ShadowList"
 
 
 const Settings = ({ route }) => {
+  const dispatch = useDispatch()
 
   const setSpotifyStorage = async ({ access, refresh, expires_in }) => {
     if (access) {
@@ -49,24 +52,59 @@ const Settings = ({ route }) => {
   if (route.params?.access_token && route.params?.refresh_token) {
     InAppBrowser.close();
   }
+
+  const { imageMenuOpen, shadowListOpen, reportOpen, notificationsOpen, genreOpen } = useSelector((state) => state.settings);
+
+  const handlePress = () => {
+    if (imageMenuOpen) {
+      dispatch(setImageMenuOpen(false))
+    }
+    if (shadowListOpen) {
+      dispatch(closeShadowList())
+    }
+    if (reportOpen) {
+      dispatch(closeReport())
+    }
+    if (notificationsOpen) {
+      dispatch(closeNotifications())
+    }
+    if (genreOpen) {
+      dispatch(closeGenre())
+    }
+  }
+  // closeNotifications, closeGenre, closeShadowList, closeReport
+
+  // shadowListOpen: false,
+  //   reportOpen: false,
+  //     notificationsOpen: false,
+  //       genreOpen: false,
+
   return (
-    <View style={{ backgroundColor: "black", flex: 1, }}>
-      <View style={styles.header}>
-        <SettingsHeader />
+    <TouchableWithoutFeedback onPress={handlePress} disabled={
+      !imageMenuOpen &&
+      !shadowListOpen &&
+      !reportOpen &&
+      !notificationsOpen &&
+      !genreOpen
+    }>
+      <View style={{ backgroundColor: "black", flex: 1, }}>
+        <View style={styles.header}>
+          <SettingsHeader />
+        </View>
+        <ScrollView>
+          <View style={styles.mainContainer}>
+            <ChangeProfileImg />
+            <TagsSettings />
+            <GenrePreferences />
+            <NotificationsSettings />
+            <ShadowList />
+            <ReportBug />
+            <SignInWithService />
+            <SignOut />
+          </View >
+        </ScrollView >
       </View>
-      <ScrollView>
-        <View style={styles.mainContainer}>
-          <ChangeProfileImg />
-          <TagsSettings />
-          <GenrePreferences />
-          <NotificationsSettings />
-          <ShadowList />
-          <ReportBug />
-          <SignInWithService />
-          <SignOut />
-        </View >
-      </ScrollView >
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

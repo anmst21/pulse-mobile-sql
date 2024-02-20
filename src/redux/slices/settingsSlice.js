@@ -24,8 +24,9 @@ const initialState = {
     shadowListOpen: false,
     reportOpen: false,
     notificationsOpen: false,
-    tags: false,
     genreOpen: false,
+    tags: false,
+    imageMenuOpen: false,
     genreList: [],
     status: ""
 };
@@ -34,7 +35,9 @@ const settingsSlice = createSlice({
     name: "settings",
     initialState,
     reducers: {
-
+        setImageMenuOpen: (state, action) => {
+            state.imageMenuOpen = action.payload;
+        },
 
         editLink: (state, action) => {
             state.profileEditState.linkEdit = true;
@@ -170,7 +173,8 @@ export const { openGenre,
     editUserName,
     closeUserName,
     closeShadowList,
-    openShadowList
+    openShadowList,
+    setImageMenuOpen
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

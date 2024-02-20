@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Text, ScrollView, TextInput, Linking } from "react-native";
+import { StyleSheet, View, TouchableOpacity, TouchableWithoutFeedback, Text, ScrollView, TextInput, Linking } from "react-native";
 import React, { useState, useEffect } from "react";
 import ProfilePicture from "../../components/profile_picture";
 import { useNavigation } from "@react-navigation/native";
@@ -7,6 +7,8 @@ import sqlApi from "../../redux/axios/sqlApi"
 import Icon from "../../components/icon"
 import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
+import * as Clipboard from "expo-clipboard";
+
 import {
     editLink,
     closeLink,
@@ -16,20 +18,26 @@ import {
     closeUserName,
     updateBio,
     updateUsername,
-    updateLink
+    updateLink,
+    setImageMenuOpen
 } from "../../redux"
+
+import ImageModal from "../../components/image_modal";
 
 
 const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
     const { id, image_link, username, bio, link: stateLink } = useSelector((state) => state.user.userInfo);
+    const { imageStatus, isLoadingImage } = useSelector((state) => state.user);
+    console.log("imageStatusimageStatusimageStatus", imageStatus)
     const initialLinkState = stateLink?.link === undefined ? "" : stateLink?.link
     const initialLinkNameState = stateLink?.linkName === undefined ? "" : stateLink?.linkName
     const initialBioState = bio === null ? "" : bio
+    const { imageMenuOpen } = useSelector((state) => state.settings);
 
     const [userName, setUserName] = useState(username)
     const [linkName, setLinkName] = useState(initialLinkNameState)
     const [link, setLink] = useState(initialLinkState)
-    const [userBio, setUserInfo] = useState(initialBioState)
+    const [userBio, setUserBio] = useState(initialBioState)
     const [error, setError] = useState(false)
 
     useEffect(() => {
@@ -103,177 +111,232 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
         }
     };
 
+    const handlePress = async () => {
+        const link = await Clipboard.getStringAsync()
+        setLink(link)
+    }
+
     return (
 
         <View style={styles.container}>
+            {isLoadingImage &&
+                <View style={{
+                    backgroundColor: "rgba(31, 32, 34, 0.5)",
+
+                    position: "absolute",
+                    top: 0,
+                    width: "100%",
+                    height: 5,
+                    right: 0
+                }}>
+                    <View style={{
+                        backgroundColor: "grey",
+
+                        width: imageStatus,
+                        height: 5,
+
+                        //position: "absolute"
+                    }} />
+                </View>
+            }
             <View style={{
-                flexDirection: "row",
-                //  backgroundColor: "blue",
-                alignItems: "center",
-                gap: 10
+                marginHorizontal: 20,
+                gap: 40,
 
             }}>
-                <ProfilePicture userId={id} imageLink={image_link?.medium} width={70} />
-                <View style={[styles.commentContainer, { flex: 1 }]}>
-                    <CustomText style={styles.inputLabel}>
-                        User Name
-                    </CustomText>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="User Name..."
-                        value={userName}
-                        onChangeText={text => setUserName(text)} // Update the state on input change
-                        placeholderTextColor="gray"
-                        multiline
-                        maxLength={16}
-                        editable={userNameEdit}
 
-                    />
-                    <CustomText style={styles.counter}>
-                        {userName.length} / 16
-                    </CustomText>
-                </View>
-                <TouchableOpacity onPress={() => {
-                    userNameEdit ? dispatch(closeUserName()) : dispatch(editUserName())
-                }}>
-                    <Icon name="pencilEdit" style={{ fill: userNameEdit ? "#fff" : "transparent", width: 16 }} />
-                </TouchableOpacity>
-
-            </View>
-            <View style={styles.link}>
                 <View style={{
                     flexDirection: "row",
                     //  backgroundColor: "blue",
                     alignItems: "center",
                     gap: 10,
-                    flex: 2.5
-
+                    zIndex: 9999
                 }}>
 
-                    <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20, }} />
-                    <View style={{ flexDirection: "row", flex: 1 }}>
-                        <View style={[styles.commentContainer, {
-                            borderTopRightRadius: 0, borderBottomRightRadius: 0, borderRightWidth: 1, flex: 1
-                        }]}>
-                            <CustomText style={styles.inputLabel}>
-                                Link
-                            </CustomText>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Title..."
-                                value={linkName}
-                                onChangeText={text => setLinkName(text)} // Update the state on input change
-                                placeholderTextColor="gray"
-                                multiline
-                                maxLength={14}
-                                editable={linkEdit}
-                            />
-                            <CustomText style={styles.counter}>
-                                {linkName.length} / 14
-                            </CustomText>
-                        </View>
+                    <ProfilePicture userId={id} imageLink={image_link?.medium} width={70} />
 
-                        <View style={[styles.commentContainer, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]}>
+                    {imageMenuOpen && <ImageModal imageLink={image_link?.medium} />}
 
-                            <TextInput
-                                style={styles.input}
-                                placeholder="URL..."
-                                value={link}
-                                onChangeText={text => setLink(text)} // Update the state on input change
-                                placeholderTextColor="gray"
-                                multiline
-                                maxLength={100}
-                                editable={linkEdit}
-                            />
-                            <CustomText style={styles.counter}>
-                                {link.length} / 100
-                            </CustomText>
-                        </View>
+                    <View style={[styles.commentContainer, { flex: 1 }]}>
+                        <CustomText style={styles.inputLabel}>
+                            User Name
+                        </CustomText>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="User Name..."
+                            value={userName}
+                            onChangeText={text => setUserName(text)} // Update the state on input change
+                            placeholderTextColor="gray"
+                            multiline
+                            maxLength={16}
+                            editable={userNameEdit}
+
+                        />
+                        <CustomText style={styles.counter}>
+                            {userName.length} / 16
+                        </CustomText>
                     </View>
                     <TouchableOpacity onPress={() => {
-                        linkEdit ? dispatch(closeLink()) : dispatch(editLink())
+                        userNameEdit ? dispatch(closeUserName()) : dispatch(editUserName())
                     }}>
-                        <Icon name="pencilEdit" style={{ fill: linkEdit ? "#fff" : "transparent", width: 16 }} />
+                        <Icon name="pencilEdit" style={{ fill: userNameEdit ? "#fff" : "transparent", width: 16 }} />
                     </TouchableOpacity>
+
                 </View>
-            </View>
-            <View style={{
-                flexDirection: "row",
-                //  backgroundColor: "blue",
-                alignItems: "center",
-                gap: 10
 
-            }}>
-                <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20, }} />
-                <View style={[styles.commentContainer, { height: 100, flex: 1 }]}>
-                    <CustomText style={styles.inputLabel}>
-                        Bio
-                    </CustomText>
-                    <TextInput
-                        style={[styles.input, { flex: 1 }]}
-                        placeholder="Bio..."
-                        value={userBio}
-                        onChangeText={text => setUserInfo(text)} // Update the state on input change
-                        placeholderTextColor="gray"
-                        multiline
-                        maxLength={90}
-                        editable={bioEdit}
-                    />
-                    {error &&
-                        <CustomText style={styles.error}>
-                            {error}
-                        </CustomText>
-                    }
+                <View style={styles.link}>
+                    <View style={{
+                        flexDirection: "row",
+                        //  backgroundColor: "blue",
+                        alignItems: "center",
+                        gap: 10,
+                        flex: 2.5,
 
-                    <CustomText style={styles.counter}>
-                        {userBio.length} / 90
-                    </CustomText>
+                    }}>
+
+                        <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20, }} />
+                        <View style={{ flexDirection: "row", flex: 1, }}>
+                            <View style={[styles.commentContainer, {
+                                borderTopRightRadius: 0, borderBottomRightRadius: 0, borderRightWidth: 1, flex: 1,
+                            }]}>
+                                <CustomText style={styles.inputLabel}>
+                                    Link
+                                </CustomText>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Title..."
+                                    value={linkName}
+                                    onChangeText={text => setLinkName(text)} // Update the state on input change
+                                    placeholderTextColor="gray"
+                                    multiline
+                                    maxLength={14}
+                                    editable={linkEdit}
+                                />
+                                <CustomText style={styles.counter}>
+                                    {linkName.length} / 14
+                                </CustomText>
+                            </View>
+
+                            <View style={[styles.commentContainer, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: 0 }]}>
+                                <TouchableOpacity onPress={handlePress} style={{
+                                    position: "absolute",
+                                    // backgroundColor: "blue",
+                                    width: "100%",
+                                    height: "100%",
+                                    zIndex: 1000,
+
+                                }}>
+                                    {/* <View style={{
+                                        position: "absolute",
+                                        backgroundColor: "blue",
+                                        width: "100%",
+                                        height: "100%",
+                                        zIndex: 9999
+                                    }} /> */}
+
+                                    <TextInput
+                                        style={[styles.input, { width: "100%", top: 5, paddingLeft: 10 }]}
+                                        placeholder="URL..."
+                                        value={link.replace(/^https?:\/\//, 'www.')}
+                                        onChangeText={text => setLink(text)} // Update the state on input change
+                                        placeholderTextColor="gray"
+                                        maxLength={100}
+                                        editable={linkEdit}
+                                    />
+                                </TouchableOpacity>
+
+                                <CustomText style={styles.counter}>
+                                    {link.length} / 100
+                                </CustomText>
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={() => {
+                            linkEdit ? dispatch(closeLink()) : dispatch(editLink())
+                        }}>
+                            <Icon name="pencilEdit" style={{ fill: linkEdit ? "#fff" : "transparent", width: 16 }} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <TouchableOpacity onPress={() => {
-                    bioEdit ? dispatch(closeBio()) : dispatch(editBio())
-                }}>
-                    <Icon name="pencilEdit" style={{ fill: bioEdit ? "#fff" : "transparent", width: 16 }} />
-                </TouchableOpacity>
-
-            </View>
-            {(bioEdit || linkEdit || userNameEdit) &&
                 <View style={{
                     flexDirection: "row",
-                    justifyContent: "flex-end",
-                    paddingHorizontal: 20,
-                    zIndex: 9999
-                    //   backgroundColor: "blue"
+                    //  backgroundColor: "blue",
+                    alignItems: "center",
+                    gap: 10
+
                 }}>
-                    <Button
-                        label={"Undo"}
+                    <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20, }} />
+                    <View style={[styles.commentContainer, { height: 100, flex: 1 }]}>
+                        <CustomText style={styles.inputLabel}>
+                            Bio
+                        </CustomText>
+                        <TextInput
+                            style={[styles.input, { flex: 1 }]}
+                            placeholder="Bio..."
+                            value={userBio}
+                            onChangeText={text => setUserBio(text)} // Update the state on input change
+                            placeholderTextColor="gray"
+                            multiline
+                            maxLength={90}
+                            editable={bioEdit}
+                        />
+                        {error &&
+                            <CustomText style={styles.error}>
+                                {error}
+                            </CustomText>
+                        }
 
-                        onPressIn={() => {
-                            dispatch(closeBio())
-                            dispatch(closeLink())
-                            dispatch(closeUserName())
-                            setUserName(username)
+                        <CustomText style={styles.counter}>
+                            {userBio.length} / 90
+                        </CustomText>
+                    </View>
+                    <TouchableOpacity onPress={() => {
+                        bioEdit ? dispatch(closeBio()) : dispatch(editBio())
+                    }}>
+                        <Icon name="pencilEdit" style={{ fill: bioEdit ? "#fff" : "transparent", width: 16 }} />
+                    </TouchableOpacity>
 
-                        }}
-                    />
-                    <Button
-                        label={"Save"}
-                        grey
-                        onPressIn={() => {
-
-                            bioEdit && updateUserBio(userBio)
-                            linkEdit && updateUserLink(link, linkName)
-                            userNameEdit && updateUserName(userName)
-
-                            dispatch(closeBio())
-                            dispatch(closeLink())
-                            dispatch(closeUserName())
-
-
-
-                        }}
-                    />
                 </View>
-            }
+                {(bioEdit || linkEdit || userNameEdit) &&
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                        paddingHorizontal: 20,
+                        zIndex: 1000
+                        //   backgroundColor: "blue"
+                    }}>
+                        <Button
+                            label={"Undo"}
+
+                            onPressIn={() => {
+                                dispatch(closeBio())
+                                dispatch(closeLink())
+                                dispatch(closeUserName())
+                                setUserName(username)
+                                setLinkName(initialLinkNameState)
+                                setLink(initialLinkState)
+                                setUserBio(initialBioState)
+                            }}
+                        />
+                        <Button
+                            label={"Save"}
+                            grey
+                            onPressIn={() => {
+
+                                bioEdit && updateUserBio(userBio)
+                                linkEdit && updateUserLink(link, linkName)
+                                userNameEdit && updateUserName(userName)
+
+                                dispatch(closeBio())
+                                dispatch(closeLink())
+                                dispatch(closeUserName())
+
+
+
+                            }}
+                        />
+                    </View>
+                }
+            </View>
         </View >
 
 
@@ -283,6 +346,27 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 export default ChangeProfileImg;
 
 const styles = StyleSheet.create({
+    modalItem: {
+        flexDirection: "row",
+        gap: 7,
+        backgroundColor: "grey",
+        paddingHorizontal: 5,
+        paddingRight: 15,
+        paddingVertical: 5,
+        borderRadius: 3,
+        alignItems: "center"
+    },
+    modal: {
+        backgroundColor: "rgba(31, 32, 34, 1)",
+        position: "absolute",
+        bottom: -95,
+        zIndex: 9999,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        gap: 5
+
+    },
     inputLabel: {
         position: "absolute",
         top: -20,
@@ -338,9 +422,10 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        gap: 40,
+        overflow: "hidden",
+        position: "relative",
         paddingTop: 30,
-        paddingHorizontal: 20,
+        //  paddingHorizontal: 20,
         flexDirection: "column",
         marginLeft: 0,
         backgroundColor: "rgba(31, 32, 34, 0.6)",

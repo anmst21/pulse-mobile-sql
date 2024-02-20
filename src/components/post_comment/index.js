@@ -198,6 +198,7 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                                             name="trashIcon"
                                             style={{
                                                 color: "#F25219",
+                                                width: 24
                                             }}
                                         />
                                     </TouchableOpacity>

@@ -32,14 +32,14 @@ const uploadImage = createAsyncThunk(
           "Content-Type": "image/jpeg",
         },
       });
-      callback("50%")
+      callback("70%")
 
       await axios.put(dataLarge.url, blob.large, {
         headers: {
           "Content-Type": "image/jpeg",
         },
       });
-      callback("80%")
+      callback("100%")
 
 
       const finalUrl = (key) => {
@@ -54,7 +54,7 @@ const uploadImage = createAsyncThunk(
         },
         userId: user,
       });
-      callback("100%")
+      callback("0%")
 
       console.log("finalUrl", finalUrl);
       return {
@@ -80,10 +80,10 @@ const fetchUserImage = createAsyncThunk("image/fetch", async (_, thunkAPI) => {
   }
 });
 
-const deleteImage = createAsyncThunk("image/delete", async (key, thunkAPI) => {
+const deleteImage = createAsyncThunk("image/delete", async ({ keys }, thunkAPI) => {
   try {
-    await sqlApi.post("/user/deleteImage", { key });
-    return key; // return the key of deleted image to handle it in the reducer
+    await sqlApi.post("/user/deleteImage", { keys });
+    return keys;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
   }
