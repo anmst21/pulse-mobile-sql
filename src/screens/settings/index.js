@@ -93,14 +93,30 @@ const Settings = ({ route }) => {
         </View>
         <ScrollView>
           <View style={styles.mainContainer}>
-            <ChangeProfileImg />
-            <TagsSettings />
-            <GenrePreferences />
-            <NotificationsSettings />
-            <ShadowList />
-            <ReportBug />
-            <SignInWithService />
-            <SignOut />
+            <TouchableWithoutFeedback>
+              <ChangeProfileImg />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <TagsSettings />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <GenrePreferences />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <NotificationsSettings />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <ShadowList />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <ReportBug />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <SignInWithService />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <SignOut />
+            </TouchableWithoutFeedback >
           </View >
         </ScrollView >
       </View>

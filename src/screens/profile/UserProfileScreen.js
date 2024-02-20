@@ -22,6 +22,7 @@ const UserProfileScreen = ({ route }) => {
         const responseAudios = await sqlApi.get(
           `/user/${id}/audios`
         );
+        console.log("responseAudiosresponseAudiosresponseAudios", responseAudios.data)
 
         setUserAudios(responseAudios.data);
         setUserInfo(response.data);

@@ -6,6 +6,7 @@ import Icon from '../icon';
 import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
 import { lowerFirst } from 'lodash';
+import ProfilePicture from '../profile_picture';
 
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
@@ -148,10 +149,12 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                 <ScrollView>
                     <View style={styles.commentContainer}>
                         <View style={styles.postHeader}>
-                            <Image
+                            {/* <Image
                                 source={{ uri: storedUserInfo.image_link }}
                                 style={{ width: 25, height: 25, borderRadius: 1000 }}
-                            />
+                            /> */}
+                            <ProfilePicture userId={userId} imageLink={audio.image_link?.small} width={25} />
+
                             <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{storedUserInfo.username}</CustomText>
 
                         </View>
@@ -205,10 +208,9 @@ const PostComment = ({ isActive, openComments, userId, audio }) => {
                                 </View>}
 
                             <View style={styles.postHeader}>
-                                <Image
-                                    source={{ uri: comment.image_link }}
-                                    style={{ width: 25, height: 25, borderRadius: 1000 }}
-                                />
+
+                                <ProfilePicture userId={comment.user_id} imageLink={comment.image_link?.small} width={25} />
+
                                 <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{comment.username}</CustomText>
                                 <View style={styles.like}>
                                     <TouchableOpacity onPress={() => likeComment(userId, comment.id)}>

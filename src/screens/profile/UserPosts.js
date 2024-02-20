@@ -21,7 +21,7 @@ import { useNavigation, StackActions } from "@react-navigation/native";
 import UpvoteDownvote from "../../components/unvote_downvote";
 import sqlApi from "../../redux/axios/sqlApi"
 import PostComment from "../../components/post_comment"
-
+import ProfilePicture from "../../components/profile_picture";
 import { PanGestureHandler } from 'react-native-gesture-handler';
 
 import Animated, {
@@ -239,10 +239,8 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
 
                   </TouchableOpacity>
                 </View>
-                <Image
-                  source={{ uri: audio.image_link }}
-                  style={{ width: 40, height: 40, borderRadius: 1000, }}
-                />
+                <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
+
                 <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
               </View>
             </TouchableOpacity>

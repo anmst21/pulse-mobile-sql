@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import userApi from "../axios/sqlApi";
+import sqlApi from "../axios/sqlApi";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
@@ -32,7 +32,7 @@ const uploadAudio = createAsyncThunk(
     try {
       const user = await AsyncStorage.getItem("userId");
       if (type === "spotify") {
-        const spotifyObject = await userApi.post("/audio/save", {
+        const spotifyObject = await sqlApi.post("/audio/save", {
           audioLink: uri,
           duration,
           user,
@@ -42,7 +42,7 @@ const uploadAudio = createAsyncThunk(
         });
         return spotifyObject.data;
       } else {
-        const response = await userApi.get(
+        const response = await sqlApi.get(
           `/audio/upload?userId=${user}&dataType=${dataType}&extension=${extension}`
         );
         const { url, key } = response.data;
@@ -54,7 +54,7 @@ const uploadAudio = createAsyncThunk(
         });
         const finalUrl =
           "https://my-audio-bucket-111.s3.us-east-2.amazonaws.com/" + key;
-        const audioObject = await userApi.post("/audio/save", {
+        const audioObject = await sqlApi.post("/audio/save", {
           audioLink: finalUrl,
           duration,
           user,
@@ -82,7 +82,7 @@ const fetchUserAudios = createAsyncThunk(
   async ({ userId }, thunkAPI) => {
     try {
       // const userId = await AsyncStorage.getItem("userId");
-      const response = await userApi.get(`/user/${userId}/audios`);
+      const response = await sqlApi.get(`/user/audios`);
       console.log("fetchUserAudios", response.data)
       return response.data;
     } catch (error) {
@@ -94,7 +94,7 @@ const fetchUserAudios = createAsyncThunk(
 const deleteAudio = createAsyncThunk("audio/delete", async (id, thunkAPI) => {
   try {
     const user = await AsyncStorage.getItem("userId");
-    await userApi.post("/audio/delete", { id, user });
+    await sqlApi.post("/audio/delete", { id, user });
 
     return id; // return the key of deleted audio to handle it in the reducer
   } catch (error) {

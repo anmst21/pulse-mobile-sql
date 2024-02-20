@@ -41,7 +41,7 @@ const FeedScreen = ({ navigation }) => {
   const fetchUserDetails = async () => {
 
 
-    const { data } = await sqlApi.get(`/audios/${storedUserInfo}`)
+    const { data } = await sqlApi.get(`/audios`)
     setAudios(data)
 
   };

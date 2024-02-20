@@ -14,18 +14,21 @@ const ImageModal = ({ imageLink }) => {
     // const { small, medium, large } = useSelector((state) => state.user.userInfo?.image_link);
 
     const pickImage = async () => {
+        dispatch(setImageMenuOpen(false))
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [4, 4],
             quality: 1,
         });
+
 
         if (!result.canceled) {
             const sizes = [
                 { width: 500, height: 500, key: 'large' },
-                { width: 120, height: 120, key: 'medium' },
-                { width: 50, height: 50, key: 'small' },
+                { width: 150, height: 150, key: 'medium' },
+                { width: 100, height: 100, key: 'small' },
             ];
 
             // Initialize the uploadObject with keys for each size, starting with null values
@@ -72,7 +75,6 @@ const ImageModal = ({ imageLink }) => {
                 })
             );
         }
-        dispatch(setImageMenuOpen(false))
 
     };
 

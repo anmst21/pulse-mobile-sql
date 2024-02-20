@@ -111,9 +111,10 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
         !imageMenuOpen && dispatch(setImageMenuOpen(true))
       }}
       activeOpacity={storedUserInfo.id === userId && width !== 250 ? 0.2 : 1}
+      disabled={width === 40}
     >
       <View style={[styles.container, { width: width, height: width }]}>
-        {width === 70 && <View style={styles.imageText}>
+        {width === 70 && !isLoading && <View style={styles.imageText}>
           <CustomText style={{
             fontSize: 8,
           }}>Edit</CustomText>
