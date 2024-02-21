@@ -105,6 +105,31 @@ const settingsSlice = createSlice({
         },
 
     },
+    // [{ "active": false, "id": 8, "name": "Acid House" },
+    //     { "active": false, "id": 39, "name": "Ambient" },
+    //     { "active": false, "id": 91, "name": "Bass Music" },
+    //     { "active": false, "id": 138, "name": "Breakbeat" },
+    //     { "active": false, "id": 209, "name": "Chill-out" },
+    //     { "active": false, "id": 457, "name": "Disco" },
+    //     { "active": false, "id": 478, "name": "Drum And Bass" },
+    //     { "active": false, "id": 480, "name": "Dub" },
+    //     { "active": false, "id": 498, "name": "Edm" },
+    //     { "active": false, "id": 500, "name": "Electro" },
+    //     { "active": false, "id": 583, "name": "Funk" },
+    //     { "active": false, "id": 592, "name": "Gabba" },
+    //     { "active": true, "id": 659, "name": "Hardcore" },
+    //     { "active": false, "id": 664, "name": "Hardstyle" },
+    //     { "active": false, "id": 677, "name": "Hip Hop" },
+    //     { "active": false, "id": 688, "name": "House" },
+    //     { "active": false, "id": 718, "name": "Industrial" },
+    //     { "active": true, "id": 722, "name": "Intelligent Dance Music" },
+    //     { "active": false, "id": 780, "name": "Jungle" },
+    //     { "active": false, "id": 1258, "name": "Techno" },
+    //     { "active": false, "id": 1288, "name": "Trance" },
+    //     { "active": false, "id": 1313, "name": "Uk Garage" },
+    //     { "active": false, "id": 1334, "name": "Video Game Music" }]
+    // { "action": "inserted", "record": { "genre_id": 8, "id": 33, "user_id": 17 } }
+    // { "action": "deleted", "genre_id": 91, "user_id": "17" }
     extraReducers: (builder) => {
         builder
             .addCase(toggleGenre.pending, (state) => {
@@ -112,10 +137,15 @@ const settingsSlice = createSlice({
             })
             .addCase(toggleGenre.fulfilled, (state, action) => {
                 state.status = "succeeded";
+                console.log("action.payloadaction.payload", action.payload)
                 // Check if the action was 'deleted'
                 if (action.payload.action === 'deleted') {
-                    const index = state.genreList.findIndex(genre => genre.id === action.payload.genre_id);
+                    const index = state.genreList.findIndex(genre => genre.id === action.payload.record.id);
                     if (index !== -1) {
+                        // If you want to completely remove the item
+                        //state.genreList.splice(index, 1);
+
+                        // Or if you prefer to set it as inactive
                         state.genreList[index].active = false;
                     }
                 }
@@ -123,15 +153,15 @@ const settingsSlice = createSlice({
                 else if (action.payload.action === 'inserted') {
                     const index = state.genreList.findIndex(genre => genre.id === action.payload.record.id);
                     if (index !== -1) {
-                        // If the genre already exists, set it as active
+                        // Record found, set it as active
                         state.genreList[index].active = true;
                     } else {
-                        // If the genre does not exist, add it to the top of the list
-                        state.genreList.unshift({
-                            id: action.payload.record.id,
-                            name: action.payload.record.name,
-                            active: true
-                        });
+                        // No record found, insert the new record and set it as active
+                        const newGenre = {
+                            ...action.payload.record,
+                            active: true  // Assuming the server doesn't include the active flag or you want to ensure it's true
+                        };
+                        state.genreList.push(newGenre);
                     }
                 }
             })

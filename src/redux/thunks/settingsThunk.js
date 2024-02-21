@@ -31,12 +31,15 @@ const toggleGenre = createAsyncThunk(
                 genre_id: genreId
             }
             );
+            console.log("response.dataTOGGLE!", response.data)
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
 );
+
+
 
 
 export { fetchGenres, toggleGenre };
