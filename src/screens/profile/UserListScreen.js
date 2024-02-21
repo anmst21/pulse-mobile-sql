@@ -172,7 +172,7 @@ const UserListScreen = ({ route }) => {
       {<UsersList results={results} setResults={setResults} />} */}
       {!results && !isLoading || results?.length === 0 && noResults}
       <View style={styles.userListContainer}>
-        {!isLoading && <RenderSkeleton name="userElement" count={50} />}
+        {isLoading && <RenderSkeleton name="userElement" count={50} />}
         {!isLoading && results && <UsersList results={results} setResults={setResults} />}
       </View>
 

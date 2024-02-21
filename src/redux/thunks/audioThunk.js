@@ -6,7 +6,7 @@ import { Audio } from "expo-av";
 //blob, duration,
 const uploadAudio = createAsyncThunk(
   "audio/upload",
-  async ({ pulseRecording, callback }, thunkAPI) => {
+  async ({ pulseRecording, imageLink, userName, callback }, thunkAPI) => {
     const {
       sound,
       bpm,
@@ -27,7 +27,6 @@ const uploadAudio = createAsyncThunk(
     const blob = track.blob;
     const dataType = track.dataType;
 
-    console.log("pulseRecasdasdasdasdasdording,", pulseRecording);
 
     try {
       const user = await AsyncStorage.getItem("userId");
@@ -69,7 +68,16 @@ const uploadAudio = createAsyncThunk(
         if (audioObject && audioObject.data && callback) {
           callback(audioObject.data);
         }
-        return audioObject.data;
+        let data = audioObject.data
+        data.image_link = imageLink;
+        data.username = userName;
+        data.upvotes = 0;
+        data.downvotes = 0;
+        data.comments = 0;
+        data.user_vote_type = null;
+        data.vote_type = null;
+        console.log("data1", data)
+        return data;
       }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);

@@ -11,9 +11,11 @@ import { pulseRecordingReducer } from "./slices/pulseRecordingSlice";
 import { signout } from "./thunks/userThunk";
 import reduxFlipper from "redux-flipper";
 import { settingsReducer } from "./slices/settingsSlice";
+import { feedReducer } from "./slices/feedSlice";
 
 const rootReducer = combineReducers({
   app: appReducer,
+  feed: feedReducer,
   user: userReducer,
   audio: recordsReducer,
   image: imageReducer,
@@ -62,6 +64,7 @@ export * from "./thunks/imageThunk";
 export * from "./thunks/pulseThunk";
 export * from "./thunks/pulseRecordingThunk";
 export * from "./thunks/settingsThunk";
+export * from "./thunks/feedThunk";
 
 export { clearErrorMessage, setImageLoader, setImageStatus, setUserStatus } from "./slices/userSlice";
 export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";

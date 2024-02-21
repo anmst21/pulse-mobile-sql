@@ -31,6 +31,7 @@ import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
 } from "react-native-reanimated";
+import { center } from "@shopify/react-native-skia";
 
 
 const humanReadableDate = (dateString) => {
@@ -275,7 +276,9 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
                 audio={audio}
               />
               <View style={styles.message} >
-
+                <View style={styles.commentsCount}>
+                  <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
+                </View>
                 <TouchableOpacity onPress={() => { toggleIsActive(audio.id); setOpenComments(prev => !prev) }}>
                   <Icon name="messageIcon" />
                 </TouchableOpacity>
@@ -310,14 +313,26 @@ const UserPosts = ({ userId, audioList, setAudioList }) => {
 export default UserPosts;
 
 const styles = StyleSheet.create({
+  commentsCount: {
+    backgroundColor: "white",
+    position: "absolute",
+    paddingLeft: 0,
+    top: -5,
+    right: -4,
+    width: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+
+  },
   message: {
     width: 40,
     height: 40,
+    backgroundColor: "rgba(31, 32, 34, 0.8)",
 
     alignItems: "center",
     justifyContent: "center",
-    borderColor: "#2D2B32",
-    borderWidth: 2,
     borderRadius: 100,
   },
   upvoteDownvote: {

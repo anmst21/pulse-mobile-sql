@@ -124,7 +124,7 @@ const NotificationItem = ({ setActiveItem, isActive, item, handleAccept, handleD
             </View>
             <View style={styles.notificationContainer}>
                 <View style={styles.userIconWithTextContainer}>
-                    {item.image_link ? <Image source={{ uri: item.image_link }} style={styles.userImage} /> : <Icon name="profileIcon" style={{ width: 40, height: 40, color: "#808080" }} />}
+                    {item.image_link ? <Image source={{ uri: item.image_link?.medium }} style={styles.userImage} /> : <Icon name="profileIcon" style={{ width: 40, height: 40, color: "#808080" }} />}
 
 
                     {textSwitch(item)}

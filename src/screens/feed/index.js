@@ -24,7 +24,7 @@ import Map from "../map";
 import CustomText from "../../components/text";
 import MapContainer from "../map";
 import UserPosts from "../profile/UserPosts";
-import { fetchUserAudios } from "../../redux";
+import { fetchUserAudios, fetchFeed } from "../../redux";
 
 const FeedScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -35,10 +35,11 @@ const FeedScreen = ({ navigation }) => {
   const scrollY = useSharedValue(0);
   const feedOpacity = useSharedValue(0);
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
+  const { posts } = useSelector((state) => state?.feed);
 
   const [audios, setAudios] = useState([])
   console.log("audiosaudiosaudios", audios)
-  const fetchUserDetails = async () => {
+  const fetchAudioList = async () => {
 
 
     const { data } = await sqlApi.get(`/audios`)
@@ -47,7 +48,8 @@ const FeedScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchUserDetails()
+    // fetchAudioList()
+    dispatch(fetchFeed())
     showInitialAnimation();
     setInitialAnimation(false);
   }, []);
@@ -127,7 +129,7 @@ const FeedScreen = ({ navigation }) => {
         <View style={styles.userPostContainer}>
           <ScrollView>
             <View style={{ paddingTop: 170 }}>
-              <UserPosts userId={storedUserInfo} setAudioList={setAudios} audioList={audios} />
+              <UserPosts userId={storedUserInfo} setAudioList={setAudios} audioList={posts} />
             </View>
           </ScrollView>
 

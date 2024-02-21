@@ -40,6 +40,7 @@ const PlayerHeader = () => {
   const [saving, setSaving] = useState(false);
   const opacity = useSharedValue(0);
   const dispatch = useDispatch();
+  const { username: userName, image_link: imageLink } = useSelector(state => state.user.userInfo)
 
   const showInitialAnimation = () => {
     opacity.value = withDelay(
@@ -94,7 +95,7 @@ const PlayerHeader = () => {
             loading={saving}
             onPressIn={() => {
               alert("Save");
-              dispatch(uploadAudio({ pulseRecording }));
+              dispatch(uploadAudio({ pulseRecording, userName, imageLink }));
               dispatch(resetPulseRecording());
               // setSaving(true)
               // setTimeout(() => {
