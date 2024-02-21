@@ -44,6 +44,7 @@ const userSlice = createSlice({
       subscriptionsCount: 0,
       notificationsCount: 0,
     },
+    userStatus: "inActive",
     token: null,
     isLoading: false,
     isLoadingImage: false,
@@ -53,6 +54,9 @@ const userSlice = createSlice({
   reducers: {
     clearErrorMessage: (state) => {
       state.errorMessage = "";
+    },
+    setUserStatus: (state, action) => {
+      state.userStatus = action.payload
     },
     setImageLoader: (state, action) => {
       state.isLoadingImage = action.payload
@@ -202,6 +206,7 @@ const userSlice = createSlice({
 export const {
   clearErrorMessage,
   setImageLoader,
-  setImageStatus
+  setImageStatus,
+  setUserStatus
 } = userSlice.actions;
 export const userReducer = userSlice.reducer;

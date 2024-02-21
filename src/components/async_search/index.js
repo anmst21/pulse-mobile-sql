@@ -66,6 +66,8 @@ const AsyncSearch = ({ search, setUserChoice }) => {
     [setResults, setIsLoading]
   );
   const fetchInitialProfiles = async () => {
+    setIsLoading(true);
+
     try {
       const loggedInUserId = await AsyncStorage.getItem("userId");
       let response
@@ -74,9 +76,11 @@ const AsyncSearch = ({ search, setUserChoice }) => {
           `/search/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
         );
         setResults(response.data);
+
       } else {
         dispatch(fetchGenres())
       }
+      setIsLoading(false);
 
     } catch (error) {
       console.error("Error fetching initial profiles: ", error);

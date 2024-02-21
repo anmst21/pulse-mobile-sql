@@ -14,6 +14,7 @@ import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTim
 const ProfilePicture = ({ imageLink, userId, width }) => {
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
+  const { userStatus } = useSelector((state) => state.user);
   const isLoading = useSelector((state) => state.user.isLoadingImage);
   const { imageMenuOpen } = useSelector((state) => state.settings);
 
@@ -40,67 +41,6 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
 
 
 
-
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   if (!result.canceled) {
-  //     const sizes = [
-  //       { width: 500, height: 500, key: 'large' },
-  //       { width: 120, height: 120, key: 'medium' },
-  //       { width: 50, height: 50, key: 'small' },
-  //     ];
-
-  //     // Initialize the uploadObject with keys for each size, starting with null values
-  //     let uploadObject = {
-  //       small: null,
-  //       medium: null,
-  //       large: null,
-  //     };
-
-  //     // Resize and process images
-  //     for (const size of sizes) {
-  //       const resizedImage = await manipulateAsync(
-  //         result.assets[0].uri,
-  //         [{ resize: { width: size.width, height: size.height } }],
-  //         { compress: 1, format: 'jpeg' }
-  //       );
-  //       const response = await fetch(resizedImage.uri);
-  //       const fileContent = await response.arrayBuffer();
-
-  //       // Assign the file content directly to the corresponding key in uploadObject
-  //       uploadObject[size.key] = fileContent;
-  //     }
-  //     function removeBaseUrl(link) {
-  //       if (imageLink) {
-  //         const baseUrl =
-  //           "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/";
-  //         return link.replace(baseUrl, "");
-  //       }
-  //     }
-  //     if (imageLink) {
-  //       dispatch(deleteImage({
-  //         keys: {
-  //           small: removeBaseUrl(storedUserInfo.image_link.small),
-  //           medium: removeBaseUrl(storedUserInfo.image_link.medium),
-  //           large: removeBaseUrl(storedUserInfo.image_link.large),
-  //         }
-  //       }));
-  //     }
-  //     //   setImage(result.assets[0].uri);
-  //     dispatch(
-  //       uploadImage({
-  //         blob: uploadObject,
-  //         callback: (value) => dispatch(setImageStatus(value))
-  //       })
-  //     );
-  //   }
-  // };
 
   return (
     <TouchableOpacity
@@ -137,12 +77,13 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
         {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
         {imageLink ? (
           <View style={{
-            width: width, height: width, backgroundColor: "rgba(31, 32, 34, 0.6)",
+            width: width, height: width, backgroundColor: userStatus === "inActive" ? "green" : "grey",
+            alignItems: "center", justifyContent: "center"
 
           }}>
             {!isLoading && <Image
               source={{ uri: imageLink }}
-              style={{ width: width, height: width, borderRadius: 1000 }}
+              style={{ width: width - 10, height: width - 10, borderRadius: 1000 }}
               //  onLoadStart={() => setIsLoading(true)} // Handle load start
               onLoadStart={() => { setImageLoader(true) }} // Handle load end
               onLoad={() => { setImageLoader(false); console.log("ended") }}

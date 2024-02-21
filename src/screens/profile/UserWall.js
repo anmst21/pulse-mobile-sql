@@ -105,7 +105,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
             </View>
             {storedUserInfo === userInfo.id &&
               <View style={{
-                position: "absolute", right: -80
+                position: "absolute", right: 20
               }}>
                 <TouchableOpacity
                   onPress={() => {
@@ -130,7 +130,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 <CustomText>{userInfo.followingCount}</CustomText>
               </View>
             </TouchableOpacity> */}
-              <View style={[styles.lilBox, { left: -10 }]}>
+              <View style={[styles.lilBox, { left: -10, }]}>
                 <Icon name="waveFormProfile" style={styles.actionIcon} />
                 <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
               </View>
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     gap: 5
   },
   sortBar: {
-    backgroundColor: "blue",
+    // backgroundColor: "blue",
     height: 50,
     marginBottom: 20,
     borderRadius: 10,
@@ -230,9 +230,9 @@ const styles = StyleSheet.create({
   },
   userNameContainer: {
 
-    backgroundColor: "rgba(31, 32, 34, 0.8)",
+    backgroundColor: "rgba(31, 32, 34, 1)",
     position: "absolute",
-    paddingHorizontal: 25,
+    paddingHorizontal: 20,
 
     justifyContent: "center",
     paddingBottom: 5,
@@ -286,24 +286,26 @@ const styles = StyleSheet.create({
     padding: 5,
     gap: 7,
     height: 75,
+    // backgroundColor: "blue",
 
 
     position: "absolute",
     bottom: 25,
     left: 10,
     zIndex: 10,
-    width: 250,
+    width: "100%",
     justifyContent: "center"
   },
 
   container: {
-
     flexDirection: "row",
     marginLeft: 0,
     backgroundColor: "rgba(31, 32, 34, 0.4)",
     paddingHorizontal: 10,
     borderRadius: 10,
     paddingVertical: 20,
+    // backgroundColor: "blue",
+    justifyContent: "center",
     paddingBottom: 120,
 
     marginBottom: 20,
@@ -320,6 +322,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   infoContainer: {
+
     marginTop: 10,
     flexDirection: "column",
     justifyContent: "space-between",
