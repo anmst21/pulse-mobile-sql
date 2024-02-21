@@ -38,32 +38,9 @@ const GenrePreferences = () => {
                 </View>
             </TouchableOpacity>
             {genreOpen &&
-                <>
-                    <AsyncSearch search={false} setUserChoice={setUserChoice} />
-                    <View style={{
-                        flexDirection: "row",
-                        justifyContent: "flex-end",
-                        marginBottom: 10,
-                        paddingHorizontal: 20
-                    }}>
-                        <Button
-                            label={"Close"}
 
-                            onPressIn={() => {
-                                dispatch(closeGenre())
+                <AsyncSearch search={false} setUserChoice={setUserChoice} />
 
-                            }}
-                        />
-                        <Button
-                            label={"Load"}
-                            grey
-                            onPressIn={() => {
-                                dispatch(fetchGenres());
-
-                            }}
-                        />
-                    </View>
-                </>
             }
         </View>
     )

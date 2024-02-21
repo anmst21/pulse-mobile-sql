@@ -2,12 +2,15 @@ import React, { useState, useCallback, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, TextInput, StyleSheet, } from "react-native";
 import userApi from "../../redux/axios/sqlApi";
-import throttle from "lodash/throttle";
 import UsersList from "../user_list";
+import { debounce } from 'lodash';
+
 import Icon from "../icon";
 import GenresList from "../genres_list"
 import { fetchGenres } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
+import RenderSkeleton from "../render_skeleton";
+import CustomText from "../text";
 
 
 const AsyncSearch = ({ search, setUserChoice }) => {
@@ -17,15 +20,27 @@ const AsyncSearch = ({ search, setUserChoice }) => {
   const { genreList } = useSelector(state => state.settings)
   console.log("genreListgenreListgenreList", genreList);
   const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState(false)
+  const [showInitial, setShowInitial] = useState(true)
+
+  useEffect(() => {
+    if (query.length === 0) {
+      setShowInitial(true)
+    } else {
+      setShowInitial(false)
+    }
+  }, [query])
+
+
+
 
   const throttledSearch = useCallback(
-    throttle(async (searchQuery) => {
+    debounce(async (searchQuery) => {
+      setIsLoading(true);
       try {
         const loggedInUserId = await AsyncStorage.getItem("userId");
 
-        ///search/genres
-        let response
-
+        let response;
         if (search) {
           response = await userApi.get(`/search/profiles`, {
             params: {
@@ -37,17 +52,19 @@ const AsyncSearch = ({ search, setUserChoice }) => {
           response = await userApi.get(`/search/genres`, {
             params: {
               searchQuery,
+              loggedInUserId
             }
           });
         }
         setResults(response.data);
       } catch (error) {
         console.error("Error searching: ", error);
+      } finally {
+        setIsLoading(false);
       }
     }, 500),
-    []
+    [setResults, setIsLoading]
   );
-
   const fetchInitialProfiles = async () => {
     try {
       const loggedInUserId = await AsyncStorage.getItem("userId");
@@ -119,18 +136,39 @@ const AsyncSearch = ({ search, setUserChoice }) => {
           onChangeText={handleTextChange}
           placeholder={"Enter a " + (search ? "Username" : "Genre")}
           placeholderTextColor="rgba(137, 137, 137, 0.5)"
-        //onFocus={fetchInitialProfiles}
+          //onFocus={fetchInitialProfiles}
+          onSubmitEditing={() => throttledSearch(query)}
         />
+        {results.length === 0 && query.length !== 0 && !isLoading && <View style={{
+          // backgroundColor: "blue",
+          alignItems: "center",
+          justifyContent: "center",
+          height: 40,
+          position: "absolute",
+          width: "100%",
+          bottom: -70
+        }}><CustomText>No Results</CustomText></View>}
       </View>
       {search && <UsersList results={results} setResults={setResults} />}
-      {!search && <GenresList setUserChoice={setUserChoice} results={query.length !== 0 ? results : genreList} setResults={setResults} />}
+      {!search && isLoading &&
+        // <GenresList setUserChoice={setUserChoice} results={query.length !== 0 ? results : genreList} setResults={setResults} />
+        <RenderSkeleton name="genreList" />
+      }
+      {!search && !isLoading && showInitial &&
+        <GenresList setUserChoice={setUserChoice} results={genreList} setResults={setResults} />
+      }
+      {!search && !isLoading && !showInitial &&
+        <GenresList setUserChoice={setUserChoice} results={results} setResults={setResults} />
+      }
+
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-
+    overflow: "hidden",
     flex: 1,
     flexDirection: "column",
     padding: 20,

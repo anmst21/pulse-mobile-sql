@@ -10,8 +10,9 @@ import { useDispatch } from "react-redux"
 
 const GenreItem = ({ item, setUserChoice }) => {
     const dispatch = useDispatch()
-    return (<TouchableOpacity onPress={() => { dispatch(toggleGenre({ genreId: item.id })) }}>
-        <View style={[styles.userElement, { backgroundColor: item.active ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)' }]}>
+    const [isActive, setIsActive] = useState(item.active)
+    return (<TouchableOpacity onPress={() => { dispatch(toggleGenre({ genreId: item.id })); setIsActive(!isActive) }}>
+        <View style={[styles.userElement, { backgroundColor: isActive ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)' }]}>
             <Text style={styles.itemText}>{item.name}</Text>
         </View>
     </TouchableOpacity>

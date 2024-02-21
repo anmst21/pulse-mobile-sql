@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import UsersList from "../../components/user_list";
-import userApi from "../../redux/axios/userApi";
+import sqlApi from "../../redux/axios/sqlApi";
 import { useSelector } from "react-redux";
 import CustomText from "../../components/text";
 import Icon from "../../components/icon";
+import RenderSkeleton from "../../components/render_skeleton";
 
 import Animated, {
   useSharedValue,
@@ -68,7 +69,7 @@ const UserListScreen = ({ route }) => {
   const fetchData = async (id) => {
     setIsLoading(true); // Set isLoading to true before starting the request
     try {
-      const response = await userApi.get(`/user/${userId}/${page}`, {
+      const response = await sqlApi.get(`/user/${userId}/${page}`, {
         params: { userId: id, loggedInUserId },
       });
       console.log("fetchData", response.data);
@@ -90,13 +91,13 @@ const UserListScreen = ({ route }) => {
   }, [userId, page]);
 
 
-  const getAnimatedTabStyle = () => {
-    return useAnimatedStyle(() => {
-      return {
-        opacity: opacity.value - scrollY.value / 100,
-      };
-    });
-  };
+  // const getAnimatedTabStyle = () => {
+  //   return useAnimatedStyle(() => {
+  //     return {
+  //       opacity: opacity.value - scrollY.value / 100,
+  //     };
+  //   });
+  // };
 
 
 
@@ -171,7 +172,7 @@ const UserListScreen = ({ route }) => {
       {<UsersList results={results} setResults={setResults} />} */}
       {!results && !isLoading || results?.length === 0 && noResults}
       <View style={styles.userListContainer}>
-        {isLoading && renderLoaderSkeletons(5)}
+        {!isLoading && <RenderSkeleton name="userElement" count={50} />}
         {!isLoading && results && <UsersList results={results} setResults={setResults} />}
       </View>
 

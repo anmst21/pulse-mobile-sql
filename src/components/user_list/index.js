@@ -16,7 +16,7 @@ import CustomText from "../text";
 const UsersList = ({ results, setResults }) => {
   const navigation = useNavigation();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
-  console.log("UsersList", results)
+
   return (
     <View style={{ paddingBottom: 125 }}>
       {results ? (
