@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchFeed } from "../thunks/feedThunk";
+import { fetchFeed, toggleUpvote } from "../thunks/feedThunk";
 import { deleteAudio, uploadAudio } from "../thunks/audioThunk";
 
 const initialState = {
@@ -44,6 +44,46 @@ const feedSlice = createSlice({
         );
       })
       .addCase(deleteAudio.rejected, (state, action) => {
+        state.error = action.error.message;
+      })
+      .addCase(toggleUpvote.pending, (state) => {
+
+      })
+      .addCase(toggleUpvote.fulfilled, (state, action) => {
+        const { post_id, vote_type, action: actionType } = action.payload;
+        state.posts = state.posts.map((post) => {
+          if (post.id === post_id) {
+            let updatedPost = { ...post };
+            if (vote_type === true) {
+              if (actionType === "add") {
+                updatedPost.vote_type = true
+                updatedPost.upvotes = (updatedPost.upvotes || 0) + 1;
+              } else if (actionType === "update") {
+                updatedPost.vote_type = true
+                updatedPost.upvotes = (updatedPost.upvotes || 0) + 1;
+                updatedPost.downvotes = Math.max(0, (updatedPost.downvotes || 0) - 1);
+              }
+            } else if (vote_type === false) {
+              if (actionType === "add") {
+                updatedPost.vote_type = false
+                updatedPost.downvotes = (updatedPost.downvotes || 0) + 1;
+              } else if (actionType === "update") {
+                updatedPost.vote_type = false
+                updatedPost.downvotes = (updatedPost.downvotes || 0) + 1;
+                updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
+              }
+            } else if (vote_type === null) {
+              // Handle vote removal
+              updatedPost.vote_type = null
+              updatedPost.upvotes = actionType === true ? Math.max(0, (updatedPost.upvotes || 0) - 1) : updatedPost.upvotes;
+              updatedPost.downvotes = actionType === false ? Math.max(0, (updatedPost.downvotes || 0) - 1) : updatedPost.downvotes;
+            }
+            return updatedPost;
+          }
+          return post;
+        });
+      })
+      .addCase(toggleUpvote.rejected, (state, action) => {
         state.error = action.error.message;
       })
       .addCase(uploadAudio.pending, (state) => {

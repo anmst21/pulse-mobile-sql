@@ -129,7 +129,14 @@ const FeedScreen = ({ navigation }) => {
         <View style={styles.userPostContainer}>
           <ScrollView>
             <View style={{ paddingTop: 170 }}>
-              <UserPosts userId={storedUserInfo} setAudioList={setAudios} audioList={posts} />
+              <View style={{ height: "100%", paddingBottom: 60 }}>
+
+
+                {posts
+                  ? posts.map((audio) => (
+                    <UserPosts key={audio.id} audio={audio} userId={storedUserInfo} setAudioList={setAudios} audioList={posts} />
+                  )) : null}
+              </View>
             </View>
           </ScrollView>
 

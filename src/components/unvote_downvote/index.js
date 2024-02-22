@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import CustomText from '../text'
 import Icon from '../icon'
 import sqlApi from "../../redux/axios/sqlApi"
+import { toggleUpvote } from '../../redux'
+import { useDispatch } from 'react-redux'
 
 //setOpenComments
 const humanReadableDate = (dateString) => {
@@ -26,79 +28,34 @@ const humanReadableDate = (dateString) => {
 };
 
 
-const UpvoteDownvote = ({ audio, userId, setAudioList, id, dateCreated, setOpenComments, toggleIsActive, upvotes, downvotes }) => {
-    const [voteType, setVoteType] = useState(audio.vote_type)
+const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
+    const dispatch = useDispatch()
 
-    //useEffect(() => { setVoteType(audio.vote_type) }, [])
-
-    const postVote = async (user_id, post_id, vote_type) => {
-        try {
-            const response = await sqlApi.post(`/vote`, { user_id, post_id, vote_type });
-            const responseVoteType = response.data.vote_type;
-            const action = response.data.action
-
-            setAudioList((prevAudioList) => {
-                return prevAudioList.map((audio) => {
-                    // Find the audio record by post_id
-                    if (audio.id === post_id) {
-                        let updatedAudio = { ...audio };
-
-                        // Update upvotes/downvotes based on the action and responseVoteType
-                        if (responseVoteType === true && action === "add") {
-                            updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
-                            setVoteType(true); // Set vote_type to true for upvote
-                        } else if (responseVoteType === true && action === "update") {
-                            updatedAudio.upvotes = (updatedAudio.upvotes || 0) + 1;
-                            updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
-                            setVoteType(true); // Update vote_type to true for upvote
-                        } else if (responseVoteType === false && action === "add") {
-                            updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
-                            setVoteType(false); // Set vote_type to false for downvote
-                        } else if (responseVoteType === false && action === "update") {
-                            updatedAudio.downvotes = (updatedAudio.downvotes || 0) + 1;
-                            updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
-                            setVoteType(false); // Update vote_type to false for downvote
-                        } else if (responseVoteType === null) {
-                            // Remove vote
-                            if (vote_type === true) {
-                                updatedAudio.upvotes = Math.max(0, (updatedAudio.upvotes || 0) - 1);
-                            } else if (vote_type === false) {
-                                updatedAudio.downvotes = Math.max(0, (updatedAudio.downvotes || 0) - 1);
-                            }
-                            setVoteType(null)
-
-                        }
-
-                        return updatedAudio;
-                    }
-                    return audio;
-                });
-            });
-        } catch (error) {
-            console.error("Error posting vote:", error);
-            // Handle error appropriately
-        }
-    };
-
-
-    console.log("audio.userVoteStatus", audio.vote_type)
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => postVote(userId, id, true)}>
-                <View style={styles.minibox}>
+            <TouchableOpacity onPress={() => dispatch(toggleUpvote({ postId: id, voteType: true }))}>
+                <View style={[styles.minibox, {
+                    borderTopRightRadius: 0,
+                    borderBottomRightRadius: 0,
+                    backgroundColor: audio.vote_type === true ? "rgba(31, 32, 34, 1)" : "transparent"
+                }]}>
                     <View style={styles.arrowIcon}>
-                        <Icon name="upvoteIcon" style={{ color: voteType === true ? "#14AD4D" : "grey" }} />
+                        <Icon name="upvoteIcon" style={{ color: audio.vote_type === true ? "#14AD4D" : "grey" }} />
                     </View>
                     <CustomText style={styles.text}>{upvotes}</CustomText>
 
                 </View>
             </TouchableOpacity>
             <View style={styles.lineHorizontal} />
-            <TouchableOpacity onPress={() => postVote(userId, id, false)}>
-                <View style={styles.minibox}>
+            <TouchableOpacity onPress={() => dispatch(toggleUpvote({ postId: id, voteType: false }))}>
+                <View style={[styles.minibox, {
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    backgroundColor: audio.vote_type === false ? "rgba(31, 32, 34, 1)" : "transparent"
+                }]}>
                     <View style={styles.arrowIcon}>
-                        <Icon name="downvoteIcon" style={{ color: voteType === false ? "#F53535" : "grey" }} />
+                        <Icon name="downvoteIcon" style={{ color: audio.vote_type === false ? "#F53535" : "grey" }} />
                     </View>
                     <CustomText style={styles.text}>{downvotes}</CustomText>
 
@@ -127,7 +84,7 @@ export default UpvoteDownvote
 const styles = StyleSheet.create({
 
     arrowIcon: {
-        right: 30,
+        right: 25,
         position: "absolute"
     },
     dateContainer: {
@@ -171,7 +128,7 @@ const styles = StyleSheet.create({
 
 
     lineHorizontal: {
-        width: 1,
+        width: 2,
         backgroundColor: "#2D2B32",
         height: 40
     },
@@ -179,7 +136,8 @@ const styles = StyleSheet.create({
         position: "relative",
         flexDirection: "row",
         alignItems: "center",
-        //  backgroundColor: "blue",
+        borderRadius: 100,
+        // backgroundColor: "blue",
 
         paddingLeft: 10,
         flex: 1,
@@ -187,14 +145,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         height: 40
     },
-    text: { fontSize: 14 },
+    text: { fontSize: 14, left: 5, },
     container: {
 
 
-        width: 121,
+        width: 122,
         height: 40,
-        borderColor: "#2D2B32",
-        borderWidth: 2,
+        backgroundColor: "rgba(31, 32, 34, 0.6)",
+
         justifyContent: "space-between",
         borderRadius: 100,
         flexDirection: "row",

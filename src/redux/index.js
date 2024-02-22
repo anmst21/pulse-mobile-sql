@@ -66,6 +66,9 @@ export * from "./thunks/pulseRecordingThunk";
 export * from "./thunks/settingsThunk";
 export * from "./thunks/feedThunk";
 
+export {
+  setActiveCommentId
+} from "./slices/feedSlice"
 export { clearErrorMessage, setImageLoader, setImageStatus, setUserStatus } from "./slices/userSlice";
 export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";
 export { addImage } from "./slices/imageSlice";
