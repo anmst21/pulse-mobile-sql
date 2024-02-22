@@ -13,7 +13,7 @@ import { switchTab, togglePlayer } from "../../redux/slices/tabSlice";
 import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAudio, setActiveCommentId } from "../../redux";
+import { deleteAudio, setActiveCommentId, toggleBookmark } from "../../redux";
 import PulsePlayer from "../../components/pulse_player/pulsePostPlayer";
 import Icon from "../../components/icon";
 import CustomText from "../../components/text";
@@ -23,6 +23,7 @@ import sqlApi from "../../redux/axios/sqlApi"
 import PostComment from "../../components/post_comment"
 import ProfilePicture from "../../components/profile_picture";
 import { PanGestureHandler } from 'react-native-gesture-handler';
+import FollowUnfollowButton from "../../components/follow_unfollow_button";
 
 import Animated, {
   useSharedValue,
@@ -56,13 +57,11 @@ const humanReadableDate = (dateString) => {
 
 
 
-const UserPosts = ({ audio, userId, audioList, setAudioList }) => {
+const UserPosts = ({ audio, userId }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
-  const [openComments, setOpenComments] = useState(false);
-  const [isActive, setIsActive] = useState(null);
-  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
 
 
 
@@ -73,9 +72,9 @@ const UserPosts = ({ audio, userId, audioList, setAudioList }) => {
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
   const { activeCommentId } = useSelector((state) => state.feed);
 
-  useEffect(() => {
-    if (activeCommentId !== audio.id) { setOpenComments(false) }
-  }, [activeCommentId]);
+  // useEffect(() => {
+  //   if (activeCommentId !== audio.id) { setOpenComments(false) }
+  // }, [activeCommentId]);
 
   const setPlayer = async () => {
     await Audio.setAudioModeAsync({
@@ -212,13 +211,10 @@ const UserPosts = ({ audio, userId, audioList, setAudioList }) => {
         }}
       >
         <View style={styles.postHeader}>
+          {audio?.user_id !== userId && <View style={styles.dotMenu}>
+            <FollowUnfollowButton item={audio} post />
+          </View>}
 
-          <View style={styles.dotMenu}>
-            <TouchableOpacity onPress={() => setIsOpenMenu(!isOpenMenu)}>
-              <Icon name="dotMenu" />
-
-            </TouchableOpacity>
-          </View>
           <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
 
           <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
@@ -261,6 +257,21 @@ const UserPosts = ({ audio, userId, audioList, setAudioList }) => {
 
           }}>
             <Icon name="messageIcon" />
+          </TouchableOpacity>
+          {/* // setActiveCommentId */}
+        </View>
+        <View style={styles.message} >
+
+          <TouchableOpacity onPress={() => {
+
+            dispatch(toggleBookmark({ postId: audio.id }))
+
+
+          }}>
+
+            <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: audio.bookmarked ? "white" : null }} />
+
+
           </TouchableOpacity>
           {/* // setActiveCommentId */}
         </View>
@@ -337,7 +348,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     position: "absolute",
-
+    marginRight: 10,
     alignItems: "center",
     justifyContent: "center",
     borderColor: "#2D2B32",

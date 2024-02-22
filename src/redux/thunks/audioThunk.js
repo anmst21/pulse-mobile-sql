@@ -73,7 +73,7 @@ const uploadAudio = createAsyncThunk(
         data.username = userName;
         data.upvotes = 0;
         data.downvotes = 0;
-        data.comments = 0;
+        data.comment_count = 0;
         data.user_vote_type = null;
         data.vote_type = null;
         console.log("data1", data)

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchFeed, toggleUpvote } from "../thunks/feedThunk";
+import { fetchFeed, toggleUpvote, toggleBookmark } from "../thunks/feedThunk";
 import { deleteAudio, uploadAudio } from "../thunks/audioThunk";
+import { followUser, unfollowUser, subscribeUser } from "../thunks/followSubscribeThunk";
 
 const initialState = {
   time: "1",
@@ -24,6 +25,61 @@ const feedSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
+      .addCase(toggleBookmark.fulfilled, (state, action) => {
+
+        const postId = action.payload.postId;
+        const bool = action.payload.action
+
+        state.posts = state.posts.map(post => {
+          if (post.id === postId) {
+            if (bool === "added") {
+              return { ...post, bookmarked: true };
+            } else {
+              return { ...post, bookmarked: false };
+            }
+          }
+          return post;
+        });
+
+      })
+      .addCase(followUser.fulfilled, (state, action) => {
+        if (action.payload.isPost) {
+          const targetUserId = action.payload.targetUserId;
+
+          state.posts = state.posts.map(post => {
+            if (post.user_id === targetUserId) {
+              return { ...post, follows: "true" };
+            }
+            return post;
+          });
+        }
+      })
+      .addCase(unfollowUser.fulfilled, (state, action) => {
+
+        const targetUserId = action.payload.targetUserId;
+
+        state.posts = state.posts.map(post => {
+          if (post.user_id === targetUserId) {
+            return { ...post, follows: "false", subscribed: "pending" };
+          }
+          return post;
+        });
+
+      })
+      .addCase(subscribeUser.fulfilled, (state, action) => {
+        if (action.payload.isPost) {
+
+          const targetUserId = action.payload.targetUserId;
+
+          state.posts = state.posts.map(post => {
+            if (post.user_id === targetUserId) {
+              return { ...post, subscribed: "pending" };
+            }
+            return post;
+          });
+        }
+      })
       .addCase(fetchFeed.pending, (state) => {
         state.isLoading = true;
       })

@@ -30,6 +30,20 @@ const toggleUpvote = createAsyncThunk(
   }
 );
 
-export { fetchFeed, toggleUpvote };
+const toggleBookmark = createAsyncThunk(
+  "toggle/bookmark",
+  async ({ postId }, { rejectWithValue }) => {
+    try {
+      const response = await sqlApi.post(`/bookmarks/toggle`, { postId });
+      let data = response.data
+      data.postId = postId
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export { fetchFeed, toggleUpvote, toggleBookmark };
 
 

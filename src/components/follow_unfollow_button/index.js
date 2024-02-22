@@ -9,81 +9,49 @@ import { useDispatch } from "react-redux";
 import React from "react";
 import Icon from "../icon";
 
-const FollowUnfollowButton = ({ item, results, setResults }) => {
+const FollowUnfollowButton = ({ item, results, setResults, post }) => {
   const dispatch = useDispatch();
 
 
   console.log("item", item);
 
-  const handleUnfollow = async (userId) => {
-    dispatch(unfollowUser(userId));
-    const updatedResults = results.map((result) =>
-      result.id === userId ? { ...result, follows: "false", subscribed: "pending" } : result
-    );
-    await setResults(updatedResults);
-  };
-
-  const handleFollow = async (userId) => {
-    dispatch(followUser(userId));
-    const updatedResults = results.map((result) =>
-      result.id === userId ? { ...result, follows: "true" } : result
-    );
-    console.log("updatedResults", updatedResults)
-    await setResults(updatedResults);
-  };
-
-  const handleSubscribe = async (userId) => {
-    try {
-      dispatch(subscribeUser(userId));
+  const handleUnfollow = (userId) => {
+    if (!post) {
+      dispatch(unfollowUser({ userId, post }));
       const updatedResults = results.map((result) =>
-        result.id === userId ? { ...result, subscribed: "pending" } : result
+        result.id === userId ? { ...result, follows: "false", subscribed: "pending" } : result
       );
-      await setResults(updatedResults);
-    } catch (error) {
-      // Handle the error, e.g., show a message to the user
-      console.error("Error subscribing to user:", error);
+      setResults(updatedResults);
+    } else {
+      dispatch(unfollowUser({ userId, post }));
+    }
+
+  };
+
+  const handleFollow = (userId) => {
+    if (!post) {
+      dispatch(followUser({ userId, post }));
+      const updatedResults = results.map((result) =>
+        result.id === userId ? { ...result, follows: "true" } : result
+      );
+      setResults(updatedResults);
+    } else {
+      dispatch(followUser({ userId: item.user_id, post }));
+
     }
   };
 
-  // const handleUnsubscribeUnfollow = async (userId) => {
-  //   try {
-  //      dispatch(unfollowUser(userId));
-  //      dispatch(unsubscribeUser(userId));
-  //     const updatedResults = results.map((result) =>
-  //       result._id === userId
-  //         ? { ...result, isFollowing: false, isSubscribed: null }
-  //         : result
-  //     );
-  //     await setResults(updatedResults);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-
-  // {
-  //   item.isSubscribed === "accepted" ? (
-  //     <Button
-  //       title="Unsubscribe and Unfollow"
-  //       onPress={() => handleUnsubscribeUnfollow(item._id)}
-  //     />
-  //   ) : item.isFollowing ? (
-  //     <>
-  //       <Button title="Unfollow" onPress={() => handleUnfollow(item._id)} />
-  //       {item.isSubscribed === "pending" ? (
-  //         <Button title="Pending" />
-  //       ) : item.isSubscribed === "declined" ? (
-  //         <Button title="Declined" />
-  //       ) : (
-  //         <Button
-  //           title="Subscribe"
-  //           onPress={() => handleSubscribe(item._id)}
-  //         />
-  //       )}
-  //     </>
-  //   ) : (
-  //     <Button title="Follow" onPress={() => handleFollow(item._id)} />
-  //   )
-  // }
+  const handleSubscribe = (userId) => {
+    if (!post) {
+      dispatch(subscribeUser({ userId, post }));
+      const updatedResults = results.map((result) =>
+        result.id === userId ? { ...result, subscribed: "pending" } : result
+      );
+      setResults(updatedResults);
+    } else {
+      dispatch(subscribeUser({ userId, post }));
+    };
+  }
 
   return (
     <View style={{

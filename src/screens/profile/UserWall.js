@@ -170,7 +170,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
           </View>
           <View style={styles.sortRight}>
             <View>
-              <Icon name="bookmarkIcon" style={{ stroke: "white", background: null }} />
+              <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: null }} />
 
             </View>
             <View style={styles.viewStyle}>
@@ -183,10 +183,15 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
             </View>
           </View>
         </View>
-        <UserPosts
-          setAudioList={setAudios} audioList={audios}
-          userId={userId}
-        />
+        <View style={{ height: "100%", paddingBottom: 60 }}>
+
+
+          {audios
+            ? audios.map((audio) => (
+              <UserPosts key={audio.id} audio={audio} userId={userId} setAudioList={setAudios} audioList={audios} />
+            )) : null}
+        </View>
+
       </View>
     </ScrollView>
   );

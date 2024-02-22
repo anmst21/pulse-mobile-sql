@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const followUser = createAsyncThunk(
   "userFollow/follow",
-  async (targetUserId, { rejectWithValue }) => {
+  async ({ userId: targetUserId, post }, { rejectWithValue }) => {
     console.log("followUser", targetUserId);
     try {
       const userId = await AsyncStorage.getItem("userId");
@@ -12,7 +12,10 @@ const followUser = createAsyncThunk(
         followerId: targetUserId,
         leaderId: userId,
       });
-      return response.data;
+      let data = response.data
+      data.isPost = post;
+      data.targetUserId = targetUserId
+      return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -21,14 +24,17 @@ const followUser = createAsyncThunk(
 
 const unfollowUser = createAsyncThunk(
   "userFollow/unfollow",
-  async (targetUserId, { rejectWithValue }) => {
+  async ({ userId: targetUserId, post }, { rejectWithValue }) => {
     try {
       const userId = await AsyncStorage.getItem("userId");
       const response = await userApi.post(`/user/unfollow`, {
         followerId: targetUserId,
         leaderId: userId,
       });
-      return response.data;
+      let data = response.data
+      data.isPost = post
+      data.targetUserId = targetUserId
+      return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -37,14 +43,17 @@ const unfollowUser = createAsyncThunk(
 
 const subscribeUser = createAsyncThunk(
   "userSubscribe/subscribe",
-  async (targetUserId, { rejectWithValue }) => {
+  async ({ userId: targetUserId, post }, { rejectWithValue }) => {
     try {
       const userId = await AsyncStorage.getItem("userId");
       const response = await userApi.post(`/user/sendSubscriptionRequest`, {
         followerId: targetUserId,
         leaderId: userId,
       });
-      return response.data;
+      let data = response.data
+      data.isPost = post
+      data.targetUserId = targetUserId
+      return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
