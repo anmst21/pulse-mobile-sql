@@ -216,39 +216,24 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                                     {linkName.length} / 14
                                 </CustomText>
                             </View>
+                            <TouchableOpacity disabled={!linkEdit} onPress={handlePress} style={[styles.commentContainer, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: 0 }]}>
 
-                            <View style={[styles.commentContainer, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingRight: 0 }]}>
-                                <TouchableOpacity onPress={handlePress} style={{
-                                    position: "absolute",
-                                    // backgroundColor: "blue",
-                                    width: "100%",
-                                    height: "100%",
-                                    zIndex: 1000,
 
-                                }}>
-                                    {/* <View style={{
-                                        position: "absolute",
-                                        backgroundColor: "blue",
-                                        width: "100%",
-                                        height: "100%",
-                                        zIndex: 9999
-                                    }} /> */}
-
-                                    <TextInput
-                                        style={[styles.input, { width: "100%", top: 5, paddingLeft: 10 }]}
-                                        placeholder="URL..."
-                                        value={link.replace(/^https?:\/\//, 'www.')}
-                                        onChangeText={text => setLink(text)} // Update the state on input change
-                                        placeholderTextColor="gray"
-                                        maxLength={100}
-                                        editable={linkEdit}
-                                    />
-                                </TouchableOpacity>
+                                <TextInput
+                                    style={[styles.input, { width: "100%", top: 5, textDecorationLine: 'underline' }]}
+                                    placeholder="URL..."
+                                    value={link.replace(/^https?:\/\//, 'www.')}
+                                    onChangeText={text => setLink(text)} // Update the state on input change
+                                    placeholderTextColor="gray"
+                                    maxLength={100}
+                                    editable={false}
+                                />
 
                                 <CustomText style={styles.counter}>
                                     {link.length} / 100
                                 </CustomText>
-                            </View>
+                            </TouchableOpacity>
+
                         </View>
                         <TouchableOpacity onPress={() => {
                             linkEdit ? dispatch(closeLink()) : dispatch(editLink())

@@ -24,6 +24,7 @@ import PostComment from "../../components/post_comment"
 import ProfilePicture from "../../components/profile_picture";
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
+import PostTags from "../../components/post_tags"
 
 import Animated, {
   useSharedValue,
@@ -66,11 +67,13 @@ const UserPosts = ({ audio, userId }) => {
 
 
 
+
   const navigation = useNavigation();
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
   const { activeCommentId } = useSelector((state) => state.feed);
+  const [isOpenTags, setIsOpenTags] = useState(false)
 
   // useEffect(() => {
   //   if (activeCommentId !== audio.id) { setOpenComments(false) }
@@ -184,116 +187,121 @@ const UserPosts = ({ audio, userId }) => {
   // { "created_at": "2024-02-03T01:37:29.090Z", "email": "3", "follows": "true", "id": 3, "image_link": "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/3/dfb97ebd-0010-47ee-8ef6-6bc62a5853b9.png", "subscribed": "pending", "username": "3" }
   return (
 
+    <View style={{
+      marginBottom: 20, borderRadius: 10, backgroundColor: "rgba(31, 32, 34, 0.4)",
 
-    <View style={styles.outerPost} >
+    }}>
+      <View style={styles.outerPost} >
 
-      <TouchableOpacity
-        onPress={() => {
-          userId !== audio.user_id
-            ? navigation.push("UserProfileScreen", {
-              id: audio.user_id,
-              item: {
-                created_at: audio.created_at,
-                email: audio.email,
-                follows: audio.follows,
-                id: audio.id,
-                image_link: audio.image_link,
-                subscribed: audio.subscribed,
-                username: audio.username
-              },
-            })
-            : dispatch(
-              switchTab({
-                name: "profile"
+        <TouchableOpacity
+          onPress={() => {
+            userId !== audio.user_id
+              ? navigation.push("UserProfileScreen", {
+                id: audio.user_id,
+                item: {
+                  created_at: audio.created_at,
+                  email: audio.email,
+                  follows: audio.follows,
+                  id: audio.id,
+                  image_link: audio.image_link,
+                  subscribed: audio.subscribed,
+                  username: audio.username
+                },
               })
-            );
-          // resetRoutes();
-        }}
-      >
-        <View style={styles.postHeader}>
-          {audio?.user_id !== userId && <View style={styles.dotMenu}>
-            <FollowUnfollowButton item={audio} post />
-          </View>}
+              : dispatch(
+                switchTab({
+                  name: "profile"
+                })
+              );
+            // resetRoutes();
+          }}
+        >
+          <View style={styles.postHeader}>
+            {audio?.user_id !== userId && <View style={styles.dotMenu}>
+              <FollowUnfollowButton item={audio} post />
+            </View>}
 
-          <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
+            <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
 
-          <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
-        </View>
-      </TouchableOpacity>
-      <View key={audio.id} style={styles.postComponent}>
-
-        <PulsePlayer
-          data={audio}
-          toggleSound={toggleSound}
-          playbackPosition={playbackPosition}
-          onPostSliderValueChange={onPostSliderValueChange}
-          sound={sound}
-          // isPlaying={isPlaying}
-          isPlaying={playingStatus[audio.id]}
-          playingNow={playingNow}
-          id={audio.id}
-        />
-
-        {audio.user_id === storedUserInfo && trash(audio.id)}
-
-      </View>
-      <View style={styles.upvoteDownvote}>
-        <UpvoteDownvote
-
-          id={audio.id}
-          audio={audio}
-          upvotes={audio.upvotes}
-          downvotes={audio.downvotes}
-
-        />
-        <View style={styles.message} >
-          <View style={styles.commentsCount}>
-            <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
+            <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
           </View>
-          <TouchableOpacity onPress={() => {
-            activeCommentId !== audio.id ?
-              dispatch(setActiveCommentId(audio.id)) :
-              dispatch(setActiveCommentId(null))
+        </TouchableOpacity>
+        <View key={audio.id} style={styles.postComponent}>
 
-          }}>
-            <Icon name="messageIcon" />
-          </TouchableOpacity>
-          {/* // setActiveCommentId */}
-        </View>
-        <View style={styles.message} >
+          <PulsePlayer
+            data={audio}
+            toggleSound={toggleSound}
+            playbackPosition={playbackPosition}
+            onPostSliderValueChange={onPostSliderValueChange}
+            sound={sound}
+            // isPlaying={isPlaying}
+            isPlaying={playingStatus[audio.id]}
+            playingNow={playingNow}
+            id={audio.id}
+          />
 
-          <TouchableOpacity onPress={() => {
-
-            dispatch(toggleBookmark({ postId: audio.id }))
-
-
-          }}>
-
-            <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: audio.bookmarked ? "white" : null }} />
-
-
-          </TouchableOpacity>
-          {/* // setActiveCommentId */}
-        </View>
-        <View style={styles.dateContainer}>
-          <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
+          {audio.user_id === storedUserInfo && trash(audio.id)}
 
         </View>
+        <View style={styles.upvoteDownvote}>
+          <UpvoteDownvote
+
+            id={audio.id}
+            audio={audio}
+            upvotes={audio.upvotes}
+            downvotes={audio.downvotes}
+
+          />
+          <View style={styles.message} >
+            <View style={styles.commentsCount}>
+              <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
+            </View>
+            <TouchableOpacity onPress={() => {
+              activeCommentId !== audio.id ?
+                dispatch(setActiveCommentId(audio.id)) :
+                dispatch(setActiveCommentId(null))
+
+            }}>
+              <Icon name="messageIcon" />
+            </TouchableOpacity>
+            {/* // setActiveCommentId */}
+          </View>
+          <View style={styles.message} >
+            <TouchableOpacity onPress={() => {
+              dispatch(toggleBookmark({ postId: audio.id }))
+            }}>
+              <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: audio.bookmarked ? "white" : null }} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.message} >
+            <View style={styles.commentsCount}>
+              <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
+            </View>
+            <TouchableOpacity onPress={() => {
+              setIsOpenTags(!isOpenTags)
+            }}>
+              <Icon name="tagsIcon" style={{ color: isOpenTags ? "#fff" : "transparent" }} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.dateContainer}>
+            <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
+
+          </View>
+
+        </View>
+        {activeCommentId === audio.id &&
+          <PostComment
+
+            userId={storedUserInfo}
+            audio={audio}
+
+          />
+        }
+
 
       </View>
-      {activeCommentId === audio.id &&
-        <PostComment
-
-          userId={storedUserInfo}
-          audio={audio}
-
-        />
-      }
-
-
+      {isOpenTags && <PostTags />}
     </View>
-
-
   );
 };
 
@@ -362,12 +370,11 @@ const styles = StyleSheet.create({
   outerPost: {
     gap: 20,
     paddingVertical: 20,
-
+    backgroundColor: "rgba(31, 32, 34, 0.4)",
 
     paddingHorizontal: 10,
     flexDirection: "column",
-    backgroundColor: "rgba(31, 32, 34, 0.4)",
-    marginBottom: 20,
+
     borderRadius: 10
   },
 
