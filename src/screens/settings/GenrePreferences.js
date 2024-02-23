@@ -39,7 +39,7 @@ const GenrePreferences = () => {
             </TouchableOpacity>
             {genreOpen &&
 
-                <AsyncSearch tags={true} search={false} setUserChoice={setUserChoice} />
+                <AsyncSearch genre={false} tags={true} search={false} setUserChoice={setUserChoice} />
 
             }
         </View>

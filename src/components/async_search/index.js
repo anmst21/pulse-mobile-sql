@@ -13,12 +13,13 @@ import RenderSkeleton from "../render_skeleton";
 import CustomText from "../text";
 
 
-const AsyncSearch = ({ search, tags, setUserChoice }) => {
+const AsyncSearch = ({ genre, search, tags, setUserChoice }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [list, setList] = useState([])
-  const { genreList } = useSelector(state => state.settings.genreList)
-  const { tags: activeIds, tagsList } = useSelector(state => state.pulseRecording)
+  const { genreList } = useSelector(state => state.settings)
+  const tagsList = useSelector(state => state.pulseRecording.tagsList)
+  const activeIds = useSelector(state => state.pulseRecording.tags)
   console.log("genreListgenreListgenreList", genreList);
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(false)
@@ -31,6 +32,8 @@ const AsyncSearch = ({ search, tags, setUserChoice }) => {
       setShowInitial(false)
     }
   }, [query])
+
+
 
 
 
@@ -57,7 +60,7 @@ const AsyncSearch = ({ search, tags, setUserChoice }) => {
             searchQuery,
             activeIds: activeIds,
           });
-        } else {
+        } else if (genre) {
           response = await sqlApi.get(`/search/genres`, {
             params: {
               searchQuery,
@@ -73,8 +76,11 @@ const AsyncSearch = ({ search, tags, setUserChoice }) => {
         setIsLoading(false);
       }
     }, 500),
-    [setResults, setIsLoading]
+    [setResults, setIsLoading, activeIds]
   );
+
+
+
   const fetchInitialProfiles = async () => {
     setIsLoading(true);
 
@@ -89,7 +95,7 @@ const AsyncSearch = ({ search, tags, setUserChoice }) => {
 
       } else if (tags) {
         dispatch(fetchTags({ activeIds }))
-      } else {
+      } else if (genre) {
         dispatch(fetchGenres())
       }
       setIsLoading(false);
@@ -171,16 +177,16 @@ const AsyncSearch = ({ search, tags, setUserChoice }) => {
         <RenderSkeleton name="genreList" />
       }
       {!search && !isLoading && showInitial && !tags &&
-        <GenresList setUserChoice={setUserChoice} results={genreList} setResults={setResults} />
+        <GenresList tags={tags} setUserChoice={setUserChoice} results={genreList} setResults={setResults} />
       }
       {!search && !isLoading && !showInitial && !tags &&
-        <GenresList setUserChoice={setUserChoice} results={results} setResults={setResults} />
+        <GenresList tags={tags} setUserChoice={setUserChoice} results={results} setResults={setResults} />
       }
       {tags && !isLoading && showInitial &&
-        <GenresList tags setUserChoice={setUserChoice} results={tagsList} setResults={setResults} />
+        <GenresList tags={tags} setUserChoice={setUserChoice} results={tagsList} setResults={setResults} />
       }
       {tags && !isLoading && !showInitial &&
-        <GenresList tags setUserChoice={setUserChoice} results={results} setResults={setResults} />
+        <GenresList tags={tags} setUserChoice={setUserChoice} results={results} setResults={setResults} />
       }
 
 

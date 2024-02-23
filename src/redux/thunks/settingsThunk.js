@@ -11,7 +11,7 @@ const fetchGenres = createAsyncThunk(
             const userId = await AsyncStorage.getItem("userId");
 
             const response = await sqlApi.get(
-                `/fetch/genres?userId=${userId}`
+                `/fetch/genres`
             );
             return response.data;
         } catch (error) {

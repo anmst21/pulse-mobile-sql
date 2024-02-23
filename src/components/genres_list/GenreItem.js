@@ -9,7 +9,6 @@ import { toggleGenre, toggleTagsState } from "../../redux";
 import { useDispatch, useSelector } from "react-redux"
 
 const GenreItem = ({ item, tags }) => {
-    const { tags: activeIds } = useSelector(state => state.pulseRecording)
     const dispatch = useDispatch()
     const [isActive, setIsActive] = useState(item.active)
     return (<TouchableOpacity onPress={() => { tags ? dispatch(toggleTagsState({ id: item.id, name: item.name, isActive: item.active })) : dispatch(toggleGenre({ genreId: item.id })); setIsActive(!isActive) }}>
