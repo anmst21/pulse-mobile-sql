@@ -15,6 +15,7 @@ import ParamSwitcher from "../../param_switcher";
 import AudioSourceEditor from "../../audio_source_editor";
 import BPMTap from "../../bpm_tap";
 import Location from "../../location";
+import AddPostTags from "../../add_post_tags";
 
 const PulseSettings = () => {
     const dispatch = useDispatch();
@@ -78,7 +79,7 @@ const PulseSettings = () => {
     const getSourceTypeId = (value) => {
         const sourceType = audioSourceTypes.find(source => source.value === value);
         return sourceType ? sourceType.id : null;
-    }   
+    }
 
 
     return (
@@ -124,13 +125,13 @@ const PulseSettings = () => {
                         }}
                     />
 
-                <AudioSourceEditor/>
+                    <AudioSourceEditor />
 
                 </View>
+                <AddPostTags />
+                <BPMTap />
 
-                <BPMTap/>
-
-                <Location/>
+                <Location />
 
 
 

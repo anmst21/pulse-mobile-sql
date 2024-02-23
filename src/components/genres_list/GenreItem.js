@@ -5,13 +5,14 @@ import {
     TouchableOpacity
 } from "react-native";
 import React, { useState } from "react";
-import { toggleGenre } from "../../redux";
-import { useDispatch } from "react-redux"
+import { toggleGenre, toggleTagsState } from "../../redux";
+import { useDispatch, useSelector } from "react-redux"
 
-const GenreItem = ({ item, setUserChoice }) => {
+const GenreItem = ({ item, tags }) => {
+    const { tags: activeIds } = useSelector(state => state.pulseRecording)
     const dispatch = useDispatch()
     const [isActive, setIsActive] = useState(item.active)
-    return (<TouchableOpacity onPress={() => { dispatch(toggleGenre({ genreId: item.id })); setIsActive(!isActive) }}>
+    return (<TouchableOpacity onPress={() => { tags ? dispatch(toggleTagsState({ id: item.id, name: item.name, isActive: item.active })) : dispatch(toggleGenre({ genreId: item.id })); setIsActive(!isActive) }}>
         <View style={[styles.userElement, { backgroundColor: isActive ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)' }]}>
             <Text style={styles.itemText}>{item.name}</Text>
         </View>

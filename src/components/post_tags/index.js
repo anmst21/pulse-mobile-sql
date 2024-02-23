@@ -17,19 +17,8 @@ const PostTags = () => {
         { id: 10, name: "Chillout" }
     ];
     return (
-        <View style={{
-            flex: 1,
-            // backgroundColor: "blue",
-            margin: 10,
-            marginVertical: 20,
-
-            marginHorizontal: 25
-        }}>
-            <View style={{
-                flexDirection: "row",
-                gap: 10,
-                alignItems: "center"
-            }}>
+        <View style={styles.container}>
+            <View style={styles.header}>
                 <Icon name="tagsIcon" style={{ color: "#fff", }} />
                 <CustomText style={{
                     fontSize: 24
@@ -51,11 +40,23 @@ const PostTags = () => {
 export default PostTags
 
 const styles = StyleSheet.create({
+    header: {
+        flexDirection: "row",
+        gap: 10,
+        alignItems: "center"
+    },
+    container: {
+        flex: 1,
+        margin: 10,
+        marginVertical: 20,
+        marginHorizontal: 25
+    },
     genreContainer: {
         flexDirection: "row",
         gap: 15,
         flexWrap: 'wrap',
-        marginTop: 15
+        marginTop: 15,
+
     },
     text: {
         fontSize: 16

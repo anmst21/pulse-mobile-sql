@@ -4,6 +4,7 @@ import {
   loadAudio,
   togglePlayback,
   onSliderValueChange,
+  fetchTags,
 } from "../thunks/pulseRecordingThunk";
 
 const initialState = {
@@ -21,6 +22,8 @@ const initialState = {
   bpm: null,
   size: null,
   uri: null,
+  tags: [],
+  tagsList: []
 };
 
 const pulseRecordingSlice = createSlice({
@@ -28,6 +31,34 @@ const pulseRecordingSlice = createSlice({
   initialState,
 
   reducers: {
+    toggleTagsState: (state, action) => {
+      const { id, name } = action.payload;
+      const tagIndex = state.tagsList.findIndex(tag => tag.id === id);
+
+      // If the tag exists in tagsList, toggle its active state
+      if (tagIndex !== -1) {
+        state.tagsList[tagIndex].active = !state.tagsList[tagIndex].active;
+
+        // If the tag is active, ensure it's in the tags array
+        if (state.tagsList[tagIndex].active) {
+          if (!state.tags.includes(id)) {
+            state.tags.push(id);
+          }
+        }
+        // If the tag is not active, remove it from the tags array
+        else {
+          state.tags = state.tags.filter(tagId => tagId !== id);
+        }
+      }
+      // If the tag doesn't exist, add it to the start of tagsList and to the tags array
+      else {
+        state.tagsList.unshift({ id, name, active: true });
+        state.tags.push(id);
+      }
+    },
+    setTag: (state, action) => {
+      state.tags = state.tags.push(action.payload);
+    },
     setBpm: (state, action) => {
       state.bpm = action.payload;
     },
@@ -74,8 +105,35 @@ const pulseRecordingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // .addCase(togglePostTags.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   console.log("action.payloadaction.payload", action.payload)
+      //   if (action.payload.action === 'deleted') {
+      //     const index = state.tagsList.findIndex(genre => genre.id === action.payload.record.id);
+      //     if (index !== -1) {
+      //       state.tagsList[index].active = false;
+      //       state.tags = [...state.tags, action.payload.record.id]
+      //     }
+      //   }
+      //   else if (action.payload.action === 'inserted') {
+      //     const index = state.tagsList.findIndex(genre => genre.id === action.payload.record.id);
+      //     if (index !== -1) {
+      //       state.tagsList[index].active = true;
+      //       state.tags = state.tags.filter(tag => tag !== action.payload.record.id)
+      //     } else {
+      //       const newGenre = {
+      //         ...action.payload.record,
+      //         active: true
+      //       };
+      //       state.tagsList.unshift(newGenre);
+      //     }
+      //   }
+      // })
       .addCase(loadAudio.pending, (state) => {
         // Handle the loading state if necessary, e.g., setting a flag
+      })
+      .addCase(fetchTags.fulfilled, (state, action) => {
+        state.tagsList = action.payload
       })
       .addCase(loadAudio.fulfilled, (state, action) => {
         // Update the state with the loaded sound and its status
@@ -113,6 +171,8 @@ export const {
   setIsLooping,
   setExtencionFilename,
   setBpm,
+  setTag,
+  toggleTagsState
 } = pulseRecordingSlice.actions;
 
 export const pulseRecordingReducer = pulseRecordingSlice.reducer;

@@ -1,23 +1,24 @@
 import React, { useState, useCallback, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, TextInput, StyleSheet, } from "react-native";
-import userApi from "../../redux/axios/sqlApi";
+import sqlApi from "../../redux/axios/sqlApi";
 import UsersList from "../user_list";
 import { debounce } from 'lodash';
 
 import Icon from "../icon";
 import GenresList from "../genres_list"
-import { fetchGenres } from "../../redux";
+import { fetchGenres, fetchTags } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
 import RenderSkeleton from "../render_skeleton";
 import CustomText from "../text";
 
 
-const AsyncSearch = ({ search, setUserChoice }) => {
+const AsyncSearch = ({ search, tags, setUserChoice }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [list, setList] = useState([])
-  const { genreList } = useSelector(state => state.settings)
+  const { genreList } = useSelector(state => state.settings.genreList)
+  const { tags: activeIds, tagsList } = useSelector(state => state.pulseRecording)
   console.log("genreListgenreListgenreList", genreList);
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(false)
@@ -42,14 +43,22 @@ const AsyncSearch = ({ search, setUserChoice }) => {
 
         let response;
         if (search) {
-          response = await userApi.get(`/search/profiles`, {
+          response = await sqlApi.get(`/search/profiles`, {
             params: {
               searchQuery,
               loggedInUserId
             }
           });
+        } else if (tags) {
+          console.log("1111111", activeIds)
+
+          response = await sqlApi.post(`/search/post/genres`, {
+
+            searchQuery,
+            activeIds: activeIds,
+          });
         } else {
-          response = await userApi.get(`/search/genres`, {
+          response = await sqlApi.get(`/search/genres`, {
             params: {
               searchQuery,
               loggedInUserId
@@ -57,6 +66,7 @@ const AsyncSearch = ({ search, setUserChoice }) => {
           });
         }
         setResults(response.data);
+        console.log("ssssssssss", response.data)
       } catch (error) {
         console.error("Error searching: ", error);
       } finally {
@@ -72,11 +82,13 @@ const AsyncSearch = ({ search, setUserChoice }) => {
       const loggedInUserId = await AsyncStorage.getItem("userId");
       let response
       if (search) {
-        response = await userApi.get(
+        response = await sqlApi.get(
           `/search/fetchInitialProfiles?loggedInUserId=${loggedInUserId}`
         );
         setResults(response.data);
 
+      } else if (tags) {
+        dispatch(fetchTags({ activeIds }))
       } else {
         dispatch(fetchGenres())
       }
@@ -158,11 +170,17 @@ const AsyncSearch = ({ search, setUserChoice }) => {
         // <GenresList setUserChoice={setUserChoice} results={query.length !== 0 ? results : genreList} setResults={setResults} />
         <RenderSkeleton name="genreList" />
       }
-      {!search && !isLoading && showInitial &&
+      {!search && !isLoading && showInitial && !tags &&
         <GenresList setUserChoice={setUserChoice} results={genreList} setResults={setResults} />
       }
-      {!search && !isLoading && !showInitial &&
+      {!search && !isLoading && !showInitial && !tags &&
         <GenresList setUserChoice={setUserChoice} results={results} setResults={setResults} />
+      }
+      {tags && !isLoading && showInitial &&
+        <GenresList tags setUserChoice={setUserChoice} results={tagsList} setResults={setResults} />
+      }
+      {tags && !isLoading && !showInitial &&
+        <GenresList tags setUserChoice={setUserChoice} results={results} setResults={setResults} />
       }
 
 
