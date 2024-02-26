@@ -64,7 +64,7 @@ const UserPosts = ({ audio, userId }) => {
   const [playingNow, setPlayingNow] = useState(null);
 
 
-
+  console.log("1488", audio)
 
 
 
@@ -273,16 +273,19 @@ const UserPosts = ({ audio, userId }) => {
               <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: audio.bookmarked ? "white" : null }} />
             </TouchableOpacity>
           </View>
-          <View style={styles.message} >
-            <View style={styles.commentsCount}>
-              <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
+          {audio.tags.length !== 0 &&
+            <View style={styles.message} >
+              <View style={styles.commentsCount}>
+                <CustomText style={{ fontSize: 12, color: "black" }}>{audio.tags.length}</CustomText>
+              </View>
+
+              <TouchableOpacity onPress={() => {
+                setIsOpenTags(!isOpenTags)
+              }}>
+                <Icon name="tagsIcon" style={{ color: isOpenTags ? "#fff" : "transparent" }} />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => {
-              setIsOpenTags(!isOpenTags)
-            }}>
-              <Icon name="tagsIcon" style={{ color: isOpenTags ? "#fff" : "transparent" }} />
-            </TouchableOpacity>
-          </View>
+          }
           <View style={styles.dateContainer}>
             <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
 
@@ -300,7 +303,7 @@ const UserPosts = ({ audio, userId }) => {
 
 
       </View>
-      {isOpenTags && <PostTags />}
+      {isOpenTags && audio.tags && <PostTags tags={audio.tags} />}
     </View>
   );
 };

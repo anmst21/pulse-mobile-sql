@@ -3,7 +3,7 @@ import React from 'react'
 import CustomText from '../text'
 import Icon from "../icon"
 
-const PostTags = () => {
+const PostTags = ({ tags }) => {
     const genres = [
         { id: 1, name: "Techno" },
         { id: 2, name: "House" },
@@ -25,7 +25,7 @@ const PostTags = () => {
                 }}>Tags</CustomText>
             </View>
             <View style={styles.genreContainer}>
-                {genres.map((genre) => (
+                {tags.map((genre) => (
                     <View key={genre.id} style={styles.genreItem}>
                         <Icon name="tagsIcon" style={{ color: "transparent", width: 20 }} />
 

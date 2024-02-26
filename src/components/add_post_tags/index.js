@@ -7,7 +7,11 @@ const AddPostTags = () => {
     return (
         <View style={styles.container}>
             <Text>AddPostTags</Text>
-            <AsyncSearch tags={true} search={false} setUserChoice={setUserChoice} />
+            <View style={{
+                height: 290
+            }}>
+                <AsyncSearch genre={false} tags={true} search={false} setUserChoice={() => { console.log("userChoice") }} />
+            </View>
 
         </View>
     )
@@ -17,6 +21,6 @@ export default AddPostTags
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "blue"
+        //backgroundColor: "blue"
     }
 })

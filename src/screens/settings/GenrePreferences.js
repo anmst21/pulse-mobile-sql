@@ -10,7 +10,6 @@ import { openGenre, closeGenre, fetchGenres } from "../../redux"
 const GenrePreferences = () => {
     const dispatch = useDispatch()
     const { genreOpen, genreList } = useSelector((state) => state.settings);
-    const [userChoice, setUserChoice] = useState([])
     console.log("genreList@", genreList);
 
 
@@ -39,7 +38,7 @@ const GenrePreferences = () => {
             </TouchableOpacity>
             {genreOpen &&
 
-                <AsyncSearch genre={false} tags={true} search={false} setUserChoice={setUserChoice} />
+                <AsyncSearch genre={true} tags={false} search={false} setUserChoice={() => { console.log("userChoice") }} />
 
             }
         </View>

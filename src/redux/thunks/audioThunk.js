@@ -6,7 +6,7 @@ import { Audio } from "expo-av";
 //blob, duration,
 const uploadAudio = createAsyncThunk(
   "audio/upload",
-  async ({ pulseRecording, imageLink, userName, callback }, thunkAPI) => {
+  async ({ pulseRecording, imageLink, userName, callback, tagIds }, thunkAPI) => {
     const {
       sound,
       bpm,
@@ -18,6 +18,7 @@ const uploadAudio = createAsyncThunk(
       type,
       track,
       uri,
+
     } = pulseRecording;
     if (sound === null) {
       // The error message can be customized as needed
@@ -38,6 +39,7 @@ const uploadAudio = createAsyncThunk(
           bpm,
           track,
           type,
+          tagIds
         });
         return spotifyObject.data;
       } else {
@@ -63,6 +65,7 @@ const uploadAudio = createAsyncThunk(
           type,
           fileName,
           extension,
+          tagIds
         });
 
         if (audioObject && audioObject.data && callback) {
@@ -76,7 +79,7 @@ const uploadAudio = createAsyncThunk(
         data.comment_count = 0;
         data.user_vote_type = null;
         data.vote_type = null;
-        console.log("data1", data)
+        console.log("data1234", data)
         return data;
       }
     } catch (error) {
@@ -146,6 +149,21 @@ const onPostSliderValueChange = createAsyncThunk(
   }
 );
 
+const setPostTags = createAsyncThunk(
+  "audio/tags",
+  async ({ tagIds, audioId, }, thunkAPI) => {
+    try {
+      const response = await sqlApi.post(`/audios/add-tags`, {
+        tagIds, audioId,
+      });
+      console.log("fetchUserAudios", response.data)
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export {
   uploadAudio,
   fetchUserAudios,
@@ -153,4 +171,5 @@ export {
   loadPostAudio,
   togglePostPlayback,
   onPostSliderValueChange,
+  setPostTags
 };

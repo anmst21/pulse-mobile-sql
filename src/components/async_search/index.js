@@ -40,8 +40,8 @@ const AsyncSearch = ({ genre, search, tags, setUserChoice }) => {
 
   const throttledSearch = useCallback(
     debounce(async (searchQuery) => {
-      setIsLoading(true);
       try {
+        setIsLoading(true);
         const loggedInUserId = await AsyncStorage.getItem("userId");
 
         let response;
@@ -69,11 +69,9 @@ const AsyncSearch = ({ genre, search, tags, setUserChoice }) => {
           });
         }
         setResults(response.data);
-        console.log("ssssssssss", response.data)
+        setIsLoading(false);
       } catch (error) {
         console.error("Error searching: ", error);
-      } finally {
-        setIsLoading(false);
       }
     }, 500),
     [setResults, setIsLoading, activeIds]
