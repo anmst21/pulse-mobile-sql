@@ -95,7 +95,16 @@ const PlayerHeader = () => {
             loading={saving}
             onPressIn={() => {
               alert("Save");
-              dispatch(uploadAudio({ pulseRecording, userName, imageLink, tagIds: pulseRecording.tags }));
+              dispatch(uploadAudio({
+                pulseRecording,
+                userName,
+                imageLink,
+                tagIds: pulseRecording.tags,
+                lat: pulseRecording.lat,
+                lng: pulseRecording.lng,
+                locName: pulseRecording.name,
+                locDist: pulseRecording.district
+              }));
               dispatch(resetPulseRecording());
               // setSaving(true)
               // setTimeout(() => {

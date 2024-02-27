@@ -224,16 +224,22 @@ const UserPosts = ({ audio, userId }) => {
 
             <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
             <View>
-              {audio.bpm &&
-                <View style={{
-                  position: "absolute",
-                  left: 15,
-                  top: 35,
-                  width: 70,
 
-                }}>
+              <View style={{
+                position: "absolute",
+                left: 15,
+                top: 35,
+                width: 150,
+
+              }}>
+                {audio.bpm &&
                   <CustomText style={styles.bpmText}>Bpm: {audio.bpm}</CustomText>
-                </View>}
+                }
+                {audio.location &&
+                  <CustomText style={[styles.bpmText, { color: Theme.purple }]}>{audio.location}</CustomText>
+                }
+              </View>
+
               <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
             </View>
           </View>
@@ -328,7 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "london",
     color: Theme.green,
-
+    marginBottom: 10
 
 
   },
@@ -388,7 +394,8 @@ const styles = StyleSheet.create({
   },
   postHeader: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 30
   },
   outerPost: {
     gap: 20,

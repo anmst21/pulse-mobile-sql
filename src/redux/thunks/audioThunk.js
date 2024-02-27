@@ -6,7 +6,7 @@ import { Audio } from "expo-av";
 //blob, duration,
 const uploadAudio = createAsyncThunk(
   "audio/upload",
-  async ({ pulseRecording, imageLink, userName, callback, tagIds }, thunkAPI) => {
+  async ({ pulseRecording, imageLink, userName, callback, tagIds, lat, lng, locName, locDist }, thunkAPI) => {
     const {
       sound,
       bpm,
@@ -39,7 +39,9 @@ const uploadAudio = createAsyncThunk(
           bpm,
           track,
           type,
-          tagIds
+          tagIds,
+          lat, lng, locName, locDist
+
         });
         return spotifyObject.data;
       } else {
@@ -65,7 +67,8 @@ const uploadAudio = createAsyncThunk(
           type,
           fileName,
           extension,
-          tagIds
+          tagIds,
+          lat, lng, locName, locDist
         });
 
         if (audioObject && audioObject.data && callback) {

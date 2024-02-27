@@ -131,7 +131,7 @@ const PulseSettings = () => {
                 <AddPostTags />
                 <BPMTap />
                 <View style={{
-                    marginBottom: 200
+                    marginBottom: 500
                 }}>
                     <Location />
                 </View>

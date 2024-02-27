@@ -86,8 +86,8 @@ export {
   setBpm,
   setTag,
   setTagsList,
-  toggleTagsState
-
+  toggleTagsState,
+  setLocData
 } from "./slices/pulseRecordingSlice";
 export {
   switchTab,

@@ -23,7 +23,11 @@ const initialState = {
   size: null,
   uri: null,
   tags: [],
-  tagsList: []
+  tagsList: [],
+  name: "702 Washington ave",
+  district: "Brooklyn, New York",
+  lng: null,
+  lat: null
 };
 
 const pulseRecordingSlice = createSlice({
@@ -31,6 +35,12 @@ const pulseRecordingSlice = createSlice({
   initialState,
 
   reducers: {
+    setLocData: (state, action) => {
+      state.name = action.payload.name;
+      state.lng = action.payload.lng;
+      state.lat = action.payload.lat
+      state.district = action.payload.district
+    },
     toggleTagsState: (state, action) => {
       const { id, name } = action.payload;
       const tagIndex = state.tagsList.findIndex(tag => tag.id === id);
@@ -172,7 +182,8 @@ export const {
   setExtencionFilename,
   setBpm,
   setTag,
-  toggleTagsState
+  toggleTagsState,
+  setLocData
 } = pulseRecordingSlice.actions;
 
 export const pulseRecordingReducer = pulseRecordingSlice.reducer;

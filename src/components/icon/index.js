@@ -62,11 +62,14 @@ import KeyIcon from "./keyIcon"
 import LogOutIcon from "./logOutIcon"
 import BugIcon from "./bugIcon"
 import ChangePrpofileIcon from "./changeProfileImg"
+import LocPoint from "./locPoint"
 
 const Icon = ({ name, style }) => {
   switch (name) {
     case "starIcon":
       return <StarIcon style={style} />;
+    case "locPoint":
+      return <LocPoint style={style} />;
     case "changeProfileIcon":
       return <ChangePrpofileIcon style={style} />;
 
