@@ -25,6 +25,7 @@ import ProfilePicture from "../../components/profile_picture";
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
 import PostTags from "../../components/post_tags"
+import Theme from "../../styles/theme"
 
 import Animated, {
   useSharedValue,
@@ -222,8 +223,19 @@ const UserPosts = ({ audio, userId }) => {
             </View>}
 
             <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
+            <View>
+              {audio.bpm &&
+                <View style={{
+                  position: "absolute",
+                  left: 15,
+                  top: 35,
+                  width: 70,
 
-            <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
+                }}>
+                  <CustomText style={styles.bpmText}>Bpm: {audio.bpm}</CustomText>
+                </View>}
+              <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
+            </View>
           </View>
         </TouchableOpacity>
         <View key={audio.id} style={styles.postComponent}>
@@ -273,7 +285,7 @@ const UserPosts = ({ audio, userId }) => {
               <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: audio.bookmarked ? "white" : null }} />
             </TouchableOpacity>
           </View>
-          {audio.tags.length !== 0 &&
+          {audio.tags && audio.tags.length !== 0 &&
             <View style={styles.message} >
               <View style={styles.commentsCount}>
                 <CustomText style={{ fontSize: 12, color: "black" }}>{audio.tags.length}</CustomText>
@@ -312,6 +324,14 @@ const UserPosts = ({ audio, userId }) => {
 export default UserPosts;
 
 const styles = StyleSheet.create({
+  bpmText: {
+    fontSize: 12,
+    fontFamily: "london",
+    color: Theme.green,
+
+
+
+  },
   commentsCount: {
     backgroundColor: "white",
     position: "absolute",
