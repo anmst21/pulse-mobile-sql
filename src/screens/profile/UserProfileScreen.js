@@ -12,9 +12,9 @@ const UserProfileScreen = ({ route }) => {
   const [userInfo, setUserInfo] = useState({});
   const [userAudios, setUserAudios] = useState();
   const storedUserInfo = useSelector((state) => state.user.userInfo);
-  const [userButton, setUserButton] = useState([item]);
-  console.log("fetchUserItem", item)
-  console.log("fetchUserInfo", userInfo)
+  const [userButton, setUserButton] = useState([]);
+  console.log("111111111", userInfo)
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -22,8 +22,8 @@ const UserProfileScreen = ({ route }) => {
         const responseAudios = await sqlApi.get(
           `/user/${id}/audios`
         );
-        console.log("responseAudiosresponseAudiosresponseAudios", responseAudios.data)
-
+        // console.log("111111111", response.data)
+        setUserButton([{ follows: response.data.follows, subscribed: response.data.subscribed }])
         setUserAudios(responseAudios.data);
         setUserInfo(response.data);
       } catch (error) {
@@ -33,6 +33,15 @@ const UserProfileScreen = ({ route }) => {
 
     fetchUserInfo();
   }, [id]);
+
+  const Btn = () => {
+    return userButton.length !== 0 &&
+      <FollowUnfollowButton
+        item={userButton[0]}
+        results={userButton}
+        setResults={setUserButton}
+      />
+  }
 
   return (
 
@@ -49,20 +58,16 @@ const UserProfileScreen = ({ route }) => {
           />
         )}
       </View> */}
-      <View style={styles.btnInteraction}>
-        <FollowUnfollowButton
-          item={userButton[0]}
-          results={userButton}
-          setResults={setUserButton}
-        />
-      </View>
+      {/* <View style={styles.btnInteraction}>
+
+      </View> */}
 
       <UserWall
         storedUserInfo={storedUserInfo}
         userAudios={userAudios}
         userInfo={userInfo}
         userId={id}
-
+        btn={() => Btn()}
 
       />
 

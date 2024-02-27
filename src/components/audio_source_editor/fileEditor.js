@@ -109,7 +109,6 @@ const RecordingEditor = () => {
       //  setRecording(result);
       const blob = await response.arrayBuffer();
       const Info = extractFileInfo(result);
-      console.log("blob", response._bodyBlob._data.type);
 
       dispatch(
         setExtencionFilename({

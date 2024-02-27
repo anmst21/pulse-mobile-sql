@@ -82,7 +82,6 @@ const uploadAudio = createAsyncThunk(
         data.comment_count = 0;
         data.user_vote_type = null;
         data.vote_type = null;
-        console.log("data1234", data)
         return data;
       }
     } catch (error) {
@@ -97,7 +96,6 @@ const fetchUserAudios = createAsyncThunk(
     try {
       // const userId = await AsyncStorage.getItem("userId");
       const response = await sqlApi.get(`/user/audios`);
-      console.log("fetchUserAudios", response.data)
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -131,7 +129,6 @@ const togglePostPlayback = createAsyncThunk(
     if (!sound) {
       callback();
     }
-    console.log(playbackPosition);
     if (isPlaying) {
       await sound.pauseAsync();
     } else {
@@ -159,7 +156,6 @@ const setPostTags = createAsyncThunk(
       const response = await sqlApi.post(`/audios/add-tags`, {
         tagIds, audioId,
       });
-      console.log("fetchUserAudios", response.data)
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);

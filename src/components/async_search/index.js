@@ -20,7 +20,6 @@ const AsyncSearch = ({ genre, search, tags, setUserChoice }) => {
   const { genreList } = useSelector(state => state.settings)
   const tagsList = useSelector(state => state.pulseRecording.tagsList)
   const activeIds = useSelector(state => state.pulseRecording.tags)
-  console.log("genreListgenreListgenreList", genreList);
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(false)
   const [showInitial, setShowInitial] = useState(true)

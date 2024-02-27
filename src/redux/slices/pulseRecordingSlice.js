@@ -115,30 +115,7 @@ const pulseRecordingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // .addCase(togglePostTags.fulfilled, (state, action) => {
-      //   state.status = "succeeded";
-      //   console.log("action.payloadaction.payload", action.payload)
-      //   if (action.payload.action === 'deleted') {
-      //     const index = state.tagsList.findIndex(genre => genre.id === action.payload.record.id);
-      //     if (index !== -1) {
-      //       state.tagsList[index].active = false;
-      //       state.tags = [...state.tags, action.payload.record.id]
-      //     }
-      //   }
-      //   else if (action.payload.action === 'inserted') {
-      //     const index = state.tagsList.findIndex(genre => genre.id === action.payload.record.id);
-      //     if (index !== -1) {
-      //       state.tagsList[index].active = true;
-      //       state.tags = state.tags.filter(tag => tag !== action.payload.record.id)
-      //     } else {
-      //       const newGenre = {
-      //         ...action.payload.record,
-      //         active: true
-      //       };
-      //       state.tagsList.unshift(newGenre);
-      //     }
-      //   }
-      // })
+
       .addCase(loadAudio.pending, (state) => {
         // Handle the loading state if necessary, e.g., setting a flag
       })

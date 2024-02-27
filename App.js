@@ -43,7 +43,6 @@ const App = () => {
   const storedUserInfo = useSelector((state) => state.user?.userInfo);
   const app = useSelector((state) => state.app);
   const ref = useRef();
-  console.log("storedUserInfostoredUserInfo", storedUserInfo.id)
 
   const fetchUserDetails = async () => {
     const userIdFromStorage = await AsyncStorage.getItem("userId");
@@ -136,7 +135,6 @@ const App = () => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       () => {
-        console.log("Keyboard is shown");
         if (ref && ref.current) {
           ref.current.scrollTo(-SCREEN_HEIGHT / 1.6, true);
         }

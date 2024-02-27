@@ -10,7 +10,6 @@ import { openGenre, closeGenre, fetchGenres } from "../../redux"
 const GenrePreferences = () => {
     const dispatch = useDispatch()
     const { genreOpen, genreList } = useSelector((state) => state.settings);
-    console.log("genreList@", genreList);
 
 
     return (

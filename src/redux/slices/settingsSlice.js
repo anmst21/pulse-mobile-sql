@@ -112,7 +112,6 @@ const settingsSlice = createSlice({
             })
             .addCase(toggleGenre.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                console.log("action.payloadaction.payload", action.payload)
                 if (action.payload.action === 'deleted') {
                     const index = state.genreList.findIndex(genre => genre.id === action.payload.record.id);
                     if (index !== -1) {

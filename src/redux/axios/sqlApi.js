@@ -12,7 +12,6 @@ instance.interceptors.request.use(
 
         const token = await AsyncStorage.getItem("token");
         const userId = await AsyncStorage.getItem("userId");
-        console.log("Axios Interceptor - UserID:", userId); // Debugging line
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -21,7 +20,6 @@ instance.interceptors.request.use(
             config.headers['userId'] = userId; // Ensure this matches the backend expectation
         }
 
-        console.log("Config Headers:", config.headers); // Debugging line
         return config;
     },
     (err) => {

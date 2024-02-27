@@ -65,7 +65,7 @@ const PostComment = ({ userId, audio }) => {
 
     const fetchComments = async (post_id, user_id) => {
         const response = await sqlApi.get(`/comments/${post_id}/${user_id}`);
-        console.log("fetchComments", response.data.comments)
+        //  console.log("fetchComments", response.data.comments)
 
         setComments(response.data.comments)
     }
@@ -73,7 +73,7 @@ const PostComment = ({ userId, audio }) => {
 
     const postComment = async (contents, user_id, post_id) => {
         const response = await sqlApi.post(`/comments`, { contents, user_id, post_id });
-        console.log("fetchComments", response.data)
+        //   console.log("fetchComments", response.data)
 
         setComments(prev => [response.data, ...prev])
     }
@@ -83,7 +83,7 @@ const PostComment = ({ userId, audio }) => {
             // Assuming the API response includes the updated comment object
             const response = await sqlApi.put(`/comments/${post_id}/${contents}`);
             const updatedComment = response.data.updatedComment; // Assuming this is the updated comment object
-            console.log("updatedComment", updatedComment)
+            //  console.log("updatedComment", updatedComment)
             setIdEdited(false);
             setEditValue("");
             setIsActiveComment(null)

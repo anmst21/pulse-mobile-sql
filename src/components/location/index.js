@@ -82,7 +82,6 @@ const RecordingEditor = () => {
         },
       });
       const data = response.data;
-      console.log("lnglat", data.features[1].place_name)
 
       if (data.features && data.features.length > 0) {
         let placeName = data.features[0].place_name; // Get the most relevant address

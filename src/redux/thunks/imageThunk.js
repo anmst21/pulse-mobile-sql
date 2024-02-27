@@ -56,7 +56,6 @@ const uploadImage = createAsyncThunk(
       });
       callback("0%")
 
-      console.log("finalUrl", finalUrl);
       return {
         small: finalUrl(dataSmall.key),
         medium: finalUrl(dataMedium.key),
@@ -73,7 +72,6 @@ const fetchUserImage = createAsyncThunk("image/fetch", async (_, thunkAPI) => {
   try {
     const userId = await AsyncStorage.getItem("userId");
     const response = await sqlApi.get(`/api/userImages?userId=${userId}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);

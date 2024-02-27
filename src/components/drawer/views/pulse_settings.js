@@ -40,7 +40,6 @@ const PulseSettings = () => {
             (event) => {
                 setKeyboardHeight(event.endCoordinates.height)
                 // scrollViewRef.current.scrollTo({ x: 0, y: event.endCoordinates.height, animated: true });
-                console.log("event.endCoordinates.height", event.endCoordinates.height)
             },
         );
 

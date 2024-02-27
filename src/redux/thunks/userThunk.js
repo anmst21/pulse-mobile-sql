@@ -17,14 +17,12 @@ const tryLocalSignIn = createAsyncThunk("user/tryLocalSignIn", async () => {
 const signup = createAsyncThunk(
   "user/signup",
   async ({ email, password, userName, navigation }, { rejectWithValue }) => {
-    console.log(email, password, userName);
     try {
       const response = await sqlApi.post("/user/signup", {
         email: email.toString(),
         password: password.toString(),
         userName: userName.toString(),
       });
-      console.log("signup response", response.data);
 
       // Set the token in AsyncStorage
       await AsyncStorage.setItem("token", response.data.token);
@@ -32,7 +30,6 @@ const signup = createAsyncThunk(
       // Set the user's ID in AsyncStorage
       await AsyncStorage.setItem("userId", response.data.userId);
       navigation.goBack();
-      console.log("response.data.token", response.data.token);
       // Return the token for further processing or usage in reducers
       return response.data;
     } catch (err) {
@@ -47,13 +44,11 @@ const signin = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await sqlApi.post("/user/signin", { email: email.toString(), password: password.toString() });
-      console.log("email, password", email, password)
       // Set the token in AsyncStorage
       await AsyncStorage.setItem("token", response.data.token);
 
       // Set the user's ID in AsyncStorage
       await AsyncStorage.setItem("userId", response.data.userId);
-      console.log("response.data", response.data)
       // Return the token for further processing or usage in reducers
       return response.data;
     } catch (err) {
@@ -79,7 +74,6 @@ const fetchUserInfo = createAsyncThunk(
     // const userId = await AsyncStorage.getItem("userId");
 
     const response = await sqlApi.get(`/user/${userId}`);
-    console.log("fetchUserInfo", response.data)
     return response.data;
   }
 );
@@ -92,7 +86,6 @@ const updateBio = createAsyncThunk(
 
       const response = await sqlApi.put('/users/bio', { bio });
 
-      console.log("updateBio", response.data);
       return response.data; // Assuming the updated bio is returned by your API
     } catch (error) {
       console.error("Error updating bio", error.response.data);
@@ -107,7 +100,6 @@ const updateUsername = createAsyncThunk(
 
       const response = await sqlApi.put('/users/username', { username });
 
-      console.log("updateUsername", response.data);
       return response.data; // Assuming the updated bio is returned by your API
     } catch (error) {
       console.error("Error updating bio", error.response.data);
@@ -122,7 +114,6 @@ const updateLink = createAsyncThunk(
 
       const response = await sqlApi.put('/users/link', { link });
 
-      console.log("updateLink", response.data);
       return response.data; // Assuming the updated bio is returned by your API
     } catch (error) {
       console.error("Error updating bio", error.response.data);

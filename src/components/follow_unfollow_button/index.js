@@ -13,7 +13,6 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
   const dispatch = useDispatch();
 
 
-  console.log("item", item);
 
   const handleUnfollow = (userId) => {
     if (!post) {

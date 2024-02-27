@@ -52,7 +52,7 @@ const List = ({ limit, url, listItem, onScrollEvent, paddingTop, paddingBottom =
 
     const fetchData = async () => {
         const userId = await AsyncStorage.getItem("userId");
-        console.log(time)
+        //  console.log(time)
         try {
 
             const response = await userApi.post(url, {

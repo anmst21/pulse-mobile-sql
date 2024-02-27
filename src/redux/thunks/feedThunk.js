@@ -6,7 +6,6 @@ const fetchFeed = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await sqlApi.get(`/audios`);
-      console.log("feedAudios", response.data)
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -22,7 +21,6 @@ const toggleUpvote = createAsyncThunk(
       const response = await sqlApi.post(`/vote`, { post_id: postId, vote_type: voteType });
       let data = response.data
       data.post_id = postId
-      console.log("toggledata", data)
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);

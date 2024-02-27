@@ -6,9 +6,9 @@ import { useNavigation } from "@react-navigation/native";
 import CustomText from "../../components/text";
 import sqlApi from "../../redux/axios/sqlApi"
 import Icon from "../../components/icon"
+import FollowUnfollowButton from "../../components/follow_unfollow_button";
 
-const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
-  console.log("userWall", userInfo)
+const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
   const navigation = useNavigation();
   const handlePress = (listType) => {
     navigation.push("UserListScreen", {
@@ -17,10 +17,9 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
       userId,
     });
   };
-  console.log("userInfo", userInfo);
+  console.log(btn, "btn")
 
   const [audios, setAudios] = useState([])
-  console.log("audiosaudiosaudios", audios)
   const fetchUserDetails = async () => {
 
 
@@ -103,10 +102,11 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 }} />
               }
             </View>
-            {storedUserInfo === userInfo.id &&
-              <View style={{
-                position: "absolute", right: 20
-              }}>
+
+            <View style={{
+              position: "absolute", right: 20
+            }}>
+              {storedUserInfo === userInfo.id ?
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("Settings");
@@ -114,7 +114,10 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo }) => {
                 >
                   <Icon name="cog" />
                 </TouchableOpacity>
-              </View>}
+                :
+                <>{btn()}</>
+              }
+            </View>
 
           </View>
 
