@@ -8,9 +8,18 @@ import CommentComponent from './CommentComponent';
 
 const PostComment = ({ userId, audio }) => {
     const [comments, setComments] = useState([]);
+    const [replies, setReplies] = useState([]);
     const [activeReplyId, setActiveReplyId] = useState(null)
 
     useEffect(() => { fetchComments(audio.id, userId) }, [])
+
+    useEffect(() => {
+        if (activeReplyId !== null) {
+            fetchReplies(activeReplyId, userId)
+        } else {
+            setReplies([])
+        }
+    }, [activeReplyId])
 
 
 
@@ -20,6 +29,12 @@ const PostComment = ({ userId, audio }) => {
 
         setComments(response.data.comments)
     }
+    const fetchReplies = async (post_id, user_id) => {
+        const response = await sqlApi.get(`/replies/${post_id}/${user_id}`);
+        //  console.log("fetchComments", response.data.comments)
+
+        setReplies(response.data.replies)
+    }
 
 
     const postComment = async (contents, user_id, post_id) => {
@@ -28,26 +43,49 @@ const PostComment = ({ userId, audio }) => {
 
         setComments(prev => [response.data, ...prev])
     }
+    const postReply = async (contents, user_id, post_id, parent_id) => {
+        const response = await sqlApi.post(`/comments`, { contents, user_id, post_id, parent_id });
+        console.log("13333", response.data)
+        setReplies([response.data, ...(replies || [])]);
+    }
 
 
     return (
         <View style={styles.comments}>
 
-            <ScrollView>
+            <ScrollView style={{
+                paddingBottom: 100
+            }}>
                 <CommentInput callback={(value, userId) => postComment(value, userId, audio.id)} />
                 {comments.map((comment) => (
                     <View key={comment.id} style={{
                         marginBottom: 15,
-                        backgroundColor: "yellow",
+                        //  backgroundColor: "yellow",
                         flexDirection: "column"
                     }}>
                         <CommentComponent comment={comment} setComments={setComments} setReply={setActiveReplyId} replyId={activeReplyId} />
                         {activeReplyId === comment.id && <View style={{
-                            backgroundColor: "red",
+                            // backgroundColor: "red",
                             flex: 1,
-                            height: 20,
                             marginHorizontal: 10
-                        }}></View>}
+                        }}>
+                            <ScrollView style={{
+                                paddingBottom: 100
+                            }}>
+                                <CommentInput callback={(value, userId) => postReply(value, userId, audio.id, comment.id)} />
+                                {replies && replies.map((comment) => (
+                                    <View key={comment.id} style={{
+                                        marginBottom: 15,
+                                        //  backgroundColor: "yellow",
+                                        flexDirection: "column",
+                                    }}>
+                                        <CommentComponent comment={comment} setComments={setReplies} setReply={setActiveReplyId} replyId={activeReplyId} />
+                                    </View>
+                                ))}
+
+                            </ScrollView>
+
+                        </View>}
 
                     </View>
                 ))}
