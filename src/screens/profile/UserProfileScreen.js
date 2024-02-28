@@ -14,9 +14,11 @@ const UserProfileScreen = ({ route }) => {
   const storedUserInfo = useSelector((state) => state.user.userInfo);
   const [userButton, setUserButton] = useState([]);
   console.log("111111111", userInfo)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      setIsLoading(true)
       try {
         const response = await sqlApi.get(`/user/${id}`);
         const responseAudios = await sqlApi.get(
@@ -28,11 +30,13 @@ const UserProfileScreen = ({ route }) => {
         setUserInfo(response.data);
       } catch (error) {
         console.error("An error occurred while fetching the user info:", error);
+      } finally {
+        setIsLoading(false)
       }
     };
 
     fetchUserInfo();
-  }, [id]);
+  }, [id, setIsLoading]);
 
   const Btn = () => {
     return userButton.length !== 0 &&
@@ -68,7 +72,7 @@ const UserProfileScreen = ({ route }) => {
         userInfo={userInfo}
         userId={id}
         btn={() => Btn()}
-
+        isLoading={isLoading}
       />
 
     </View>

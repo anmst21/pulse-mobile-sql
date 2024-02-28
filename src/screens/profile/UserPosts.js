@@ -9,7 +9,6 @@ import {
   TextInput
 } from "react-native";
 import { switchTab, togglePlayer } from "../../redux/slices/tabSlice";
-
 import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,7 +58,7 @@ const humanReadableDate = (dateString) => {
 
 
 
-const UserPosts = ({ audio, userId }) => {
+const UserPosts = ({ audio, userId, isLoading }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
@@ -73,7 +72,7 @@ const UserPosts = ({ audio, userId }) => {
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
-  const { activeCommentId } = useSelector((state) => state.feed);
+  const { activeCommentId, } = useSelector((state) => state.feed);
   const [isOpenTags, setIsOpenTags] = useState(false)
 
   // useEffect(() => {
@@ -185,65 +184,67 @@ const UserPosts = ({ audio, userId }) => {
       </View>
     </TouchableOpacity>
   );
-  // { "created_at": "2024-02-03T01:37:29.090Z", "email": "3", "follows": "true", "id": 3, "image_link": "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/3/dfb97ebd-0010-47ee-8ef6-6bc62a5853b9.png", "subscribed": "pending", "username": "3" }
+
+  const onEditorRightLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    console.log("compHeight", height)
+    //240
+  };
+
+
   return (
 
     <View style={{
       marginBottom: 20, borderRadius: 10, backgroundColor: "rgba(31, 32, 34, 0.4)",
 
-    }}>
+    }}
+      onLayout={onEditorRightLayout}
+    >
       <View style={styles.outerPost} >
 
-        <TouchableOpacity
-          onPress={() => {
-            userId !== audio.user_id
-              ? navigation.push("UserProfileScreen", {
-                id: audio.user_id,
-                item: {
-                  created_at: audio.created_at,
-                  email: audio.email,
-                  follows: audio.follows,
-                  id: audio.id,
-                  image_link: audio.image_link,
-                  subscribed: audio.subscribed,
-                  username: audio.username
-                },
-              })
-              : dispatch(
-                switchTab({
-                  name: "profile"
-                })
-              );
-            // resetRoutes();
-          }}
-        >
-          <View style={styles.postHeader}>
-            {audio?.user_id !== userId && <View style={styles.dotMenu}>
-              <FollowUnfollowButton item={audio} post />
-            </View>}
 
-            <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
-            <View>
+        <View style={styles.postHeader}>
+          {audio?.user_id !== userId && <View style={styles.dotMenu}>
+            <FollowUnfollowButton item={audio} post />
+          </View>}
 
-              <View style={{
-                position: "absolute",
-                left: 15,
-                top: 35,
-                width: 150,
+          <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={40} />
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                userId !== audio.user_id
+                  ? navigation.push("UserProfileScreen", {
+                    id: audio.user_id,
 
-              }}>
-                {audio.bpm &&
-                  <CustomText style={styles.bpmText}>Bpm: {audio.bpm}</CustomText>
-                }
-                {audio.location &&
-                  <CustomText style={[styles.bpmText, { color: Theme.purple }]}>{audio.location}</CustomText>
-                }
-              </View>
-
+                  })
+                  : dispatch(
+                    switchTab({
+                      name: "profile"
+                    })
+                  );
+                // resetRoutes();
+              }}
+            >
               <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{audio.username}</CustomText>
+            </TouchableOpacity>
+
+            <View style={{
+              position: "absolute",
+              left: 15,
+              top: 35,
+              width: 150,
+
+            }}>
+              {audio.bpm &&
+                <CustomText style={styles.bpmText}>Bpm: {audio.bpm}</CustomText>
+              }
+              {audio.location &&
+                <CustomText style={[styles.bpmText, { color: Theme.purple }]}>{audio.location}</CustomText>
+              }
             </View>
+
           </View>
-        </TouchableOpacity>
+        </View>
         <View key={audio.id} style={styles.postComponent}>
 
           <PulsePlayer
@@ -323,6 +324,7 @@ const UserPosts = ({ audio, userId }) => {
       </View>
       {isOpenTags && audio.tags && <PostTags tags={audio.tags} />}
     </View>
+
   );
 };
 

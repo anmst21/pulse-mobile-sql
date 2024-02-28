@@ -20,10 +20,22 @@ const RenderSkeleton = ({ name, count }) => {
     });
 
     useEffect(() => {
-        opacity1.value = withRepeat(
-            withTiming(1, { duration: 1000, easing: Easing.linear }),
-            true
+        const animation = withRepeat(
+            withTiming(1, {
+                duration: 1000,
+                easing: Easing.linear,
+            }),
+            -1, // Infinite repeat
+            true, // Reverse on each iteration, set to false if you do not want the animation to reverse
         );
+
+        opacity1.value = animation;
+
+        // Cleanup function
+        return () => {
+            opacity1.value = undefined; // Attempt to halt the animation
+            // Alternatively, directly stop the animation if there's a specific method or reset it as needed.
+        };
     }, []);
 
     const widthArray = [80, 100, 130, 80, 80, 130, 130, 130, 90, 70, 80, 80]
@@ -51,7 +63,31 @@ const RenderSkeleton = ({ name, count }) => {
                             style={[
                                 styles.userElement,
                                 animatedStyle,
-                                { width }
+                                { height: 240 }
+                            ]}
+                        />
+                    ))
+                }
+            </View>}
+            {name === "postList" && <View style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: 15,
+
+
+                // backgroundColor: "blue"
+            }}>
+                {
+
+                    Array.from({ length: count }, (_, index) => (
+                        <Animated.View
+                            key={index}
+                            style={[
+                                styles.userElement,
+                                animatedStyle,
+                                {
+                                    height: 240, width: "100%", padding: 0, flexShrink: 0
+                                }
                             ]}
                         />
                     ))
@@ -87,7 +123,7 @@ const styles = StyleSheet.create({
         // marginTop: 15,
 
         backgroundColor: 'rgba(255, 255, 255, 0.15)',
-        borderRadius: 20,
+        borderRadius: 10,
         flexShrink: 1,
         paddingHorizontal: 20,
         paddingVertical: 10,

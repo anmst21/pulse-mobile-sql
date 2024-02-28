@@ -25,6 +25,7 @@ import CustomText from "../../components/text";
 import MapContainer from "../map";
 import UserPosts from "../profile/UserPosts";
 import { fetchUserAudios, fetchFeed } from "../../redux";
+import RenderSkeleton from "../../components/render_skeleton";
 
 const FeedScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ const FeedScreen = ({ navigation }) => {
   const scrollY = useSharedValue(0);
   const feedOpacity = useSharedValue(0);
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
-  const { posts } = useSelector((state) => state?.feed);
+  const { posts, isLoading } = useSelector((state) => state?.feed);
 
   const [audios, setAudios] = useState([])
   console.log("audiosaudiosaudios", audios)
@@ -131,11 +132,21 @@ const FeedScreen = ({ navigation }) => {
             <View style={{ paddingTop: 170 }}>
               <View style={{ height: "100%", paddingBottom: 60 }}>
 
+                {isLoading &&
+                  <RenderSkeleton name="postList" count={10} />
+                }
 
                 {posts
-                  ? posts.map((audio) => (
-                    <UserPosts key={audio.id} audio={audio} userId={storedUserInfo} setAudioList={setAudios} audioList={posts} />
-                  )) : null}
+                  && posts.map((audio) => (
+                    <UserPosts
+                      key={audio.id}
+                      audio={audio}
+                      isLoading={isLoading}
+                      userId={storedUserInfo}
+                      setAudioList={setAudios}
+                      audioList={posts}
+                    />
+                  ))}
               </View>
             </View>
           </ScrollView>

@@ -7,8 +7,9 @@ import CustomText from "../../components/text";
 import sqlApi from "../../redux/axios/sqlApi"
 import Icon from "../../components/icon"
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
+import RenderSkeleton from "../../components/render_skeleton";
 
-const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
+const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios }) => {
   const navigation = useNavigation();
   const handlePress = (listType) => {
     navigation.push("UserListScreen", {
@@ -17,20 +18,23 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
       userId,
     });
   };
-  console.log(btn, "btn")
-
   const [audios, setAudios] = useState([])
-  const fetchUserDetails = async () => {
 
 
-    const { data } = await sqlApi.get(`/user/${userId}/audios`)
-    setAudios(data)
-
-  };
 
   useEffect(() => {
+    const fetchUserDetails = async () => {
+
+      try {
+        const { data } = await sqlApi.get(`/user/${userId}/audios`);
+        setAudios(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+      }
+    };
     fetchUserDetails()
-  }, [])
+  }, [userId])
 
 
   const handleLinkPress = async (url) => {
@@ -66,7 +70,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
             }}>
 
               <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20 }} />
-              {userInfo.link ?
+              {userInfo.link && !isLoading ?
                 <TouchableOpacity onPress={() => {
                   handleLinkPress(userInfo.link.link)
                 }}>
@@ -91,7 +95,7 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
             }}>
 
               <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20 }} />
-              {userInfo.bio ?
+              {userInfo.bio && !isLoading ?
                 <CustomText style={{ fontSize: 16 }}>{userInfo.bio}</CustomText>
                 :
                 <View style={{
@@ -133,22 +137,36 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
                 <CustomText>{userInfo.followingCount}</CustomText>
               </View>
             </TouchableOpacity> */}
+
               <View style={[styles.lilBox, { left: -10, }]}>
-                <Icon name="waveFormProfile" style={styles.actionIcon} />
-                <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
+
+                {!isLoading ?
+                  <>
+                    <Icon name="waveFormProfile" style={styles.actionIcon} />
+                    <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
+                  </>
+                  : <View style={styles.skeletonIcon} />
+                }
               </View>
 
               <TouchableOpacity onPress={() => handlePress("followers")}>
                 <View style={styles.lilBox}>
-
-                  <Icon name="followIcon" style={styles.actionIcon} />
-                  <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
+                  {!isLoading ?
+                    <>
+                      <Icon name="followIcon" style={styles.actionIcon} />
+                      <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
+                    </>
+                    : <View style={styles.skeletonIcon} />}
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handlePress("subscribers")}>
                 <View style={[styles.lilBox, { left: -20 }]}>
-                  <Icon name="subscribeIcon" style={styles.actionIcon} />
-                  <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
+                  {!isLoading ?
+                    <>
+                      <Icon name="subscribeIcon" style={styles.actionIcon} />
+                      <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
+                    </>
+                    : <View style={styles.skeletonIcon} />}
                 </View>
               </TouchableOpacity>
 
@@ -187,16 +205,19 @@ const UserWall = ({ userAudios, userInfo, userId, storedUserInfo, btn }) => {
           </View>
         </View>
         <View style={{ height: "100%", paddingBottom: 60 }}>
+          {isLoading &&
+            <RenderSkeleton name="postList" count={10} />
+          }
 
 
-          {audios
-            ? audios.map((audio) => (
-              <UserPosts key={audio.id} audio={audio} userId={userId} setAudioList={setAudios} audioList={audios} />
+          {userAudios
+            ? userAudios.map((audio) => (
+              <UserPosts key={audio.id} audio={audio} userId={userId} />
             )) : null}
         </View>
 
-      </View>
-    </ScrollView>
+      </View >
+    </ScrollView >
   );
 };
 
@@ -250,6 +271,14 @@ const styles = StyleSheet.create({
     left: 10,
     zIndex: 9999,
 
+
+
+  },
+  skeletonIcon: {
+    height: 60,
+    width: 60,
+    backgroundColor: "rgba(31, 32, 34, 0.4)",
+    borderRadius: 100
 
   },
   actionIcon: {
