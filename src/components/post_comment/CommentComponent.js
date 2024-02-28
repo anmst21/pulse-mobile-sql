@@ -5,36 +5,79 @@ import CustomText from "../../components/text";
 import Icon from '../icon';
 import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
+import { lowerFirst } from 'lodash';
+import ProfilePicture from '../profile_picture';
+import CommentInput from './CommentInput';
+import { useNavigation, StackActions } from "@react-navigation/native";
+import { switchTab } from '../../redux';
+import { humanReadableDate } from '../../utils/humanReadableDate';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+    runOnJS,
+    useAnimatedGestureHandler,
+} from "react-native-reanimated";
 
 
-const CommentComponent = ({ comment, setComments, userId }) => {
 
+
+
+
+
+const CommentComponent = ({ comment, setComments, setReply, replyId }) => {
     const [editValue, setEditValue] = useState("")
     const [isEdited, setIdEdited] = useState(false)
     const [isActiveComment, setIsActiveComment] = useState(null)
 
 
+    const storedUserInfo = useSelector((state) => state.user?.userInfo);
+    const navigation = useNavigation();
+    const dispatch = useDispatch()
+
+
+
+
+
+    const putComment = async (post_id, contents) => {
+        try {
+            const response = await sqlApi.put(`/comments/${post_id}/${contents}`);
+            const updatedComment = response.data.updatedComment;
+            setIdEdited(false);
+            setEditValue("");
+            setIsActiveComment(null)
+            setComments((prevComments) => {
+                return prevComments.map((comment) => {
+                    if (comment.id === updatedComment.id) {
+                        return { ...comment, contents: updatedComment.contents, updated_at: updatedComment.updated_at };
+                    }
+                    return comment;
+                });
+            });
+        } catch (error) {
+            console.error("Error updating comment:", error);
+        }
+    };
+
+
     const deleteComment = async (comment_id) => {
         try {
-            // Sending a DELETE request to the server to delete a comment
             await sqlApi.delete(`/comments/${comment_id}`);
 
-            // Update the comments state to remove the deleted comment
             setComments(prevComments => prevComments.filter(comment => comment.id !== comment_id));
         } catch (error) {
             console.error("Error deleting the comment:", error);
-            // Handle the error appropriately, e.g., show an error message to the user
         }
     };
 
 
     const likeComment = async (user_id, comment_id) => {
         try {
-            // Sending a POST request to the server to like/unlike a comment
             const response = await sqlApi.post(`/comments/like`, { user_id, comment_id });
             const { action } = response.data;
 
-            // Update the comments state based on the response
             setComments(prevComments => prevComments.map(comment => {
                 if (comment.id === comment_id) {
                     if (action === 'like') {
@@ -47,23 +90,14 @@ const CommentComponent = ({ comment, setComments, userId }) => {
             }));
         } catch (error) {
             console.error("Error liking/unliking the comment:", error);
-            // Handle the error appropriately
         }
     };
+
+
     return (
-        <View key={comment.id} style={styles.commentContainer} >
-            {/* <TouchableOpacity
-                        onPress={() => {
-                          storedUserInfo.id !== comment.user_id
-                            ? navigation.push("UserProfileScreen", {
-                              id: comment.user_id,
-                              comment,
-                            })
-                            : navigation.dispatch(StackActions.popToTop());
-                        }}
-                      > */}
-            {
-                comment.user_id === userId &&
+        <View key={comment.id} style={styles.commentContainer}>
+
+            {comment.user_id === storedUserInfo.id &&
                 <View style={styles.commentsTrashIcon}>
                     <TouchableOpacity onPress={() => deleteComment(comment.id)}>
                         <Icon
@@ -74,26 +108,47 @@ const CommentComponent = ({ comment, setComments, userId }) => {
                             }}
                         />
                     </TouchableOpacity>
-                </View>
-            }
+                </View>}
 
             <View style={styles.postHeader}>
-                <Image
-                    source={{ uri: comment.image_link }}
-                    style={{ width: 25, height: 25, borderRadius: 1000 }}
-                />
-                <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{comment.username}</CustomText>
+
+                <ProfilePicture userId={comment.user_id} imageLink={comment.image_link?.small} width={25} />
+                <TouchableOpacity
+                    onPress={() => {
+                        storedUserInfo.id !== comment.user_id
+                            ? navigation.push("UserProfileScreen", {
+                                id: comment.user_id,
+                            })
+                            : dispatch(
+                                switchTab({
+                                    name: "profile"
+                                })
+                            );
+                    }}
+                >
+                    <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{comment.username}</CustomText>
+                </TouchableOpacity>
+
                 <View style={styles.like}>
-                    <TouchableOpacity onPress={() => likeComment(userId, comment.id)}>
+                    <TouchableOpacity onPress={() => likeComment(storedUserInfo.id, comment.id)}>
 
                         <Icon style={{ fill: comment.liked && "white" }} name="heartIcon" />
 
                     </TouchableOpacity>
                     <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>
                 </View>
-                {userId === comment.user_id &&
+                {storedUserInfo.id !== comment.user_id && <View style={styles.repost}>
+                    <TouchableOpacity onPress={() => { replyId === comment.id ? setReply(null) : setReply(comment.id) }}>
+
+                        <Icon name="repostIcon" />
+
+                    </TouchableOpacity>
+
+                </View>}
+
+                {storedUserInfo.id === comment.user_id &&
                     <View style={styles.edit}>
-                        {isActive ? <TouchableOpacity onPress={() => {
+                        {!isActiveComment ? <TouchableOpacity onPress={() => {
                             setIdEdited(true);
                             setEditValue(comment.contents);
                             setIsActiveComment(comment.id)
@@ -109,19 +164,11 @@ const CommentComponent = ({ comment, setComments, userId }) => {
                             }>
                                 <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
                             </TouchableOpacity>}
-                        {/* <TouchableOpacity onPress={() => {
-                                            setIdEdited(false);
-                                            setEditValue("");
-                                            setIsActiveComment(null)
-                                        }
-                                        }>
-                                            <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
-                                        </TouchableOpacity> */}
+
                     </View>
                 }
 
             </View>
-            {/* </TouchableOpacity> */}
 
             {
                 isEdited && isActiveComment === comment.id ?
@@ -129,7 +176,7 @@ const CommentComponent = ({ comment, setComments, userId }) => {
                         style={styles.input}
                         placeholder="Enter a comment..."
                         value={editValue}
-                        onChangeText={text => setEditValue(text)} // Update the state on input change
+                        onChangeText={text => setEditValue(text)}
                         placeholderTextColor="gray"
                         multiline
                         maxLength={240}
@@ -143,18 +190,20 @@ const CommentComponent = ({ comment, setComments, userId }) => {
                 <CustomText style={styles.counter}>
                     {humanReadableDate(comment.created_at)}
                 </CustomText>
+                {comment.created_at !== comment.updated_at && !isEdited && <CustomText style={styles.counter}>
+                    edited
+                </CustomText>}
+
                 {isEdited && isActiveComment === comment.id && <Button
                     label="Post"
                     iconRight="arrow_right"
-
                     purple={true}
-                    // status={player.edited}
-                    // loading={saving}
-                    onPressIn={() => console.log("pressed")}
+                    onPressIn={() => putComment(comment.id, editValue)}
                 />}
 
             </View>
-        </View >
+        </View>
+
     )
 }
 
@@ -180,23 +229,19 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 16,
         marginVertical: 10,
-
-        borderWidth: 1,
-
-        //   width: '100%',
-
         color: "white"
     },
     like: { position: "absolute", right: 10, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
+    repost: { position: "absolute", right: 140, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
     likeText: { fontSize: 16 },
     comments: {
+        // right: 100,
         height: 400,
         // backgroundColor: "blue",
-        bottom: -40
+        // bottom: -40
     },
 
     postHeader: {
-
         flexDirection: "row",
         alignItems: "center"
     },
@@ -213,8 +258,7 @@ const styles = StyleSheet.create({
     commentContainer: {
         marginBottom: 10,
         padding: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        backgroundColor: "rgba(31, 32, 34, 0.2)",
         borderRadius: 5,
     },
 
