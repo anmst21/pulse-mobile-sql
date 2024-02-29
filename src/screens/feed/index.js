@@ -122,13 +122,19 @@ const FeedScreen = ({ navigation }) => {
     }
   };
 
+
+
+  const scrollViewRef = useRef(null);
+
+
+
   const renderContent = () => {
     if (activeTab.map) {
       return (<MapContainer />)
     } else {
       return (
         <View style={styles.userPostContainer}>
-          <ScrollView>
+          <ScrollView ref={scrollViewRef}>
             <View style={{ paddingTop: 170 }}>
               <View style={{ height: "100%", paddingBottom: 60 }}>
 
@@ -140,11 +146,13 @@ const FeedScreen = ({ navigation }) => {
                   && posts.map((audio) => (
                     <UserPosts
                       key={audio.id}
+                      //  scrollToChild={scrollToChild}
                       audio={audio}
                       isLoading={isLoading}
                       userId={storedUserInfo}
                       setAudioList={setAudios}
                       audioList={posts}
+                      scrollViewRef={scrollViewRef}
                     />
                   ))}
               </View>

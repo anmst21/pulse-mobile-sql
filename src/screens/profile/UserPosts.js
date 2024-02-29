@@ -9,7 +9,7 @@ import {
   TextInput
 } from "react-native";
 import { switchTab, togglePlayer } from "../../redux/slices/tabSlice";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Audio } from "expo-av";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAudio, setActiveCommentId, toggleBookmark } from "../../redux";
@@ -58,13 +58,40 @@ const humanReadableDate = (dateString) => {
 
 
 
-const UserPosts = ({ audio, userId, isLoading }) => {
+const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
+  const [prevChildRef, setPrevChildRef] = useState(null)
+
+  const childRef = useRef();
+
+  console.log("1488", prevChildRef)
+  // const compH = scrollViewRef.current.measure((x, y, width, height) => {
+  //   return height
+  // });
+  const onEditorRightLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    console.log("compHeight", height)
+    //240
+  };
+
+  const scrollToChild = () => {
+    childRef.current.measure((x, y, width, height, pageX, pageY) => {
+      console.log("loglog", y)
+      if (prevChildRef <= y) {
+        setPrevChildRef(y)
+
+        scrollViewRef.current.scrollTo({ y: y + 10 - height, animated: true });
+      } else {
+        setPrevChildRef(y)
+
+        scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
+      }
 
 
-  console.log("1488", audio)
+    });
+  };
 
 
 
@@ -185,19 +212,28 @@ const UserPosts = ({ audio, userId, isLoading }) => {
     </TouchableOpacity>
   );
 
-  const onEditorRightLayout = (event) => {
-    const { height } = event.nativeEvent.layout;
-    console.log("compHeight", height)
-    //240
-  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   return (
 
-    <View style={{
-      marginBottom: 20, borderRadius: 10, backgroundColor: "rgba(31, 32, 34, 0.4)",
-
-    }}
+    <View ref={childRef}
+      style={{
+        marginBottom: 20, borderRadius: 10, backgroundColor: "rgba(31, 32, 34, 0.2)",
+      }}
       onLayout={onEditorRightLayout}
     >
       <View style={styles.outerPost} >
@@ -277,7 +313,7 @@ const UserPosts = ({ audio, userId, isLoading }) => {
             </View>
             <TouchableOpacity onPress={() => {
               activeCommentId !== audio.id ?
-                dispatch(setActiveCommentId(audio.id)) :
+                (dispatch(setActiveCommentId(audio.id)), scrollToChild()) :
                 dispatch(setActiveCommentId(null))
 
             }}>
@@ -300,6 +336,7 @@ const UserPosts = ({ audio, userId, isLoading }) => {
 
               <TouchableOpacity onPress={() => {
                 setIsOpenTags(!isOpenTags)
+
               }}>
                 <Icon name="tagsIcon" style={{ color: isOpenTags ? "#fff" : "transparent" }} />
               </TouchableOpacity>
@@ -323,7 +360,7 @@ const UserPosts = ({ audio, userId, isLoading }) => {
 
       </View>
       {isOpenTags && audio.tags && <PostTags tags={audio.tags} />}
-    </View>
+    </View >
 
   );
 };

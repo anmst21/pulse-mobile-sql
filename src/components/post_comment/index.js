@@ -54,12 +54,12 @@ const PostComment = ({ userId, audio }) => {
         <View style={styles.comments}>
 
             <ScrollView style={{
-                paddingBottom: 100
+
             }}>
                 <CommentInput callback={(value, userId) => postComment(value, userId, audio.id)} />
                 {comments.map((comment) => (
                     <View key={comment.id} style={{
-                        marginBottom: 15,
+
                         //  backgroundColor: "yellow",
                         flexDirection: "column"
                     }}>
@@ -70,16 +70,16 @@ const PostComment = ({ userId, audio }) => {
                             marginHorizontal: 10
                         }}>
                             <ScrollView style={{
-                                paddingBottom: 100
+
                             }}>
-                                <CommentInput callback={(value, userId) => postReply(value, userId, audio.id, comment.id)} />
+                                <CommentInput reply callback={(value, userId) => postReply(value, userId, audio.id, comment.id)} />
                                 {replies && replies.map((comment) => (
                                     <View key={comment.id} style={{
-                                        marginBottom: 15,
+
                                         //  backgroundColor: "yellow",
                                         flexDirection: "column",
                                     }}>
-                                        <CommentComponent comment={comment} setComments={setReplies} setReply={setActiveReplyId} replyId={activeReplyId} />
+                                        <CommentComponent reply comment={comment} setComments={setReplies} setReply={setActiveReplyId} replyId={activeReplyId} />
                                     </View>
                                 ))}
 
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     likeText: { fontSize: 16 },
     comments: {
         // right: 100,
-        height: 400,
+        height: 250,
         // backgroundColor: "blue",
         // bottom: -40
     },

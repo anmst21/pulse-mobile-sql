@@ -22,6 +22,8 @@ PODS:
     - ExpoModulesCore
   - Expo (49.0.16):
     - ExpoModulesCore
+  - ExpoBlur (12.4.1):
+    - ExpoModulesCore
   - ExpoClipboard (4.3.1):
     - ExpoModulesCore
   - ExpoDocumentPicker (11.5.4):
@@ -685,6 +687,7 @@ DEPENDENCIES:
   - EXLocation (from `../node_modules/expo-location/ios`)
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - Expo (from `../node_modules/expo`)
+  - ExpoBlur (from `../node_modules/expo-blur/ios`)
   - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
   - ExpoDocumentPicker (from `../node_modules/expo-document-picker/ios`)
   - ExpoGL (from `../node_modules/expo-gl`)
@@ -825,6 +828,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-permissions/ios"
   Expo:
     :path: "../node_modules/expo"
+  ExpoBlur:
+    :path: "../node_modules/expo-blur/ios"
   ExpoClipboard:
     :path: "../node_modules/expo-clipboard/ios"
   ExpoDocumentPicker:
@@ -978,6 +983,7 @@ SPEC CHECKSUMS:
   EXLocation: a425ace19c0445e7ea9702982fc6b9a402791510
   EXPermissions: 4f80cf527001aa408a22eddf076e61465ea71d5a
   Expo: fcfd60c1ed6806dee5103b210335ae0c72f675ed
+  ExpoBlur: a2c90bdfa4ff9f459cdb0f83191bddf020e3e2db
   ExpoClipboard: 695f274f8e028cd113837f917da40c76850877eb
   ExpoDocumentPicker: 5cb7389ff935b4addefdd466a606de51a512e922
   ExpoGL: 77f5c4f4c1efeebceabbbcb18540208c5ab67d12

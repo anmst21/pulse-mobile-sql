@@ -6,7 +6,7 @@ import CustomText from '../text';
 import Button from "../../components/button";
 
 
-const CommentInput = ({ callback }) => {
+const CommentInput = ({ callback, reply }) => {
     const storedUserInfo = useSelector((state) => state.user?.userInfo);
     const [inputValue, setInputValue] = useState('');
 
@@ -17,7 +17,9 @@ const CommentInput = ({ callback }) => {
         setInputValue(''); // Clear the input after submission
     };
     return (
-        <View style={styles.commentContainer}>
+        <View style={[styles.commentContainer, {
+            backgroundColor: reply ? "rgba(31, 32, 34, 1)" : "rgba(31, 32, 34, 0.5)",
+        }]}>
             <View style={styles.postHeader}>
 
                 <ProfilePicture userId={storedUserInfo.id} imageLink={storedUserInfo.image_link?.small} width={25} />

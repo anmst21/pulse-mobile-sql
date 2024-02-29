@@ -27,7 +27,7 @@ import Animated, {
 
 
 
-const CommentComponent = ({ comment, setComments, setReply, replyId }) => {
+const CommentComponent = ({ comment, setComments, setReply, replyId, reply }) => {
     const [editValue, setEditValue] = useState("")
     const [isEdited, setIdEdited] = useState(false)
     const [isActiveComment, setIsActiveComment] = useState(null)
@@ -95,7 +95,9 @@ const CommentComponent = ({ comment, setComments, setReply, replyId }) => {
 
 
     return (
-        <View key={comment.id} style={styles.commentContainer}>
+        <View key={comment.id} style={[styles.commentContainer, {
+            backgroundColor: reply ? "rgba(31, 32, 34, 1)" : "rgba(31, 32, 34, 0.5)",
+        }]}>
 
             {comment.user_id === storedUserInfo.id &&
                 <View style={styles.commentsTrashIcon}>
@@ -127,6 +129,7 @@ const CommentComponent = ({ comment, setComments, setReply, replyId }) => {
                     }}
                 >
                     <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{comment.username}</CustomText>
+
                 </TouchableOpacity>
 
                 <View style={styles.like}>
@@ -137,14 +140,16 @@ const CommentComponent = ({ comment, setComments, setReply, replyId }) => {
                     </TouchableOpacity>
                     <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>
                 </View>
-                {storedUserInfo.id !== comment.user_id && <View style={styles.repost}>
-                    <TouchableOpacity onPress={() => { replyId === comment.id ? setReply(null) : setReply(comment.id) }}>
+                {!reply &&
+                    <View style={styles.repost}>
+                        <TouchableOpacity onPress={() => { replyId === comment.id ? setReply(null) : setReply(comment.id) }}>
 
-                        <Icon name="repostIcon" />
+                            <Icon name="repostIcon" />
 
-                    </TouchableOpacity>
-
-                </View>}
+                        </TouchableOpacity>
+                        <CustomText style={styles.likeText}>{comment.replies_count}</CustomText>
+                    </View>
+                }
 
                 {storedUserInfo.id === comment.user_id &&
                     <View style={styles.edit}>
@@ -256,6 +261,7 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     commentContainer: {
+        //   height: 150,
         marginBottom: 10,
         padding: 10,
         backgroundColor: "rgba(31, 32, 34, 0.2)",
