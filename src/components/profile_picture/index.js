@@ -77,13 +77,13 @@ const ProfilePicture = ({ imageLink, userId, width }) => {
         {/* <Button title="Pick an image from camera roll" onPress={pickImage} /> */}
         {imageLink ? (
           <View style={{
-            width: width, height: width, backgroundColor: userStatus === "inActive" ? "green" : "grey",
+            //   width: width, height: width, backgroundColor: userStatus === "inActive" ? "green" : "grey",
             alignItems: "center", justifyContent: "center"
 
           }}>
             {!isLoading && <Image
               source={{ uri: imageLink }}
-              style={{ width: width - 10, height: width - 10, borderRadius: 1000 }}
+              style={{ width: width, height: width, borderRadius: 1000 }}
               //  onLoadStart={() => setIsLoading(true)} // Handle load start
               onLoadStart={() => { setImageLoader(true) }} // Handle load end
               onLoad={() => { setImageLoader(false); console.log("ended") }}

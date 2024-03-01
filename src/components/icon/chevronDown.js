@@ -40,7 +40,7 @@ const Icon = ({ style }) => {
                     stroke="#fff"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
+                    strokeWidth="1"
                     d="M7 10l5 4.58L17 10"
                 ></Path>
             </Svg>
