@@ -63,10 +63,22 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
   const [prevChildRef, setPrevChildRef] = useState(null)
-
+  const navigation = useNavigation();
+  const [playbackPosition, setPlaybackPosition] = useState(0);
+  const dispatch = useDispatch();
+  const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
+  const { activeCommentId, } = useSelector((state) => state.feed);
+  const [isOpenTags, setIsOpenTags] = useState(false)
+  const [isOpenComments, setIsOpenComments] = useState(false)
+  const [isBookmarked, setIsBookmarked] = useState(audio.bookmarked)
   const childRef = useRef();
 
-  console.log("1488", prevChildRef)
+
+  useEffect(() => {
+    !activeCommentId && setActiveCommentId(null)
+
+  }, [activeCommentId])
+
   // const compH = scrollViewRef.current.measure((x, y, width, height) => {
   //   return height
   // });
@@ -78,16 +90,18 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
 
   const scrollToChild = () => {
     childRef.current.measure((x, y, width, height, pageX, pageY) => {
-      console.log("loglog", y)
-      if (prevChildRef <= y) {
-        setPrevChildRef(y)
+      console.log("1488", isOpenComments, prevChildRef, y)
 
-        scrollViewRef.current.scrollTo({ y: y + 10 - height, animated: true });
-      } else {
-        setPrevChildRef(y)
+      if (prevChildRef < y && prevChildRef) {
+
+        scrollViewRef.current.scrollTo({ y: y + 10 - 280, animated: true });
+      } else if (prevChildRef >= y && prevChildRef) {
 
         scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
+      } else if (prevChildRef === null) {
+        scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
       }
+      setPrevChildRef(y)
 
 
     });
@@ -95,12 +109,11 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
 
 
 
-  const navigation = useNavigation();
-  const [playbackPosition, setPlaybackPosition] = useState(0);
-  const dispatch = useDispatch();
-  const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
-  const { activeCommentId, } = useSelector((state) => state.feed);
-  const [isOpenTags, setIsOpenTags] = useState(false)
+
+
+  useEffect(() => {
+    activeCommentId !== audio.id && setIsOpenComments(false)
+  }, [activeCommentId])
 
   // useEffect(() => {
   //   if (activeCommentId !== audio.id) { setOpenComments(false) }
@@ -312,20 +325,25 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
               <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
             </View>
             <TouchableOpacity onPress={() => {
-              activeCommentId !== audio.id ?
-                (dispatch(setActiveCommentId(audio.id)), scrollToChild()) :
-                dispatch(setActiveCommentId(null))
+              !isOpenComments ?
+                (setIsOpenComments(true), dispatch(setActiveCommentId(audio.id)), scrollToChild()) :
+                (setIsOpenComments(false), setPrevChildRef(null), dispatch(setActiveCommentId(null)))
 
             }}>
-              <Icon name="messageIcon" />
+              <Icon name="messageIcon" style={{ fill: isOpenComments }} />
             </TouchableOpacity>
             {/* // setActiveCommentId */}
           </View>
           <View style={styles.message} >
             <TouchableOpacity onPress={() => {
+              if (audio.bookmarked) {
+                setIsBookmarked(false)
+              } else {
+                setIsBookmarked(true)
+              }
               dispatch(toggleBookmark({ postId: audio.id }))
             }}>
-              <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: audio.bookmarked ? "white" : null }} />
+              <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: isBookmarked ? "white" : null }} />
             </TouchableOpacity>
           </View>
           {audio.tags && audio.tags.length !== 0 &&
@@ -348,7 +366,7 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
           </View>
 
         </View>
-        {activeCommentId === audio.id &&
+        {isOpenComments &&
           <PostComment
 
             userId={storedUserInfo}

@@ -30,51 +30,58 @@ const humanReadableDate = (dateString) => {
 
 const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
     const dispatch = useDispatch()
+    const [vote, setVote] = useState(audio.vote_type)
 
+    const handleUpvote = (type) => {
+        if (type) {
+            if (audio.vote_type === true) {
+                setVote(null)
+            } else {
+                setVote(true)
+
+            }
+            dispatch(toggleUpvote({ postId: id, voteType: true }))
+        }
+        if (!type) {
+            if (audio.vote_type === false) {
+                setVote(null)
+            } else {
+                setVote(false)
+
+            }
+            dispatch(toggleUpvote({ postId: id, voteType: false }))
+        }
+    }
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => dispatch(toggleUpvote({ postId: id, voteType: true }))}>
+            <TouchableOpacity onPress={() => handleUpvote(true)}>
                 <View style={[styles.minibox, {
                     borderTopRightRadius: 0,
                     borderBottomRightRadius: 0,
-                    backgroundColor: audio.vote_type === true ? "rgba(31, 32, 34, 1)" : "transparent"
+                    backgroundColor: vote === true ? "rgba(31, 32, 34, 1)" : "transparent"
                 }]}>
                     <View style={styles.arrowIcon}>
-                        <Icon name="upvoteIcon" style={{ color: audio.vote_type === true ? "#14AD4D" : "grey" }} />
+                        <Icon name="upvoteIcon" style={{ color: vote === true ? "#14AD4D" : "grey" }} />
                     </View>
                     <CustomText style={styles.text}>{upvotes}</CustomText>
 
                 </View>
             </TouchableOpacity>
             <View style={styles.lineHorizontal} />
-            <TouchableOpacity onPress={() => dispatch(toggleUpvote({ postId: id, voteType: false }))}>
+            <TouchableOpacity onPress={() => handleUpvote(false)}>
                 <View style={[styles.minibox, {
                     borderTopLeftRadius: 0,
                     borderBottomLeftRadius: 0,
-                    backgroundColor: audio.vote_type === false ? "rgba(31, 32, 34, 1)" : "transparent"
+                    backgroundColor: vote === false ? "rgba(31, 32, 34, 1)" : "transparent"
                 }]}>
                     <View style={styles.arrowIcon}>
-                        <Icon name="downvoteIcon" style={{ color: audio.vote_type === false ? "#F53535" : "grey" }} />
+                        <Icon name="downvoteIcon" style={{ color: vote === false ? "#F53535" : "grey" }} />
                     </View>
                     <CustomText style={styles.text}>{downvotes}</CustomText>
 
                 </View >
             </TouchableOpacity>
-
-
-
-
-
-            {/* <View style={styles.bookMark}>
-                <Icon name="bookMark" />
-
-            </View> */}
-
-            {/* <View style={styles.dateContainer}>
-                <CustomText style={styles.date}>{humanReadableDate(dateCreated)}</CustomText>
-
-            </View> */}
         </View >
     )
 }

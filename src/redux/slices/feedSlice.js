@@ -5,9 +5,10 @@ import { followUser, unfollowUser, subscribeUser } from "../thunks/followSubscri
 
 const initialState = {
   time: "1",
+  activeCommentId: null,
   posts: [],
   comments: [],
-  activeCommentId: null,
+
   isLoading: false,
   error: ""
 };
@@ -128,7 +129,13 @@ const feedSlice = createSlice({
                 updatedPost.downvotes = (updatedPost.downvotes || 0) + 1;
                 updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
               }
-            } else if (vote_type === null) {
+            } else if (actionType === "delete") {
+              if (updatedPost.vote_type === true) {
+                updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
+              } else if (updatedPost.vote_type === false) {
+                updatedPost.downvotes = Math.max(0, (updatedPost.downvotes || 0) - 1);
+
+              }
               // Handle vote removal
               updatedPost.vote_type = null
               updatedPost.upvotes = actionType === true ? Math.max(0, (updatedPost.upvotes || 0) - 1) : updatedPost.upvotes;

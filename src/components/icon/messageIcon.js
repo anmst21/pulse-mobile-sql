@@ -19,6 +19,7 @@ const Icon = ({ style }) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
+                fill={style?.fill ? "#fff" : "transparent"}
                 d="M7.2 7.2h8.4M7.2 12H12m-.313 4.591L6.678 21.6v-5.009H4.8a2.4 2.4 0 01-2.4-2.4V4.8a2.4 2.4 0 012.4-2.4h14.4a2.4 2.4 0 012.4 2.4v9.391a2.4 2.4 0 01-2.4 2.4h-7.513z"
             ></Path>
         </Svg>
