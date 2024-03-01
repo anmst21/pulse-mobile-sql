@@ -362,6 +362,50 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
       <Animated.View style={[animatedStyles]}>
         <View style={[styles.ctaBtn, { width: calcWidth }]}>
 
+          <View style={styles.message} >
+            <View style={styles.commentsCount}>
+              <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
+            </View>
+            <TouchableOpacity onPress={() => {
+              activeCommentId === audio.id && setPrevChildRef(null),
+                activeCommentId !== audio.id ?
+                  (setIsOpenComments(true), dispatch(setActiveCommentId(audio.id)), translateX.value = withSpring(0)) :
+                  (setIsOpenComments(false), dispatch(setActiveCommentId(null)))
+
+            }}>
+              <Icon name="messageIcon" style={{ fill: isOpenComments }} />
+            </TouchableOpacity>
+            {/* // setActiveCommentId */}
+          </View>
+
+          <View style={styles.message} >
+            <TouchableOpacity onPress={() => {
+              if (audio.bookmarked) {
+                setIsBookmarked(false)
+              } else {
+                setIsBookmarked(true)
+              }
+              dispatch(toggleBookmark({ postId: audio.id }))
+            }}>
+              <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: isBookmarked ? "white" : null }} />
+            </TouchableOpacity>
+          </View>
+
+
+          {audio.tags && audio.tags.length !== 0 &&
+            <View style={styles.message} >
+              <View style={styles.commentsCount}>
+                <CustomText style={{ fontSize: 12, color: "black" }}>{audio.tags.length}</CustomText>
+              </View>
+
+              <TouchableOpacity onPress={() => {
+                setIsOpenTags(!isOpenTags)
+
+              }}>
+                <Icon name="tagsIcon" style={{ color: isOpenTags ? "#fff" : "transparent" }} />
+              </TouchableOpacity>
+            </View>
+          }
 
 
         </View>
@@ -451,47 +495,8 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
                 downvotes={audio.downvotes}
 
               />
-              <View style={styles.message} >
-                <View style={styles.commentsCount}>
-                  <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
-                </View>
-                <TouchableOpacity onPress={() => {
-                  activeCommentId === audio.id && setPrevChildRef(null),
-                    activeCommentId !== audio.id ?
-                      (setIsOpenComments(true), dispatch(setActiveCommentId(audio.id)), scrollToChild()) :
-                      (setIsOpenComments(false), dispatch(setActiveCommentId(null)))
 
-                }}>
-                  <Icon name="messageIcon" style={{ fill: isOpenComments }} />
-                </TouchableOpacity>
-                {/* // setActiveCommentId */}
-              </View>
-              <View style={styles.message} >
-                <TouchableOpacity onPress={() => {
-                  if (audio.bookmarked) {
-                    setIsBookmarked(false)
-                  } else {
-                    setIsBookmarked(true)
-                  }
-                  dispatch(toggleBookmark({ postId: audio.id }))
-                }}>
-                  <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: isBookmarked ? "white" : null }} />
-                </TouchableOpacity>
-              </View>
-              {audio.tags && audio.tags.length !== 0 &&
-                <View style={styles.message} >
-                  <View style={styles.commentsCount}>
-                    <CustomText style={{ fontSize: 12, color: "black" }}>{audio.tags.length}</CustomText>
-                  </View>
 
-                  <TouchableOpacity onPress={() => {
-                    setIsOpenTags(!isOpenTags)
-
-                  }}>
-                    <Icon name="tagsIcon" style={{ color: isOpenTags ? "#fff" : "transparent" }} />
-                  </TouchableOpacity>
-                </View>
-              }
 
               <View style={[styles.message, { backgroundColor: "transparent" }]} >
                 <View style={styles.commentsCount}>
@@ -536,13 +541,13 @@ const styles = StyleSheet.create({
     left: "100%",
     flexDirection: "column",
     paddingHorizontal: 10,
-    gap: 50,
+    gap: 20,
     // width: 255,
-    backgroundColor: "red",
+    //   backgroundColor: "red",
     justifyContent: "center",
     height: "100%",
-    alignItems: "center"
-
+    alignItems: "center",
+    paddingBottom: 20
   },
   bpmText: {
     fontSize: 12,
