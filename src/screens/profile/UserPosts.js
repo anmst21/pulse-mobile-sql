@@ -59,21 +59,29 @@ const humanReadableDate = (dateString) => {
 
 
 const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screenHeight, feedY }) => {
+  const dispatch = useDispatch();
+
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
-  const [prevChildRef, setPrevChildRef] = useState(null)
   const navigation = useNavigation();
   const [playbackPosition, setPlaybackPosition] = useState(0);
-  const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
+
   const { activeCommentId, } = useSelector((state) => state.feed);
   const [isOpenTags, setIsOpenTags] = useState(false)
   const [isOpenComments, setIsOpenComments] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(audio.bookmarked)
-  const [isSeen, setIsSeen] = useState(false)
+  const [isSeen, setIsSeen] = useState(audio.isSeen)
+  const [seen, setSeen] = useState(audio.seen)
+
+
   const childRef = useRef();
-  console.log("prevChildRef", isSeen)
+  const [prevChildRef, setPrevChildRef] = useState(null)
+  const timeoutRef = useRef(null);
+  console.log("auauauau", audio)
+
+
 
   useEffect(() => {
     !activeCommentId && setActiveCommentId(null)
@@ -81,33 +89,54 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
   }, [activeCommentId])
 
   useEffect(() => {
-    if (childRef.current) {
-      childRef.current.measure((x, y, width, height, pageX, pageY) => {
-        const shouldSetSeen = ((screenHeight - height) > pageY + 80);
+    const checkAndSetSeen = () => {
+      if (childRef.current) {
+        childRef.current.measure(async (x, y, width, height, pageX, pageY) => {
+          const shouldSetSeen = ((screenHeight - height) > pageY + 80) && !isSeen;
+          console.log("shouldSetSeen", shouldSetSeen);
 
-        if (shouldSetSeen) {
-          setIsSeen(true);
-          console.log("1488", "log", pageY)
+          if (shouldSetSeen) {
+            timeoutRef.current = setTimeout(async () => {
+              try {
 
-        }
-      });
-    }
-  }, [feedY]);
+                const response = await sqlApi.post('/audios/seen', { audioId: audio.id });
+                console.log();
+                if (response.data.action === "seen") {
+                  setIsSeen(true);
+                  setSeen(seen + 1);
+                }
 
-  // const compH = scrollViewRef.current.measure((x, y, width, height) => {
-  //   return height
-  // });
+
+              } catch (error) {
+                console.error('Error posting seen action:', error);
+              }
+            }, 3000);
+          } else {
+            if (timeoutRef.current) {
+              clearTimeout(timeoutRef.current);
+            }
+          }
+        });
+      }
+    };
+
+    // Call the function to check condition and possibly set timeout
+    checkAndSetSeen();
+
+    // Cleanup function to clear timeout on unmount or when feedY changes
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [feedY, seen, isSeen]);
+
+
   const onEditorRightLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     console.log("compHeight", height)
     //240
   };
-
-  // childRef.current.measure((x, y, width, height, pageX, pageY) => {
-  //   ((screenHeight - height) > pageY + 80)
-
-
-  // });
 
   const scrollToChild = () => {
     childRef.current.measure((x, y, width, height, pageX, pageY) => {
@@ -136,9 +165,6 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
     activeCommentId !== audio.id && setIsOpenComments(false)
   }, [activeCommentId])
 
-  // useEffect(() => {
-  //   if (activeCommentId !== audio.id) { setOpenComments(false) }
-  // }, [activeCommentId]);
 
   const setPlayer = async () => {
     await Audio.setAudioModeAsync({
@@ -150,9 +176,8 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
   useEffect(() => {
     setPlayer();
     return () => {
-      // This cleanup function will be called when the component unmounts
       if (sound) {
-        sound.unloadAsync(); // Unload the sound
+        sound.unloadAsync();
       }
     };
   }, [sound]);
@@ -391,6 +416,17 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
               </TouchableOpacity>
             </View>
           }
+
+          <View style={[styles.message, { backgroundColor: "transparent" }]} >
+            <View style={styles.commentsCount}>
+              <CustomText style={{ fontSize: 12, color: "black" }}>{seen}</CustomText>
+            </View>
+
+
+            <Icon name="seenIcon" style={{ width: 24, }} />
+
+          </View>
+
           <View style={styles.dateContainer}>
             <CustomText style={styles.date}>{humanReadableDate(audio.date_created)}</CustomText>
 

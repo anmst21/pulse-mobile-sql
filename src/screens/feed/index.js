@@ -134,7 +134,7 @@ const FeedScreen = ({ navigation }) => {
       return (
         <View style={styles.userPostContainer} onLayout={onEditorRightLayout}>
           <ScrollView
-            //scrollEventThrottle={16}
+            scrollEventThrottle={16}
             ref={scrollViewRef}
             onScroll={event => {
               const y = event.nativeEvent.contentOffset.y;
