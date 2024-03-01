@@ -58,7 +58,7 @@ const humanReadableDate = (dateString) => {
 
 
 
-const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
+const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screenHeight, feedY }) => {
   const [sound, setSound] = useState();
   const [playingStatus, setPlayingStatus] = useState({});
   const [playingNow, setPlayingNow] = useState(null);
@@ -71,13 +71,28 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
   const [isOpenTags, setIsOpenTags] = useState(false)
   const [isOpenComments, setIsOpenComments] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(audio.bookmarked)
+  const [isSeen, setIsSeen] = useState(false)
   const childRef = useRef();
-
+  console.log("prevChildRef", isSeen)
 
   useEffect(() => {
     !activeCommentId && setActiveCommentId(null)
 
   }, [activeCommentId])
+
+  useEffect(() => {
+    if (childRef.current) {
+      childRef.current.measure((x, y, width, height, pageX, pageY) => {
+        const shouldSetSeen = ((screenHeight - height) > pageY + 80);
+
+        if (shouldSetSeen) {
+          setIsSeen(true);
+          console.log("1488", "log", pageY)
+
+        }
+      });
+    }
+  }, [feedY]);
 
   // const compH = scrollViewRef.current.measure((x, y, width, height) => {
   //   return height
@@ -88,21 +103,27 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
     //240
   };
 
+  // childRef.current.measure((x, y, width, height, pageX, pageY) => {
+  //   ((screenHeight - height) > pageY + 80)
+
+
+  // });
+
   const scrollToChild = () => {
     childRef.current.measure((x, y, width, height, pageX, pageY) => {
-      console.log("1488", isOpenComments, prevChildRef, y)
 
-      if (prevChildRef < y && prevChildRef) {
+      if (prevChildRef <= y && prevChildRef) {
 
         scrollViewRef.current.scrollTo({ y: y + 10 - 280, animated: true });
       } else if (prevChildRef >= y && prevChildRef) {
 
         scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
-      } else if (prevChildRef === null) {
+      } else if (!prevChildRef && !isOpenComments) {
         scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
       }
-      setPrevChildRef(y)
 
+
+      setPrevChildRef(y)
 
     });
   };
@@ -251,6 +272,15 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
     >
       <View style={styles.outerPost} >
 
+        <View style={{
+          width: 5,
+          height: 5,
+          backgroundColor: !isSeen ? Theme.green : "transparent",
+          borderRadius: 10,
+          position: "absolute",
+          right: 15,
+          top: 15
+        }} />
 
         <View style={styles.postHeader}>
           {audio?.user_id !== userId && <View style={styles.dotMenu}>
@@ -325,9 +355,10 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef }) => {
               <CustomText style={{ fontSize: 12, color: "black" }}>{audio.comment_count}</CustomText>
             </View>
             <TouchableOpacity onPress={() => {
-              !isOpenComments ?
-                (setIsOpenComments(true), dispatch(setActiveCommentId(audio.id)), scrollToChild()) :
-                (setIsOpenComments(false), setPrevChildRef(null), dispatch(setActiveCommentId(null)))
+              activeCommentId === audio.id && setPrevChildRef(null),
+                activeCommentId !== audio.id ?
+                  (setIsOpenComments(true), dispatch(setActiveCommentId(audio.id)), scrollToChild()) :
+                  (setIsOpenComments(false), dispatch(setActiveCommentId(null)))
 
             }}>
               <Icon name="messageIcon" style={{ fill: isOpenComments }} />

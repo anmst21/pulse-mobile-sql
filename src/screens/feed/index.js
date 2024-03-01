@@ -37,16 +37,11 @@ const FeedScreen = ({ navigation }) => {
   const feedOpacity = useSharedValue(0);
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
   const { posts, isLoading } = useSelector((state) => state?.feed);
-
-  const [audios, setAudios] = useState([])
-  console.log("audiosaudiosaudios", audios)
-  const fetchAudioList = async () => {
+  const [feedHeight, setFeedHeight] = useState(null)
+  const [feedY, setFeedY] = useState(0);
 
 
-    const { data } = await sqlApi.get(`/audios`)
-    setAudios(data)
-
-  };
+  console.log("setFeedY", feedY)
 
   useEffect(() => {
     // fetchAudioList()
@@ -126,6 +121,10 @@ const FeedScreen = ({ navigation }) => {
 
   const scrollViewRef = useRef(null);
 
+  const onEditorRightLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    setFeedHeight(height)
+  };
 
 
   const renderContent = () => {
@@ -133,8 +132,14 @@ const FeedScreen = ({ navigation }) => {
       return (<MapContainer />)
     } else {
       return (
-        <View style={styles.userPostContainer}>
-          <ScrollView ref={scrollViewRef}>
+        <View style={styles.userPostContainer} onLayout={onEditorRightLayout}>
+          <ScrollView
+            //scrollEventThrottle={16}
+            ref={scrollViewRef}
+            onScroll={event => {
+              const y = event.nativeEvent.contentOffset.y;
+              setFeedY(y);
+            }}>
             <View style={{ paddingTop: 170 }}>
               <View style={{ height: "100%", paddingBottom: 60 }}>
 
@@ -145,14 +150,17 @@ const FeedScreen = ({ navigation }) => {
                 {posts
                   && posts.map((audio) => (
                     <UserPosts
+
+                      //  scrollEventThrottle={16}
                       key={audio.id}
+                      feedY={feedY}
                       //  scrollToChild={scrollToChild}
                       audio={audio}
                       isLoading={isLoading}
                       userId={storedUserInfo}
-                      setAudioList={setAudios}
                       audioList={posts}
                       scrollViewRef={scrollViewRef}
+                      feedHeight={feedHeight}
                     />
                   ))}
               </View>
@@ -180,6 +188,9 @@ const FeedScreen = ({ navigation }) => {
   //     }
   //   }}
   // />
+
+
+
   return (
     <View style={{ backgroundColor: "black", position: "relative" }}>
       {renderTab()}
