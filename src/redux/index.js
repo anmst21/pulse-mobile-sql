@@ -67,7 +67,8 @@ export * from "./thunks/settingsThunk";
 export * from "./thunks/feedThunk";
 
 export {
-  setActiveCommentId
+  setActiveCommentId,
+  setActiveDrawerId
 } from "./slices/feedSlice"
 export { clearErrorMessage, setImageLoader, setImageStatus, setUserStatus } from "./slices/userSlice";
 export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";

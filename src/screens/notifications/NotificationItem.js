@@ -22,7 +22,6 @@ import Icon from "../../components/icon";
 const NotificationItem = ({ setActiveItem, isActive, item, handleAccept, handleDecline, handleSeen, storedUserInfo }) => {
     const calcWidth = item.type === "subscription_request" ? 255 : 150
     const translateX = useSharedValue(0);
-    console.log("NotificationItem", isActive)
 
 
     useEffect(() => {

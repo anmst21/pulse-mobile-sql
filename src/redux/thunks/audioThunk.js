@@ -82,6 +82,8 @@ const uploadAudio = createAsyncThunk(
         data.comment_count = 0;
         data.user_vote_type = null;
         data.vote_type = null;
+        data.seen = 0;
+        data.isSeen = false
         return data;
       }
     } catch (error) {

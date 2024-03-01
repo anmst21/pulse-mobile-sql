@@ -6,6 +6,7 @@ import { followUser, unfollowUser, subscribeUser } from "../thunks/followSubscri
 const initialState = {
   time: "1",
   activeCommentId: null,
+  activeDrawerId: null,
   posts: [],
   comments: [],
 
@@ -22,6 +23,9 @@ const feedSlice = createSlice({
     },
     setActiveCommentId: (state, action) => {
       state.activeCommentId = action.payload;
+    },
+    setActiveDrawerId: (state, action) => {
+      state.activeDrawerId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -164,7 +168,8 @@ const feedSlice = createSlice({
 
 export const {
   updateTimeStamp,
-  setActiveCommentId
+  setActiveCommentId,
+  setActiveDrawerId
 } = feedSlice.actions;
 
 export const feedReducer = feedSlice.reducer;

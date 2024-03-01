@@ -40,6 +40,8 @@ const FeedScreen = ({ navigation }) => {
   const [feedHeight, setFeedHeight] = useState(null)
   const [feedY, setFeedY] = useState(0);
 
+  const [activeDrawerId, setActiveDrawerId] = useState(null)
+
 
   console.log("setFeedY", feedY)
 
@@ -150,11 +152,12 @@ const FeedScreen = ({ navigation }) => {
                 {posts
                   && posts.map((audio) => (
                     <UserPosts
+                      activeDrawer={activeDrawerId === audio.id}
+                      setActiveDrawerId={setActiveDrawerId}
 
-                      //  scrollEventThrottle={16}
                       key={audio.id}
                       feedY={feedY}
-                      //  scrollToChild={scrollToChild}
+
                       audio={audio}
                       isLoading={isLoading}
                       userId={storedUserInfo}
