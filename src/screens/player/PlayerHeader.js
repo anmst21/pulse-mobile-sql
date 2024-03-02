@@ -172,7 +172,7 @@ const PlayerHeader = () => {
         />
 
         <View style={styles.headerButtons}>
-          <Button
+          {/* <Button
             label="Mix"
             active={activeMix}
             icon="atom"
@@ -182,8 +182,10 @@ const PlayerHeader = () => {
               // alert("Mix")
               // dispatch(togglePlayer(false))
             }}
-          />
-          {renderDuplicateButton()}
+          /> */}
+          <View style={{ alignSelf: "flex-end" }}>
+            {renderDuplicateButton()}
+          </View>
 
           {renderSaveButton()}
         </View>

@@ -1,7 +1,7 @@
 import { StyleSheet, View, ScrollView, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import sqlApi from "../../redux/axios/sqlApi"
-
+import CustomText from '../text';
 import CommentInput from './CommentInput';
 import CommentComponent from './CommentComponent';
 
@@ -10,6 +10,7 @@ const PostComment = ({ userId, audio }) => {
     const [comments, setComments] = useState([]);
     const [replies, setReplies] = useState([]);
     const [activeReplyId, setActiveReplyId] = useState(null)
+    const [containerWidth, setContainerWidth] = useState(100)
 
     useEffect(() => { fetchComments(audio.id, userId) }, [])
 
@@ -48,46 +49,62 @@ const PostComment = ({ userId, audio }) => {
         console.log("13333", response.data)
         setReplies([response.data, ...(replies || [])]);
     }
+    const onEditorLayout = (event) => {
+        const { width } = event.nativeEvent.layout;
+        setContainerWidth(width || 100)
+        console.log("hhh", width)
+    };
+
 
 
     return (
-        <View style={styles.comments}>
-
-            <ScrollView style={{
+        <View style={styles.comments} onLayout={onEditorLayout}>
+            <CustomText style={{ fontSize: 40, position: "absolute", top: 30, zIndex: 9999 }}>Comments</CustomText>
+            <ScrollView showsHorizontalScrollIndicator={false} horizontal style={{
 
             }}>
-                <CommentInput callback={(value, userId) => postComment(value, userId, audio.id)} />
+                <View style={{
+                    marginTop: 100
+                }}>
+                    <CommentInput containerWidth={containerWidth} callback={(value, userId) => postComment(value, userId, audio.id)} />
+                </View>
                 {comments.map((comment) => (
-                    <View key={comment.id} style={{
-
-                        //  backgroundColor: "yellow",
-                        flexDirection: "column"
+                    <ScrollView key={comment.id} showsVerticalScrollIndicator={false} style={{
+                        paddingTop: 100,
                     }}>
-                        <CommentComponent comment={comment} setComments={setComments} setReply={setActiveReplyId} replyId={activeReplyId} />
-                        {activeReplyId === comment.id && <View style={{
-                            // backgroundColor: "red",
-                            flex: 1,
-                            marginHorizontal: 10
+                        <View style={{
+
+                            //  backgroundColor: "yellow",
+                            flexDirection: "column",
                         }}>
-                            <ScrollView style={{
+                            <CommentComponent containerWidth={containerWidth} comment={comment} setComments={setComments} setReply={setActiveReplyId} replyId={activeReplyId} />
+                            {activeReplyId === comment.id && <View style={{
+                                // backgroundColor: "red",
+                                flex: 1,
 
                             }}>
+
                                 <CommentInput reply callback={(value, userId) => postReply(value, userId, audio.id, comment.id)} />
-                                {replies && replies.map((comment) => (
-                                    <View key={comment.id} style={{
+                                <View style={{
+                                    paddingBottom: 150
+                                }}>
+                                    {replies && replies.map((comment) => (
+                                        <View key={comment.id} style={{
 
-                                        //  backgroundColor: "yellow",
-                                        flexDirection: "column",
-                                    }}>
-                                        <CommentComponent reply comment={comment} setComments={setReplies} setReply={setActiveReplyId} replyId={activeReplyId} />
-                                    </View>
-                                ))}
+                                            //  backgroundColor: "yellow",
+                                            flexDirection: "column",
+                                        }}>
+                                            <CommentComponent reply comment={comment} setComments={setReplies} setReply={setActiveReplyId} replyId={activeReplyId} />
+                                        </View>
+                                    ))}
+                                </View>
 
-                            </ScrollView>
 
-                        </View>}
 
-                    </View>
+                            </View>}
+
+                        </View>
+                    </ScrollView>
                 ))}
             </ScrollView>
         </View>
@@ -125,8 +142,10 @@ const styles = StyleSheet.create({
     repost: { position: "absolute", right: 140, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
     likeText: { fontSize: 16 },
     comments: {
+
         // right: 100,
-        height: 250,
+        //  top: -30,
+        flex: 1,
         // backgroundColor: "blue",
         // bottom: -40
     },

@@ -27,7 +27,7 @@ import Animated, {
 
 
 
-const CommentComponent = ({ comment, setComments, setReply, replyId, reply }) => {
+const CommentComponent = ({ containerWidth, comment, setComments, setReply, replyId, reply }) => {
     const [editValue, setEditValue] = useState("")
     const [isEdited, setIdEdited] = useState(false)
     const [isActiveComment, setIsActiveComment] = useState(null)
@@ -97,6 +97,7 @@ const CommentComponent = ({ comment, setComments, setReply, replyId, reply }) =>
     return (
         <View key={comment.id} style={[styles.commentContainer, {
             backgroundColor: reply ? "rgba(31, 32, 34, 1)" : "rgba(31, 32, 34, 0.5)",
+            width: containerWidth
         }]}>
 
             {comment.user_id === storedUserInfo.id &&
@@ -111,101 +112,104 @@ const CommentComponent = ({ comment, setComments, setReply, replyId, reply }) =>
                         />
                     </TouchableOpacity>
                 </View>}
+            <View style={{
+                flex: 1
+            }}>
+                <View style={styles.postHeader}>
 
-            <View style={styles.postHeader}>
-
-                <ProfilePicture userId={comment.user_id} imageLink={comment.image_link?.small} width={25} />
-                <TouchableOpacity
-                    onPress={() => {
-                        storedUserInfo.id !== comment.user_id
-                            ? navigation.push("UserProfileScreen", {
-                                id: comment.user_id,
-                            })
-                            : dispatch(
-                                switchTab({
-                                    name: "profile"
+                    <ProfilePicture userId={comment.user_id} imageLink={comment.image_link?.small} width={25} />
+                    <TouchableOpacity
+                        onPress={() => {
+                            storedUserInfo.id !== comment.user_id
+                                ? navigation.push("UserProfileScreen", {
+                                    id: comment.user_id,
                                 })
-                            );
-                    }}
-                >
-                    <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{comment.username}</CustomText>
-
-                </TouchableOpacity>
-
-                <View style={styles.like}>
-                    <TouchableOpacity onPress={() => likeComment(storedUserInfo.id, comment.id)}>
-
-                        <Icon style={{ fill: comment.liked && "white" }} name="heartIcon" />
+                                : dispatch(
+                                    switchTab({
+                                        name: "profile"
+                                    })
+                                );
+                        }}
+                    >
+                        <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{comment.username}</CustomText>
 
                     </TouchableOpacity>
-                    <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>
-                </View>
-                {!reply &&
-                    <View style={styles.repost}>
-                        <TouchableOpacity onPress={() => { replyId === comment.id ? setReply(null) : setReply(comment.id) }}>
 
-                            <Icon name="repostIcon" />
+                    <View style={styles.like}>
+                        <TouchableOpacity onPress={() => likeComment(storedUserInfo.id, comment.id)}>
+
+                            <Icon style={{ fill: comment.liked && "white" }} name="heartIcon" />
 
                         </TouchableOpacity>
-                        <CustomText style={styles.likeText}>{comment.replies_count}</CustomText>
+                        <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>
                     </View>
-                }
+                    {!reply &&
+                        <View style={styles.repost}>
+                            <TouchableOpacity onPress={() => { replyId === comment.id ? setReply(null) : setReply(comment.id) }}>
 
-                {storedUserInfo.id === comment.user_id &&
-                    <View style={styles.edit}>
-                        {!isActiveComment ? <TouchableOpacity onPress={() => {
-                            setIdEdited(true);
-                            setEditValue(comment.contents);
-                            setIsActiveComment(comment.id)
-                        }
-                        }>
-                            <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
-                        </TouchableOpacity>
-                            : <TouchableOpacity onPress={() => {
-                                setIdEdited(false);
-                                setEditValue("");
-                                setIsActiveComment(null)
+                                <Icon name="repostIcon" />
+
+                            </TouchableOpacity>
+                            <CustomText style={styles.likeText}>{comment.replies_count}</CustomText>
+                        </View>
+                    }
+
+                    {storedUserInfo.id === comment.user_id &&
+                        <View style={styles.edit}>
+                            {!isActiveComment ? <TouchableOpacity onPress={() => {
+                                setIdEdited(true);
+                                setEditValue(comment.contents);
+                                setIsActiveComment(comment.id)
                             }
                             }>
                                 <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
-                            </TouchableOpacity>}
+                            </TouchableOpacity>
+                                : <TouchableOpacity onPress={() => {
+                                    setIdEdited(false);
+                                    setEditValue("");
+                                    setIsActiveComment(null)
+                                }
+                                }>
+                                    <Icon style={{ fill: isEdited && isActiveComment === comment.id ? "#fff" : "transparent" }} name="pencilEdit" />
+                                </TouchableOpacity>}
 
-                    </View>
+                        </View>
+                    }
+
+                </View>
+
+                {
+                    isEdited && isActiveComment === comment.id ?
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter a comment..."
+                            value={editValue}
+                            onChangeText={text => setEditValue(text)}
+                            placeholderTextColor="gray"
+                            multiline
+                            maxLength={240}
+                        />
+                        :
+
+                        <CustomText style={{ fontSize: 17, marginVertical: 13, flex: 1 }}>{comment.contents}</CustomText>
                 }
 
-            </View>
+                <View style={styles.btnContainer}>
+                    <CustomText style={styles.counter}>
+                        {humanReadableDate(comment.created_at)}
+                    </CustomText>
+                    {comment.created_at !== comment.updated_at && !isEdited && <CustomText style={styles.counter}>
+                        edited
+                    </CustomText>}
+                    <View style={{ height: 50 }}>
+                        {isEdited && isActiveComment === comment.id && <Button
+                            label="Post"
+                            iconRight="arrow_right"
+                            purple={true}
+                            onPressIn={() => putComment(comment.id, editValue)}
+                        />}</View>
 
-            {
-                isEdited && isActiveComment === comment.id ?
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter a comment..."
-                        value={editValue}
-                        onChangeText={text => setEditValue(text)}
-                        placeholderTextColor="gray"
-                        multiline
-                        maxLength={240}
-                    />
-                    :
-
-                    <CustomText style={{ fontSize: 17, marginVertical: 13 }}>{comment.contents}</CustomText>
-            }
-
-            <View style={styles.btnContainer}>
-                <CustomText style={styles.counter}>
-                    {humanReadableDate(comment.created_at)}
-                </CustomText>
-                {comment.created_at !== comment.updated_at && !isEdited && <CustomText style={styles.counter}>
-                    edited
-                </CustomText>}
-
-                {isEdited && isActiveComment === comment.id && <Button
-                    label="Post"
-                    iconRight="arrow_right"
-                    purple={true}
-                    onPressIn={() => putComment(comment.id, editValue)}
-                />}
-
+                </View>
             </View>
         </View>
 
@@ -232,9 +236,11 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     input: {
+        flex: 1,
         fontSize: 16,
         marginVertical: 10,
-        color: "white"
+        color: "white",
+        // backgroundColor: "red"
     },
     like: { position: "absolute", right: 10, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
     repost: { position: "absolute", right: 140, top: 3, alignItems: "center", flexDirection: "row", gap: 7 },
@@ -261,11 +267,16 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     commentContainer: {
+        height: 200,
+        justifyContent: "space-between",
+
         //   height: 150,
         marginBottom: 10,
+        marginRight: 10,
         padding: 10,
         backgroundColor: "rgba(31, 32, 34, 0.2)",
         borderRadius: 5,
+        width: "100%"
     },
 
 })

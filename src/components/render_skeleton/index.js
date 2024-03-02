@@ -86,7 +86,7 @@ const RenderSkeleton = ({ name, count }) => {
                                 styles.userElement,
                                 animatedStyle,
                                 {
-                                    height: 240, width: "100%", padding: 0, flexShrink: 0
+                                    height: 500, width: "100%", padding: 0, flexShrink: 0
                                 }
                             ]}
                         />

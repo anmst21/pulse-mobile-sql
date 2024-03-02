@@ -6,7 +6,7 @@ import CustomText from '../text';
 import Button from "../../components/button";
 
 
-const CommentInput = ({ callback, reply }) => {
+const CommentInput = ({ containerWidth, callback, reply }) => {
     const storedUserInfo = useSelector((state) => state.user?.userInfo);
     const [inputValue, setInputValue] = useState('');
 
@@ -19,23 +19,30 @@ const CommentInput = ({ callback, reply }) => {
     return (
         <View style={[styles.commentContainer, {
             backgroundColor: reply ? "rgba(31, 32, 34, 1)" : "rgba(31, 32, 34, 0.5)",
+            width: containerWidth,
+
+
         }]}>
-            <View style={styles.postHeader}>
+            <View style={{
+                flex: 1
+            }}>
+                <View style={styles.postHeader}>
 
-                <ProfilePicture userId={storedUserInfo.id} imageLink={storedUserInfo.image_link?.small} width={25} />
+                    <ProfilePicture userId={storedUserInfo.id} imageLink={storedUserInfo.image_link?.small} width={25} />
 
-                <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{storedUserInfo.username}</CustomText>
+                    <CustomText style={{ marginLeft: 15, fontSize: 20 }}>{storedUserInfo.username}</CustomText>
 
+                </View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter a comment..."
+                    value={inputValue}
+                    onChangeText={text => setInputValue(text)} // Update the state on input change
+                    placeholderTextColor="gray"
+                    multiline
+                    maxLength={240}
+                />
             </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter a comment..."
-                value={inputValue}
-                onChangeText={text => setInputValue(text)} // Update the state on input change
-                placeholderTextColor="gray"
-                multiline
-                maxLength={240}
-            />
             <View style={styles.btnContainer}>
                 <CustomText style={styles.counter}>
                     {inputValue.length} / 240
@@ -58,6 +65,9 @@ export default CommentInput
 
 const styles = StyleSheet.create({
     commentContainer: {
+        height: 200,
+        justifyContent: "space-between",
+        marginRight: 10,
         marginBottom: 10,
         padding: 10,
         backgroundColor: "rgba(31, 32, 34, 0.2)",
@@ -70,7 +80,9 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 16,
         marginVertical: 10,
-        color: "white"
+        color: "white",
+        //  backgroundColor: "blue",
+        flex: 1
     },
     btnContainer: {
         //  backgroundColor: "blue",
