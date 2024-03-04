@@ -70,7 +70,15 @@ export {
   setActiveCommentId,
   setActiveDrawerId
 } from "./slices/feedSlice"
-export { clearErrorMessage, setImageLoader, setImageStatus, setUserStatus } from "./slices/userSlice";
+export {
+  clearErrorMessage,
+  setImageLoader,
+  setImageStatus,
+  setUserStatus,
+  setWindowTab,
+  setShowOld,
+  setShowBookmarks
+} from "./slices/userSlice";
 export { addRecording, setPostIsPlaying } from "./slices/recordingsSlice";
 export { addImage } from "./slices/imageSlice";
 export {

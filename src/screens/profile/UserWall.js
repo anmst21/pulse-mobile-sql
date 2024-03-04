@@ -8,9 +8,17 @@ import sqlApi from "../../redux/axios/sqlApi"
 import Icon from "../../components/icon"
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
 import RenderSkeleton from "../../components/render_skeleton";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setWindowTab, setShowOld,
+  setShowBookmarks
+} from "../../redux";
+
 
 const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch()
+  const { windowTab, showBookmarks, showOld } = useSelector((state) => state.user)
   const handlePress = (listType) => {
     navigation.push("UserListScreen", {
       screenKey: userId,
@@ -183,23 +191,28 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios
           </View>
         </View>
         <View style={styles.sortBar}>
-          <View style={styles.sort}>
-            <CustomText style={{ fontSize: 16 }}>New</CustomText>
-            <View style={{ top: 2 }}>
-              <Icon name="downvoteIcon" style={{ color: "white" }} />
+          <TouchableOpacity onPress={() => dispatch(setShowOld(!showOld))}>
+            <View style={styles.sort}>
+              <CustomText style={{ fontSize: 16 }}>{!showOld ? "New" : "Old"}</CustomText>
+              <View style={{ top: 2 }}>
+                <Icon name={!showOld ? "upvoteIcon" : "downvoteIcon"} style={{ color: "white" }} />
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
+
           <View style={styles.sortRight}>
             <View>
-              <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: null }} />
-
+              <TouchableOpacity onPress={() => dispatch(setShowBookmarks(!showBookmarks))}>
+                <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: showBookmarks ? "white" : null }} />
+              </TouchableOpacity>
             </View>
             <View style={styles.viewStyle}>
-
-              <Icon name="viewStyleList" style={{ stroke: "white", background: "white" }} />
-
-              <Icon name="viewStyleWindows" style={{ stroke: "white", background: null }} />
-
+              <TouchableOpacity onPress={() => dispatch(setWindowTab(false))}>
+                <Icon name="viewStyleList" style={{ stroke: "white", background: !windowTab ? "white" : null }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => dispatch(setWindowTab(true))}>
+                <Icon name="viewStyleWindows" style={{ stroke: "white", background: windowTab ? "white" : null }} />
+              </TouchableOpacity>
 
             </View>
           </View>
@@ -208,12 +221,14 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios
           {isLoading &&
             <RenderSkeleton name="postList" count={10} />
           }
+          {!windowTab && <RenderSkeleton name="postList" count={10} />}
+          {windowTab && <RenderSkeleton name="postWindowList" count={10} />}
 
-
-          {userAudios
+          {/* {userAudios
             ? userAudios.map((audio) => (
               <UserPosts key={audio.id} audio={audio} userId={userId} />
-            )) : null}
+            )) : null} */}
+
         </View>
 
       </View >

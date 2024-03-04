@@ -50,8 +50,20 @@ const userSlice = createSlice({
     isLoadingImage: false,
     imageStatus: "0%",
     errorMessage: "",
+    windowTab: false,
+    showOld: false,
+    showBookmarks: false
   },
   reducers: {
+    setShowOld: (state, action) => {
+      state.showOld = action.payload;
+    },
+    setShowBookmarks: (state, action) => {
+      state.showBookmarks = action.payload;
+    },
+    setWindowTab: (state, action) => {
+      state.windowTab = action.payload;
+    },
     clearErrorMessage: (state) => {
       state.errorMessage = "";
     },
@@ -207,6 +219,9 @@ export const {
   clearErrorMessage,
   setImageLoader,
   setImageStatus,
-  setUserStatus
+  setUserStatus,
+  setWindowTab,
+  setShowOld,
+  setShowBookmarks
 } = userSlice.actions;
 export const userReducer = userSlice.reducer;

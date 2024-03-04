@@ -93,6 +93,41 @@ const RenderSkeleton = ({ name, count }) => {
                     ))
                 }
             </View>}
+            {name === "postWindowList" && <View style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                // gap: 10
+
+                //   backgroundColor: "blue"
+            }}>
+                {
+
+                    Array.from({ length: count }, (_, index) => (
+                        <Animated.View
+                            key={index}
+                            style={[
+
+                                animatedStyle,
+                                {
+                                    height: 250,
+                                    //  flex: 0.5,
+                                    // padding: 0,
+                                    marginBottom: 10,
+                                    width: 200,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                    borderRadius: 5,
+                                    // flexWrap: "wrap", 
+                                    //  flex: 1,
+                                    width: '48%',
+                                    //  backgroundColor: "yellow"
+                                }
+                            ]}
+                        />
+                    ))
+                }
+            </View>}
 
         </>
     );
