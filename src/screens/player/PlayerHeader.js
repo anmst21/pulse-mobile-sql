@@ -17,7 +17,7 @@ import Animated, {
   withDelay,
   Easing,
 } from "react-native-reanimated";
-import { togglePlayer } from "../../redux/slices/tabSlice";
+import { switchTab, togglePlayer } from "../../redux/slices/tabSlice";
 import {
   toggleMix,
   toggleNotification,
@@ -96,7 +96,7 @@ const PlayerHeader = () => {
             status={player.edited}
             loading={saving}
             onPressIn={() => {
-              alert("Save");
+              // alert("Save");
               dispatch(uploadAudio({
                 pulseRecording,
                 userName,
@@ -110,6 +110,10 @@ const PlayerHeader = () => {
                 loader: (value) => dispatch(setPostLoader(value))
               }));
               dispatch(resetPulseRecording());
+              dispatch(toggleMix(false));
+              dispatch(togglePlayer(false));
+              dispatch(setEdited(false));
+
               // setSaving(true)
               // setTimeout(() => {
               //     setSaving(false)

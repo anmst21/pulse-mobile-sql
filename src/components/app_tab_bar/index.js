@@ -13,7 +13,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { resetScroll, stopScroll } from "../../redux/slices/tabSlice";
-
+import LineLoader from "../line_loader";
 import Theme from "../../styles/theme";
 
 const AppTabBar = () => {
@@ -23,6 +23,8 @@ const AppTabBar = () => {
   const offset = useSharedValue(0);
   const opacity = useSharedValue(0);
   const navigation = useNavigation();
+  const { postLoader,
+    isPostLoading, } = useSelector((state) => state.app);
 
   const animateOut = () => {
     offset.value = withSpring(85, {
@@ -106,111 +108,117 @@ const AppTabBar = () => {
 
   return (
     <Animated.View style={[styles.tabBar, animatedStyles]}>
-      <Button
-        content={
-          <Icon
-            name="mountains"
-            style={{ fill: activeTab.name === "feed" ? "#fff" : "transparent" }}
-          />
-        }
-        onPress={() => {
-          dispatch(resetScroll(true));
 
-          dispatch(
-            switchTab({
-              name: "feed"
-            })
-          );
-          resetRoutes()
-        }}
-      />
+      {isPostLoading && <LineLoader name="postUpload" status={postLoader} />}
+      <View style={{
+        paddingHorizontal: 20, flexDirection: "row",
+        justifyContent: "space-around",
+      }}>
+        <Button
+          content={
+            <Icon
+              name="mountains"
+              style={{ fill: activeTab.name === "feed" ? "#fff" : "transparent" }}
+            />
+          }
+          onPress={() => {
+            dispatch(resetScroll(true));
 
-      <Button
-        content={
-          <Icon
-            name="x"
-            style={{ strokeWidth: activeTab.name === "x" ? "2" : "1" }}
-          />
-        }
-        onPress={() => {
-          dispatch(
-            switchTab({
-              name: "x"
-            })
-          );
-          resetRoutes()
-        }}
-      />
+            dispatch(
+              switchTab({
+                name: "feed"
+              })
+            );
+            resetRoutes()
+          }}
+        />
 
-      <Button
-        content={
-          <Icon
-            name="plus"
-            style={{ strokeWidth: activeTab.name === "player" ? "2" : "1" }}
-          />
-        }
-        onPress={() => {
-          // dispatch(stopScroll(true));
-          dispatch(togglePlayer(true));
+        <Button
+          content={
+            <Icon
+              name="x"
+              style={{ strokeWidth: activeTab.name === "x" ? "2" : "1" }}
+            />
+          }
+          onPress={() => {
+            dispatch(
+              switchTab({
+                name: "x"
+              })
+            );
+            resetRoutes()
+          }}
+        />
 
-          setTimeout(() => {
+        <Button
+          content={
+            <Icon
+              name="plus"
+              style={{ strokeWidth: activeTab.name === "player" ? "2" : "1" }}
+            />
+          }
+          onPress={() => {
             // dispatch(stopScroll(true));
-            // dispatch(stopScroll(false));
-          }, 100);
-        }}
-      />
+            dispatch(togglePlayer(true));
 
-      <Button
-        content={
-          <Icon
-            name="search"
-            style={{ strokeWidth: activeTab.name === "search" ? "2" : "1", width: 24 }}
-          />
-        }
-        onPress={() => {
-          dispatch(
-            switchTab({
-              name: "search"
-            })
-          );
+            setTimeout(() => {
+              // dispatch(stopScroll(true));
+              // dispatch(stopScroll(false));
+            }, 100);
+          }}
+        />
 
-          resetRoutes()
-        }}
-      />
+        <Button
+          content={
+            <Icon
+              name="search"
+              style={{ strokeWidth: activeTab.name === "search" ? "2" : "1", width: 24 }}
+            />
+          }
+          onPress={() => {
+            dispatch(
+              switchTab({
+                name: "search"
+              })
+            );
 
-      <Button
-        content={
-          <Icon
-            name="user"
-            style={{
-              fill: activeTab.name === "profile" ? "#fff" : "transparent",
-            }}
-          />
-        }
-        onPress={() => {
-          dispatch(
-            switchTab({
-              name: "profile"
-            })
-          );
-          resetRoutes()
-        }}
-      />
+            resetRoutes()
+          }}
+        />
+
+        <Button
+          content={
+            <Icon
+              name="user"
+              style={{
+                fill: activeTab.name === "profile" ? "#fff" : "transparent",
+              }}
+            />
+          }
+          onPress={() => {
+            dispatch(
+              switchTab({
+                name: "profile"
+              })
+            );
+            resetRoutes()
+          }}
+        />
+      </View>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   tabBar: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     zIndex: 100,
     height: 85,
-    paddingHorizontal: 20,
+
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.05)",
     backgroundColor: "#000000",

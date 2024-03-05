@@ -8,6 +8,7 @@ import Icon from "../../components/icon"
 import Button from "../../components/button";
 import { useDispatch, useSelector } from "react-redux";
 import * as Clipboard from "expo-clipboard";
+import LineLoader from "../../components/line_loader"
 
 import {
     editLink,
@@ -120,24 +121,8 @@ const ChangeProfileImg = ({ userAudios, userInfo, userId, storedUserInfo }) => {
 
         <View style={styles.container}>
             {isLoadingImage &&
-                <View style={{
-                    backgroundColor: "rgba(31, 32, 34, 0.5)",
+                <LineLoader status={imageStatus} name="imgSettings" />
 
-                    position: "absolute",
-                    top: 0,
-                    width: "100%",
-                    height: 5,
-                    right: 0
-                }}>
-                    <View style={{
-                        backgroundColor: "grey",
-
-                        width: imageStatus,
-                        height: 5,
-
-                        //position: "absolute"
-                    }} />
-                </View>
             }
             <View style={{
                 marginHorizontal: 20,

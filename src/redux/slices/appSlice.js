@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { uploadAudio } from "../thunks/audioThunk";
 
 const initialState = {
   drawerOpen: false,
@@ -10,7 +11,8 @@ const initialState = {
   notificationMessage: null,
   notificationIntent: null,
   notificationDuration: null,
-  postLoader: "0%"
+  postLoader: "0%",
+  isPostLoading: false,
 };
 
 const appSlice = createSlice({
@@ -33,6 +35,18 @@ const appSlice = createSlice({
       state.notificationIntent = action.payload.notificationIntent;
       state.notificationDuration = action.payload.notificationDuration;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(uploadAudio.pending, (state) => {
+        state.isPostLoading = true
+      })
+      .addCase(uploadAudio.fulfilled, (state, action) => {
+        state.isPostLoading = false
+      })
+      .addCase(uploadAudio.rejected, (state, action) => {
+        state.isPostLoading = false
+      })
   }
 });
 

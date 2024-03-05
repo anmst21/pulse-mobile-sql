@@ -17,6 +17,7 @@ import SignUpScreen from "./profile/SignUpScreen";
 import UserListScreen from "../screens/profile/UserListScreen";
 import UserProfileScreen from "./profile/UserProfileScreen";
 import Settings from "./settings";
+import LineLoader from "../components/line_loader";
 
 import { tryLocalSignIn } from "../redux";
 
@@ -27,6 +28,8 @@ const Stack = createNativeStackNavigator();
 
 const MainFlow = () => {
   const activeTab = useSelector((state) => state.tab);
+
+
   const activePlayer = useSelector((state) => state.tab.player);
   const dispatch = useDispatch();
 
@@ -63,6 +66,8 @@ const MainFlow = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#000000" }}>
       <Header />
+
+
       {renderPlayer()}
       {renderedScreen}
     </View>
@@ -142,6 +147,7 @@ export default MainApp = () => {
         />
       </Stack.Navigator>
       <AppTabBar />
+
     </View>
   );
 };
