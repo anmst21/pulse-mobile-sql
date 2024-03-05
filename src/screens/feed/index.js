@@ -40,6 +40,8 @@ const FeedScreen = ({ navigation }) => {
   const [feedHeight, setFeedHeight] = useState(null)
   const [feedY, setFeedY] = useState(0);
 
+  console.log("imgpost", posts[0])
+
   const [activeDrawerId, setActiveDrawerId] = useState(null)
 
 

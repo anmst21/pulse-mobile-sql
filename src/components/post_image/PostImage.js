@@ -13,7 +13,7 @@ const PostImage = () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [19.5, 9],
+            aspect: [9, 19.5],
             quality: 1,
         });
         console.log("qqwewwe", result.assets[0])

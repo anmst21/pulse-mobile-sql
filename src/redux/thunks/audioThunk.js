@@ -187,7 +187,7 @@ const uploadAudio = createAsyncThunk(
         data.isSeen = false
         data.img = imgLinks
 
-        callback("0%")
+        loader("0%")
         return data;
       }
     } catch (error) {

@@ -414,10 +414,18 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
 
         <View ref={childRef}
           style={{
-            marginBottom: 20, borderRadius: 10, backgroundColor: "rgba(31, 32, 34, 0.5)",
+            marginBottom: 20,
+            borderRadius: 10,
+            backgroundColor: "rgba(31, 32, 34, 0.5)",
+            overflow: "hidden"
           }}
           onLayout={onEditorRightLayout}
         >
+          {audio.img && !isOpenComments &&
+            <Image
+              source={{ uri: audio.img?.small }}
+              style={styles.imageBg}
+            />}
           <View style={styles.outerPost} >
             {/* //seen */}
             <View style={{
@@ -570,6 +578,16 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
 export default UserPosts;
 
 const styles = StyleSheet.create({
+  imageBg: {
+
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
+
+  },
   ctaBtn: {
     position: "absolute",
     left: "100%",

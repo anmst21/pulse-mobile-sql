@@ -1,0 +1,53 @@
+{
+    "audio_link": "https://my-audio-bucket-111.s3.us-east-2.amazonaws.com/1/34f9ed18-a640-4ff0-84a9-ed91c4b0b0f6.m4a",
+    "bookmarked": false,
+    "bpm": 107,
+    "comment_count": 0,
+    "date_created": "2024-03-05T20:11:41.101Z",
+    "downvotes": 0,
+    "duration": 4551,
+    "extension": "m4a",
+    "file_name": "recording-1326B73E-550A-4D88-9B4C-635189E70A6F.m4a",
+    "follows": "false",
+    "id": 95,
+    "image_link": {
+        "large": "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/1/large/7ed2a194-d497-448c-9693-93482dac9c6c.png",
+        "medium": "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/1/medium/42cbdc5f-0b3c-4c77-b3dd-c393cc2de7e3.png",
+        "small": "https://my-photo-bucket-111.s3.us-east-2.amazonaws.com/1/small/ac037864-1105-41c9-8c0a-dbb0f5fc95ad.png"
+    },
+    "img": {
+        "large": "https://post-photo-bucket.s3.us-east-2.amazonaws.com/1/large/68b7ecc0-c0bb-4ac9-9629-783aa4027f4e.png",
+        "medium": "https://post-photo-bucket.s3.us-east-2.amazonaws.com/1/medium/cdae5ee8-95cb-4417-a152-739e262720dc.png",
+        "small": "https://post-photo-bucket.s3.us-east-2.amazonaws.com/1/small/4dbfb72c-2027-45c9-9910-135c64caac9b.png"
+    },
+    "isSeen": true,
+    "isseen": true,
+    "location": null,
+    "seen": 1,
+    "size": "0.10 MB",
+    "sound_levels": [
+        {
+            "id": 1,
+            "rawValue": -73.36774444580078,
+            "value": -73.36774444580078
+        }
+    ],
+    "subscribed": null,
+    "tags": [
+        {
+            "id": 2,
+            "name": "Abstract"
+        },
+        {
+            "id": 10,
+            "name": "Acid Techno"
+        }
+    ],
+    "track": {},
+    "type": "recording",
+    "upvotes": 0,
+    "user_id": 1,
+    "user_vote_type": null,
+    "username": "Qqq",
+    "vote_type": null
+}
