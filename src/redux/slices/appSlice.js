@@ -9,13 +9,17 @@ const initialState = {
   notificationActive: false,
   notificationMessage: null,
   notificationIntent: null,
-  notificationDuration: null
+  notificationDuration: null,
+  postLoader: "0%"
 };
 
 const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
+    setPostLoader: (state, action) => {
+      state.postLoader = action.payload
+    },
     toggleDrawer: (state, action) => {
       state.drawerOpen = action.payload.drawerOpen;
       state.drawerType = action.payload.drawerType;
@@ -32,6 +36,6 @@ const appSlice = createSlice({
   }
 });
 
-export const { toggleDrawer, toggleNotification } = appSlice.actions;
+export const { toggleDrawer, toggleNotification, setPostLoader } = appSlice.actions;
 
 export const appReducer = appSlice.reducer;

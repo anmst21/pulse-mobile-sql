@@ -4,9 +4,92 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
 //blob, duration,
+import { manipulateAsync } from 'expo-image-manipulator';
+
+
+
+const imgHelper = async ({ imgFile, loader }) => {
+  try {
+    const sizes = [
+      { compression: 0.7, key: 'large' },
+      { compression: 0.5, key: 'medium' },
+      { compression: 0.3, key: 'small' },
+    ];
+
+    let uploadObject = {
+      small: null,
+      medium: null,
+      large: null,
+    };
+
+    for (const size of sizes) {
+      const resizedImage = await manipulateAsync(
+        imgFile,
+        [],
+        { compress: size.compression, format: 'jpeg' }
+      );
+      const response = await fetch(resizedImage.uri);
+      const fileContent = await response.arrayBuffer();
+      uploadObject[size.key] = fileContent;
+    }
+
+    loader("5%");
+
+    // Assuming sqlApi.post() is an asynchronous operation that gets S3 URLs
+    const imageSmall = await sqlApi.post(`/audios/img`, { size: "small" });
+    const dataSmall = imageSmall.data;
+    const imageMedium = await sqlApi.post(`/audios/img`, { size: "medium" });
+    const dataMedium = imageMedium.data;
+    const imageLarge = await sqlApi.post(`/audios/img`, { size: "large" });
+    const dataLarge = imageLarge.data;
+
+    loader("10%");
+
+    await axios.put(dataSmall.url, uploadObject.small, { "Content-Type": "image/jpeg" });
+    loader("30%");
+    await axios.put(dataMedium.url, uploadObject.medium, { "Content-Type": "image/jpeg" });
+    loader("50%");
+    await axios.put(dataLarge.url, uploadObject.large, { "Content-Type": "image/jpeg" });
+    loader("70%");
+
+    const finalUrl = key => "https://post-photo-bucket.s3.us-east-2.amazonaws.com/" + key;
+
+    // Return the final URLs for all image sizes
+    return {
+      small: finalUrl(dataSmall.key),
+      medium: finalUrl(dataMedium.key),
+      large: finalUrl(dataLarge.key)
+    };
+  } catch (err) {
+    console.error("Error:", err);
+    // Return an error indication, could also be a boolean, error message, or specific error object
+    return { error: true, message: "An error occurred during image processing." };
+  }
+};
+
+
+
+
+
+
 const uploadAudio = createAsyncThunk(
   "audio/upload",
-  async ({ pulseRecording, imageLink, userName, callback, tagIds, lat, lng, locName, locDist }, thunkAPI) => {
+  async ({
+    pulseRecording,
+    imageLink,
+    userName,
+    callback,
+    tagIds,
+    lat,
+    lng,
+    locName,
+    locDist,
+    imgFile,
+    loader
+  }, thunkAPI) => {
+
+    loader("0%")
+
     const {
       sound,
       bpm,
@@ -20,6 +103,8 @@ const uploadAudio = createAsyncThunk(
       uri,
 
     } = pulseRecording;
+
+    console.log("imgFile", imgFile)
     if (sound === null) {
       // The error message can be customized as needed
       return thunkAPI.rejectWithValue("No sound to upload");
@@ -31,6 +116,18 @@ const uploadAudio = createAsyncThunk(
 
     try {
       const user = await AsyncStorage.getItem("userId");
+
+      const imgData = () => {
+        if (imgFile) {
+          console.log("imgHelper({ imgFile, loader })", imgHelper({ imgFile, loader }))
+          return imgHelper({ imgFile, loader })
+        } else {
+          return null
+        }
+      }
+      const imgLinks = await imgData()
+      console.log("imgLinksimgLinksimgLinks", imgLinks)
+
       if (type === "spotify") {
         const spotifyObject = await sqlApi.post("/audio/save", {
           audioLink: uri,
@@ -40,7 +137,8 @@ const uploadAudio = createAsyncThunk(
           track,
           type,
           tagIds,
-          lat, lng, locName, locDist
+          lat, lng, locName, locDist,
+          img: imgLinks
 
         });
         return spotifyObject.data;
@@ -57,6 +155,7 @@ const uploadAudio = createAsyncThunk(
         });
         const finalUrl =
           "https://my-audio-bucket-111.s3.us-east-2.amazonaws.com/" + key;
+
         const audioObject = await sqlApi.post("/audio/save", {
           audioLink: finalUrl,
           duration,
@@ -68,8 +167,10 @@ const uploadAudio = createAsyncThunk(
           fileName,
           extension,
           tagIds,
-          lat, lng, locName, locDist
+          lat, lng, locName, locDist,
+          img: imgLinks
         });
+        loader("100%")
 
         if (audioObject && audioObject.data && callback) {
           callback(audioObject.data);
@@ -84,6 +185,9 @@ const uploadAudio = createAsyncThunk(
         data.vote_type = null;
         data.seen = 0;
         data.isSeen = false
+        data.img = imgLinks
+
+        callback("0%")
         return data;
       }
     } catch (error) {

@@ -27,7 +27,8 @@ const initialState = {
   name: "702 Washington ave",
   district: "Brooklyn, New York",
   lng: null,
-  lat: null
+  lat: null,
+  imgLink: null,
 };
 
 const pulseRecordingSlice = createSlice({
@@ -35,6 +36,9 @@ const pulseRecordingSlice = createSlice({
   initialState,
 
   reducers: {
+    setImgLink: (state, action) => {
+      state.imgLink = action.payload
+    },
     setLocData: (state, action) => {
       state.name = action.payload.name;
       state.lng = action.payload.lng;
@@ -160,7 +164,8 @@ export const {
   setBpm,
   setTag,
   toggleTagsState,
-  setLocData
+  setLocData,
+  setImgLink
 } = pulseRecordingSlice.actions;
 
 export const pulseRecordingReducer = pulseRecordingSlice.reducer;

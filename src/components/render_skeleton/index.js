@@ -112,16 +112,11 @@ const RenderSkeleton = ({ name, count }) => {
                                 animatedStyle,
                                 {
                                     height: 250,
-                                    //  flex: 0.5,
-                                    // padding: 0,
                                     marginBottom: 10,
                                     width: 200,
                                     backgroundColor: 'rgba(255, 255, 255, 0.15)',
                                     borderRadius: 5,
-                                    // flexWrap: "wrap", 
-                                    //  flex: 1,
                                     width: '48%',
-                                    //  backgroundColor: "yellow"
                                 }
                             ]}
                         />

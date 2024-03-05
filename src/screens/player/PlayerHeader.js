@@ -24,6 +24,7 @@ import {
   setEdited,
   uploadAudio,
   resetPulseRecording,
+  setPostLoader
 } from "../../redux";
 
 import Icon from "../../components/icon";
@@ -32,6 +33,7 @@ import Button from "../../components/button";
 
 const PlayerHeader = () => {
   const navigation = useNavigation();
+  const { postLoader } = useSelector((state) => state.app);
   const player = useSelector((state) => state.player);
   const pulseRecording = useSelector((state) => state.pulseRecording);
   const [initialAnimation, setInitialAnimation] = useState(true);
@@ -41,7 +43,7 @@ const PlayerHeader = () => {
   const opacity = useSharedValue(0);
   const dispatch = useDispatch();
   const { username: userName, image_link: imageLink } = useSelector(state => state.user.userInfo)
-
+  console.log("postLoader", postLoader)
   const showInitialAnimation = () => {
     opacity.value = withDelay(
       100,
@@ -103,7 +105,9 @@ const PlayerHeader = () => {
                 lat: pulseRecording.lat,
                 lng: pulseRecording.lng,
                 locName: pulseRecording.name,
-                locDist: pulseRecording.district
+                locDist: pulseRecording.district,
+                imgFile: pulseRecording.imgLink,
+                loader: (value) => dispatch(setPostLoader(value))
               }));
               dispatch(resetPulseRecording());
               // setSaving(true)

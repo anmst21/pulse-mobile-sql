@@ -96,7 +96,8 @@ export {
   setTag,
   setTagsList,
   toggleTagsState,
-  setLocData
+  setLocData,
+  setImgLink
 } from "./slices/pulseRecordingSlice";
 export {
   switchTab,
@@ -104,7 +105,11 @@ export {
   resetScroll,
   toggleMap,
 } from "./slices/tabSlice";
-export { toggleDrawer, toggleNotification } from "./slices/appSlice";
+export {
+  toggleDrawer,
+  toggleNotification,
+  setPostLoader
+} from "./slices/appSlice";
 
 export {
   toggleMix,
