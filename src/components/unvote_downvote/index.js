@@ -5,6 +5,8 @@ import Icon from '../icon'
 import sqlApi from "../../redux/axios/sqlApi"
 import { toggleUpvote } from '../../redux'
 import { useDispatch } from 'react-redux'
+import { BlurView } from 'expo-blur';
+
 
 //setOpenComments
 const humanReadableDate = (dateString) => {
@@ -59,8 +61,9 @@ const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
                 <View style={[styles.minibox, {
                     borderTopRightRadius: 0,
                     borderBottomRightRadius: 0,
-                    backgroundColor: vote === true ? "rgba(31, 32, 34, 1)" : "transparent"
+                    overflow: "hidden"
                 }]}>
+                    <BlurView intensity={vote === true ? 50 : 10} style={styles.blurBackground} />
                     <View style={styles.arrowIcon}>
                         <Icon name="upvoteIcon" style={{ color: vote === true ? "#14AD4D" : "grey" }} />
                     </View>
@@ -68,13 +71,17 @@ const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
 
                 </View>
             </TouchableOpacity>
-            <View style={styles.lineHorizontal} />
+            {/* <View style={styles.lineHorizontal} /> */}
+            <BlurView intensity={70} style={styles.lineHorizontal} />
+
             <TouchableOpacity onPress={() => handleUpvote(false)}>
                 <View style={[styles.minibox, {
                     borderTopLeftRadius: 0,
                     borderBottomLeftRadius: 0,
-                    backgroundColor: vote === false ? "rgba(31, 32, 34, 1)" : "transparent"
+                    overflow: "hidden"
                 }]}>
+                    <BlurView intensity={vote === false ? 50 : 10} style={styles.blurBackground} />
+
                     <View style={styles.arrowIcon}>
                         <Icon name="downvoteIcon" style={{ color: vote === false ? "#F53535" : "grey" }} />
                     </View>
@@ -89,7 +96,15 @@ const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
 export default UpvoteDownvote
 
 const styles = StyleSheet.create({
+    blurBackground: {
 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+
+    },
     arrowIcon: {
         right: 25,
         position: "absolute"
@@ -136,7 +151,7 @@ const styles = StyleSheet.create({
 
     lineHorizontal: {
         width: 2,
-        backgroundColor: "#2D2B32",
+        //   backgroundColor: "#2D2B32",
         height: 40
     },
     minibox: {

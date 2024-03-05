@@ -25,6 +25,7 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 import FollowUnfollowButton from "../../components/follow_unfollow_button";
 import PostTags from "../../components/post_tags"
 import Theme from "../../styles/theme"
+import { BlurView } from "expo-blur";
 
 import Animated, {
   useSharedValue,
@@ -482,12 +483,22 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
                     width: 150,
 
                   }}>
-                    {audio.bpm &&
-                      <CustomText style={styles.bpmText}>Bpm: {audio.bpm}</CustomText>
-                    }
-                    {audio.location &&
-                      <CustomText style={[styles.bpmText, { color: Theme.purple }]}>{audio.location}</CustomText>
-                    }
+                    <View style={{
+                      overflow: "hidden",
+                      borderRadius: 10
+                    }}>
+                      <BlurView intensity={20} style={{
+                        padding: 10,
+                        paddingBottom: 0
+                      }} >
+                        {audio.bpm &&
+                          <CustomText style={styles.bpmText}>Bpm: {audio.bpm}</CustomText>
+                        }
+                        {audio.location &&
+                          <CustomText style={[styles.bpmText, { color: Theme.purple }]}>{audio.location}</CustomText>
+                        }
+                      </BlurView>
+                    </View>
                   </View>
                   <View>
                     <TouchableOpacity
