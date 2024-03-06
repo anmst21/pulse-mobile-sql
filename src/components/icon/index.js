@@ -65,9 +65,25 @@ import ChangePrpofileIcon from "./changeProfileImg"
 import LocPoint from "./locPoint"
 import SeenIcon from "./seenIcon"
 import AddImageIcon from "./addImageIcon"
+import MinusIcon from "./minusIcon"
+import PlusIcon from "./plusIcon"
+import SortIcon from "./sortIcon"
+import ShareIcon from "./shareIcon"
+import ReportIcon from "./reportIcon"
+
 
 const Icon = ({ name, style }) => {
   switch (name) {
+    case "minusIcon":
+      return <MinusIcon style={style} />;
+    case "plusIcon":
+      return <PlusIcon style={style} />;
+    case "sortIcon":
+      return <SortIcon style={style} />;
+    case "shareIcon":
+      return <ShareIcon style={style} />;
+    case "reportIcon":
+      return <ReportIcon style={style} />;
     case "addImageIcon":
       return <AddImageIcon style={style} />;
     case "starIcon":

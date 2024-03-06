@@ -422,11 +422,22 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
           }}
           onLayout={onEditorRightLayout}
         >
-          {audio.img && !isOpenComments &&
+          {audio.img && <>
+
             <Image
               source={{ uri: audio.img?.small }}
               style={styles.imageBg}
-            />}
+            />
+            <BlurView style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }} intensity={isOpenComments ? 20 : 0} tint="systemThickMaterialLight" />
+          </>
+
+          }
           <View style={styles.outerPost} >
             {/* //seen */}
             <View style={{
@@ -487,7 +498,7 @@ const UserPosts = ({ audio, userId, isLoading, scrollViewRef, feedHeight: screen
                       overflow: "hidden",
                       borderRadius: 10
                     }}>
-                      <BlurView intensity={20} style={{
+                      <BlurView intensity={40} style={{
                         padding: 10,
                         paddingBottom: 0
                       }} >

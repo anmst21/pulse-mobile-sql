@@ -6,7 +6,7 @@ import { Linking, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import config from "../../../config";
-import LineSoundBar from "../soundbar/lineSoundbar copy";
+import LineSoundBar from "../soundbar/lineSoundbar";
 import * as Clipboard from "expo-clipboard";
 
 import {

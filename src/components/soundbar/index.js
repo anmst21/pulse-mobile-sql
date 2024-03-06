@@ -1,6 +1,8 @@
 import React from "react";
 import { Canvas, Line, vec } from "@shopify/react-native-skia";
 import { View, TouchableOpacity, PanResponder } from "react-native";
+import { BlurView } from 'expo-blur';
+
 
 const SoundBar = ({
   barData,
@@ -35,10 +37,19 @@ const SoundBar = ({
         style={{
           borderRadius: 10,
           width: canvasWidth,
-
+          overflow: "hidden",
+          // height: canvasHeight - 10,
           // backgroundColor: "rgba(255, 255, 255, 0.03)",
         }}
       >
+        <BlurView intensity={20} style={{
+
+          position: 'absolute',
+          width: canvasWidth,
+          height: canvasHeight,
+        }} />
+
+
         <Canvas
           style={{
             width: canvasWidth,
@@ -62,10 +73,10 @@ const SoundBar = ({
               const barColor = disabled
                 ? "#112619"
                 : isRecording
-                ? "#FFB945"
-                : barIndexPercentage <= playbackPercentage
-                ? "#29FF7F"
-                : "#112619"; // #fff is active, #555 is inactive
+                  ? "#FFB945"
+                  : barIndexPercentage <= playbackPercentage
+                    ? "#29FF7F"
+                    : "#112619"; // #fff is active, #555 is inactive
 
               return (
                 <Line

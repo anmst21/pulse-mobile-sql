@@ -63,7 +63,7 @@ const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
                     borderBottomRightRadius: 0,
                     overflow: "hidden"
                 }]}>
-                    <BlurView intensity={vote === true ? 50 : 10} style={styles.blurBackground} />
+                    <BlurView intensity={vote === true ? 50 : 20} style={styles.blurBackground} />
                     <View style={styles.arrowIcon}>
                         <Icon name="upvoteIcon" style={{ color: vote === true ? "#14AD4D" : "grey" }} />
                     </View>
@@ -80,7 +80,7 @@ const UpvoteDownvote = ({ audio, id, upvotes, downvotes }) => {
                     borderBottomLeftRadius: 0,
                     overflow: "hidden"
                 }]}>
-                    <BlurView intensity={vote === false ? 50 : 10} style={styles.blurBackground} />
+                    <BlurView intensity={vote === false ? 50 : 20} style={styles.blurBackground} />
 
                     <View style={styles.arrowIcon}>
                         <Icon name="downvoteIcon" style={{ color: vote === false ? "#F53535" : "grey" }} />
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 
         width: 122,
         height: 40,
-        backgroundColor: "rgba(31, 32, 34, 0.6)",
+        // backgroundColor: "rgba(31, 32, 34, 0.6)",
 
         justifyContent: "space-between",
         borderRadius: 100,
