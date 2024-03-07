@@ -9,6 +9,7 @@ import {
     openReport, closeReport
 } from "../../redux";
 import ReportInput from '../../components/report_input'
+import sqlApi from "../../redux/axios/sqlApi"
 
 const ReportBug = () => {
     const dispatch = useDispatch()
@@ -16,7 +17,39 @@ const ReportBug = () => {
     const [topInputValue, setTopInputValue] = useState("")
     const [botInputValue, setBotInputValue] = useState("")
 
+    const onSubmit = async () => {
+        try {
+            dispatch(closeReport())
+            const response = sqlApi.post("/report/bug", {
+                reportReason: topInputValue,
+                reportDetails: botInputValue
+            })
+            setBotInputValue("")
+            setTopInputValue("")
+            console.log("Success!", response.data)
+        } catch (err) {
+            console.log("Error Reporting a Bug:", err)
+        }
+    }
+    // const onSubmitReport = async () => {
+    //     try {
+    //         dispatch(setActiveReportId(null))
 
+    //         const object = posts.find(item => item.id === activeReportId);
+
+    //         const response = sqlApi.post("/report/post", {
+    //             audioId: object.id,
+    //             ownerUserId: object.user_id,
+    //             reportReason: topInputValue,
+    //             reportDetails: botInputValue
+    //         })
+    //         setBotInputValue("")
+    //         setTopInputValue("")
+    //         console.log("Success!", response.data)
+    //     } catch (err) {
+    //         console.log("Error uploading post report", err)
+    //     }
+    // }
 
 
 
@@ -53,60 +86,9 @@ const ReportBug = () => {
                     setTopInputValue={setTopInputValue}
                     botInputValue={botInputValue}
                     setBotInputValue={setBotInputValue}
+                    onSubmit={onSubmit}
                 />
-                // <View style={{
 
-
-                // }}>
-                //     <View style={styles.commentContainer}>
-
-                //         <TextInput
-                //             style={styles.input}
-                //             placeholder="Enter a header..."
-                //             value={topInputValue}
-                //             onChangeText={text => setTopInputValue(text)} // Update the state on input change
-                //             placeholderTextColor="gray"
-                //             multiline
-                //             maxLength={30}
-                //         />
-                //         <CustomText style={styles.counter}>
-                //             {topInputValue.length} / 30
-                //         </CustomText>
-                //     </View>
-                //     <View style={[styles.commentContainer, { height: 100, marginTop: 30 }]}>
-
-                //         <TextInput
-                //             style={styles.input}
-                //             placeholder="Enter a body..."
-                //             value={botInputValue}
-                //             onChangeText={text => setBotInputValue(text)} // Update the state on input change
-                //             placeholderTextColor="gray"
-                //             multiline
-                //             maxLength={240}
-                //         />
-                //         <CustomText style={styles.counter}>
-                //             {botInputValue.length} / 240
-                //         </CustomText>
-                //     </View>
-                //     <View style={{
-                //         flexDirection: "row",
-                //         justifyContent: "flex-end",
-                //         marginBottom: 10,
-                //         paddingHorizontal: 20,
-                //         left: 5,
-                //         marginTop: 40
-                //     }}>
-
-                //         <Button
-                //             label={"Submit"}
-                //             grey
-                //             onPressIn={() => {
-                //                 console.log()
-
-                //             }}
-                //         />
-                //     </View>
-                // </View>
             }
         </View>
     )

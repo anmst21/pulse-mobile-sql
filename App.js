@@ -49,7 +49,7 @@ const App = () => {
 
     if (userIdFromStorage) {
       dispatch(fetchUserInfo({ userId: userIdFromStorage }));
-      dispatch(fetchUserAudios({ userId: userIdFromStorage }));
+      // dispatch(fetchUserAudios({ userId: userIdFromStorage }));
     }
   };
 

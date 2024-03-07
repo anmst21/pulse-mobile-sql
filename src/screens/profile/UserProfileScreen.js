@@ -26,7 +26,7 @@ const UserProfileScreen = ({ route }) => {
         );
         // console.log("111111111", response.data)
         setUserButton([{ follows: response.data.follows, subscribed: response.data.subscribed }])
-        setUserAudios(responseAudios.data);
+        // setUserAudios(responseAudios.data);
         setUserInfo(response.data);
       } catch (error) {
         console.error("An error occurred while fetching the user info:", error);

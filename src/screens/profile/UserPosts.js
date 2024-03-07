@@ -2,7 +2,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAudio,
@@ -224,14 +224,16 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
     setIsOpenTags(!isOpenTags)
   }
 
-  const toggleDrawer = () => {
+  const toggleDrawer = useCallback(() => {
     if (activeDrawer) {
-      translateX.value = withSpring(0), setActiveDrawerId(null)
+      translateX.value = withSpring(0);
+      setActiveDrawerId(null);
     } else {
-      translateX.value = withSpring(-calcWidth)
-      setActiveDrawerId(audio.id)
+      translateX.value = withSpring(-calcWidth);
+      setActiveDrawerId(audio.id);
     }
-  }
+  }, [activeDrawer]);
+
   const toggleReport = () => {
     if (activeReportId) {
       translateX.value = withSpring(0)
@@ -287,7 +289,6 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
             <RectBtn count={audio.comment_count} state={activeCommentId === audio.id} name="comments" callback={toggleComments} />
             <RectBtn state={isBookmarked} name="bookmark" callback={toggleBookmarkState} />
             <RectBtn count={audio.tags.length} state={isOpenTags} name="tags" callback={toggleTags} />
-            {audio.user_id === storedUserInfo && <RectBtn state={isOpenTags} name="trash" callback={() => handleDelete(audio.id)} />}
             <View style={{
               zIndex: 9999
             }}>
@@ -295,14 +296,17 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
               <RectBtn state={activeShareId === audio.id} name="share" callback={toggleShare} />
             </View>
             <RectBtn state={activeReportId === audio.id} name="report" callback={toggleReport} />
+            {audio.user_id === storedUserInfo && <RectBtn state={isOpenTags} name="trash" callback={() => handleDelete(audio.id)} />}
+
           </View>
 
           <View
             style={styles.mainContainer}
             onLayout={onEditorRightLayout}
           >
-            <PostImg activeCommentId={activeCommentId} audio={audio} />
             <View style={styles.outerPost} >
+              <PostImg activeCommentId={activeCommentId} audio={audio} />
+
               <PostSeen isSeen={isSeen} />
 
               <View style={styles.drawerBtn} >
@@ -327,8 +331,8 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
 
             </View>
 
-            {isOpenTags && audio.tags && <PostTags tags={audio.tags} />}
-
+            {isOpenTags && audio.tags && <PostTags tags={audio.tags} close={toggleTags} />}
+            {/* close={closeTags} */}
           </View >
         </Animated.View >
       </PanGestureHandler >
@@ -355,7 +359,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: "column",
     borderRadius: 10,
-    zIndex: 1
+    zIndex: 1,
+    overflow: "hidden"
 
   },
 

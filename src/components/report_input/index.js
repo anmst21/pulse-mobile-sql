@@ -8,7 +8,8 @@ const ReportInput = ({
     topInputValue,
     setTopInputValue,
     botInputValue,
-    setBotInputValue
+    setBotInputValue,
+    onSubmit
 }) => {
     return (
         <View style={{
@@ -47,10 +48,7 @@ const ReportInput = ({
                 <Button
                     label={"Submit"}
                     grey
-                    onPressIn={() => {
-                        console.log()
-
-                    }}
+                    onPressIn={onSubmit}
                 />
             </View>
         </View>

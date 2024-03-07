@@ -2,27 +2,23 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CustomText from '../text'
 import Icon from "../icon"
+import RectBtn from '../rect_btn'
 
-const PostTags = ({ tags }) => {
-    const genres = [
-        { id: 1, name: "Techno" },
-        { id: 2, name: "House" },
-        { id: 3, name: "Trance" },
-        { id: 4, name: "Dubstep" },
-        { id: 5, name: "Drum and Bass" },
-        { id: 6, name: "Electro" },
-        { id: 7, name: "Hardstyle" },
-        { id: 8, name: "Deep House" },
-        { id: 9, name: "Progressive House" },
-        { id: 10, name: "Chillout" }
-    ];
+const PostTags = ({ tags, close }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Icon name="tagsIcon" style={{ color: "#fff", }} />
-                <CustomText style={{
-                    fontSize: 24
-                }}>Tags</CustomText>
+                <View style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10
+                }}>
+                    <Icon name="tagsIcon" style={{ color: "#fff", }} />
+                    <CustomText style={{
+                        fontSize: 24
+                    }}>Tags</CustomText>
+                </View>
+                <RectBtn name="minus" callback={() => close()} />
             </View>
             <View style={styles.genreContainer}>
                 {tags.map((genre) => (
@@ -42,8 +38,8 @@ export default PostTags
 const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
-        gap: 10,
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "space-between"
     },
     container: {
         flex: 1,

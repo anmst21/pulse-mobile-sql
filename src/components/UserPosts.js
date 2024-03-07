@@ -20,7 +20,7 @@ const UserPosts = () => {
 
   useEffect(() => {
     setPlayer();
-    dispatch(fetchUserAudios());
+    // dispatch(fetchUserAudios());
   }, []);
 
   async function playSound(url) {

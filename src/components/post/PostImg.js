@@ -8,7 +8,7 @@ const PostImg = ({ activeCommentId, audio }) => {
             {audio.img && <>
                 <Image
                     source={{ uri: audio.img?.small }}
-                    style={styles.imageBg}
+                    style={StyleSheet.absoluteFill}
                 />
                 <BlurView
                     style={styles.stretchBg}
