@@ -8,7 +8,8 @@ import {
   deleteAudio,
   setActiveCommentId,
   toggleBookmark,
-  setActiveReportId
+  setActiveReportId,
+  setActiveShareId
 } from "../../redux";
 import sqlApi from "../../redux/axios/sqlApi"
 import PostComment from "../../components/post_comment"
@@ -27,6 +28,8 @@ import Animated, {
 } from "react-native-reanimated";
 import PostFooter from "../../components/post/PostFooter";
 import PostPlayer from "../../components/pulse_player/PostPlayer";
+import Modal from "../../components/modal";
+import Icon from "../../components/icon";
 
 
 
@@ -36,7 +39,7 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
 
-  const { activeCommentId, activeReportId } = useSelector((state) => state.feed);
+  const { activeCommentId, activeReportId, activeShareId } = useSelector((state) => state.feed);
   const [isOpenTags, setIsOpenTags] = useState(false)
   const [isOpenComments, setIsOpenComments] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(audio.bookmarked)
@@ -89,6 +92,9 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
 
   useEffect(() => {
     if (!activeDrawer) { translateX.value = withSpring(0); }
+    if (activeShareId === audio.id && !activeDrawer) {
+      dispatch(setActiveShareId(null))
+    }
 
   }, [activeDrawer])
 
@@ -237,21 +243,58 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
       dispatch(setActiveReportId((audio.id)))
     }
   }
+  const toggleShare = () => {
+    if (activeShareId) {
+
+      dispatch(setActiveShareId((null)))
+    } else {
+
+      dispatch(setActiveShareId((audio.id)))
+    }
+  }
 
 
 
+  const modalObject = [
+    {
+      key: 1,
+      icon: <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20 }} />,
+      condition: true,
+      text: "Copy Link",
+      callback: () => console.log("Clicked!")
+    },
+    {
+      key: 2,
+      icon: <Icon name="warpCastLogo" style={{ color: "#ABABAB", width: 20 }} />,
+      condition: true,
+      text: "Copy Frame Link",
+      callback: () => console.log("Clicked!")
+    },
+  ]
 
+
+
+  // return (
+  //   <Modal modalList={modalObject} type="profileImg" />
+  // )
   return (
-    <View ref={childRef}>
+    <View ref={childRef} >
       <PanGestureHandler onGestureEvent={panGestureEvent} activeOffsetX={[-10, 10]}   >
         <Animated.View style={animatedStyles}>
-          <View style={[styles.ctaBtn, { width: calcWidth }]}>
+          <View style={[styles.ctaBtn, {
+            width: calcWidth, zIndex: 9999
+          }]}>
             <RectBtn count={audio.comment_count} state={activeCommentId === audio.id} name="comments" callback={toggleComments} />
             <RectBtn state={isBookmarked} name="bookmark" callback={toggleBookmarkState} />
             <RectBtn count={audio.tags.length} state={isOpenTags} name="tags" callback={toggleTags} />
             {audio.user_id === storedUserInfo && <RectBtn state={isOpenTags} name="trash" callback={() => handleDelete(audio.id)} />}
-            <RectBtn state={isOpenTags} name="share" callback={() => console.log("share")} />
-            <RectBtn state={isOpenTags} name="report" callback={toggleReport} />
+            <View style={{
+              zIndex: 9999
+            }}>
+              {activeShareId === audio.id && <Modal modalList={modalObject} />}
+              <RectBtn state={activeShareId === audio.id} name="share" callback={toggleShare} />
+            </View>
+            <RectBtn state={activeReportId === audio.id} name="report" callback={toggleReport} />
           </View>
 
           <View
@@ -302,7 +345,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 15,
     top: "50%",
-    zIndex: 9999
+    zIndex: 1
   },
 
   outerPost: {
@@ -311,14 +354,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(31, 32, 34, 0.2)",
     paddingHorizontal: 10,
     flexDirection: "column",
-    borderRadius: 10
+    borderRadius: 10,
+    zIndex: 1
+
   },
 
   mainContainer: {
     marginBottom: 20,
     borderRadius: 10,
     backgroundColor: "rgba(31, 32, 34, 0.5)",
-    overflow: "hidden"
+    overflow: "hidden",
+    zIndex: 1
   },
   ctaBtn: {
     position: "absolute",

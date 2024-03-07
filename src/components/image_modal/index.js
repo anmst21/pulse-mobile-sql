@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { manipulateAsync } from 'expo-image-manipulator';
 import * as ImagePicker from "expo-image-picker";
 import { deleteImage, uploadImage, setImageLoader, setImageStatus, setImageMenuOpen } from "../../redux";
-
+import Modal from '../modal'
 
 const ImageModal = ({ imageLink }) => {
     const dispatch = useDispatch()
@@ -99,33 +99,34 @@ const ImageModal = ({ imageLink }) => {
     }
 
 
+    const modalObject = [
+        {
+            key: 1,
+            icon: <Icon name="changeProfileIcon" style={{ width: 20 }} />,
+            condition: true,
+            text: "Change Profile Image",
+            callback: () => pickImage()
+
+        },
+        {
+            key: 2,
+            icon: <Icon
+                name="trashIcon"
+                style={{
+                    color: "#F25219",
+                    width: 20
+                }}
+            />,
+            condition: img,
+            text: "Delete Profile Image",
+            callback: () => deleteImageAction()
+        },
+    ]
+
+
 
     return (
-        <View style={styles.modal}>
-            <TouchableOpacity onPress={pickImage}>
-                <View style={styles.modalItem}>
-                    <Icon name="changeProfileIcon" style={{ width: 20 }} />
-                    <CustomText style={{
-                        fontSize: 14
-                    }}>Change Profile Image</CustomText>
-                </View>
-            </TouchableOpacity>
-            {img &&
-                <TouchableOpacity onPress={deleteImageAction}>
-                    <View style={styles.modalItem}>
-                        <Icon
-                            name="trashIcon"
-                            style={{
-                                color: "#F25219",
-                                width: 20
-                            }}
-                        />
-                        <CustomText style={{
-                            fontSize: 14
-                        }}>Delete Profile Image</CustomText>
-                    </View>
-                </TouchableOpacity>}
-        </View>
+        <Modal modalList={modalObject} type="profileImg" />
     )
 }
 

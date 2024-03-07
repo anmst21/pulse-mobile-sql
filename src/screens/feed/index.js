@@ -184,22 +184,9 @@ const FeedScreen = ({ navigation }) => {
             <BlurView intensity={80} style={StyleSheet.absoluteFill} />
 
 
-            <View style={{
-              borderRadius: 10,
-              width: "100%",
-              backgroundColor: "rgba(31, 32, 34, 0.7)",
+            <View style={styles.blurModal}>
 
-
-            }}>
-
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginLeft: 20,
-                marginTop: 20,
-                marginRight: 10,
-              }}>
+              <View style={styles.modalHeader}>
                 <CustomText style={{ fontSize: 25 }}>Report a post</CustomText>
                 {/* <RectBtn /> */}
                 <RectBtn name="minus" callback={() => dispatch(setActiveReportId(null))
@@ -257,6 +244,19 @@ const FeedScreen = ({ navigation }) => {
 export default FeedScreen;
 
 const styles = StyleSheet.create({
+  blurModal: {
+    borderRadius: 10,
+    width: "100%",
+    backgroundColor: "rgba(31, 32, 34, 0.7)",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginLeft: 20,
+    marginTop: 20,
+    marginRight: 10,
+  },
   blurBackground: {
     justifyContent: 'center', // Centers children vertically in the container
     alignItems: 'center',

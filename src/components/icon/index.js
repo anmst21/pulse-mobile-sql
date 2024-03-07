@@ -70,10 +70,12 @@ import PlusIcon from "./plusIcon"
 import SortIcon from "./sortIcon"
 import ShareIcon from "./shareIcon"
 import ReportIcon from "./reportIcon"
-
+import WarpCastLogo from "./warpCastLogo"
 
 const Icon = ({ name, style }) => {
   switch (name) {
+    case "warpCastLogo":
+      return <WarpCastLogo style={style} />;
     case "minusIcon":
       return <MinusIcon style={style} />;
     case "plusIcon":
