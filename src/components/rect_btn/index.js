@@ -78,9 +78,13 @@ const RectBtn = ({ count, name, callback, state }) => {
                 return <NumberBtn
                     type="noBG"
                     icon={<Icon name="reportIcon" style={{
-                        //  fill: "#F25219",
                         stroke: "#FFAB1F"
                     }} />}
+                />;
+            case "minus":
+                return <NumberBtn
+                    type="noBG"
+                    icon={<Icon name="minusIcon" />}
                 />;
         }
     }

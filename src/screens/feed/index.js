@@ -8,7 +8,7 @@ import {
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReportInput from "../../components/report_input";
-
+import RectBtn from "../../components/rect_btn";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -191,11 +191,20 @@ const FeedScreen = ({ navigation }) => {
 
 
             }}>
-              <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 15 }} onPress={() => {
-                dispatch(setActiveReportId(null))
+
+              <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginLeft: 20,
+                marginTop: 20,
+                marginRight: 10,
               }}>
-                <CustomText >AAAAA</CustomText>
-              </TouchableOpacity>
+                <CustomText style={{ fontSize: 25 }}>Report a post</CustomText>
+                {/* <RectBtn /> */}
+                <RectBtn name="minus" callback={() => dispatch(setActiveReportId(null))
+                } />
+              </View>
               <ReportInput
                 topInputValue={topInputValue}
                 setTopInputValue={setTopInputValue}
