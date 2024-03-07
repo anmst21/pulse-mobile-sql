@@ -68,7 +68,8 @@ export * from "./thunks/feedThunk";
 
 export {
   setActiveCommentId,
-  setActiveDrawerId
+  setActiveDrawerId,
+  setActiveReportId
 } from "./slices/feedSlice"
 export {
   clearErrorMessage,

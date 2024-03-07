@@ -7,7 +7,8 @@ import AsyncSearch from '../../components/async_search'
 import { useDispatch, useSelector } from "react-redux";
 import {
     openReport, closeReport
-} from "../../redux"
+} from "../../redux";
+import ReportInput from '../../components/report_input'
 
 const ReportBug = () => {
     const dispatch = useDispatch()
@@ -47,60 +48,65 @@ const ReportBug = () => {
                 </View>
             </TouchableOpacity>
             {reportOpen &&
+                <ReportInput
+                    topInputValue={topInputValue}
+                    setTopInputValue={setTopInputValue}
+                    botInputValue={botInputValue}
+                    setBotInputValue={setBotInputValue}
+                />
+                // <View style={{
 
-                <View style={{
 
+                // }}>
+                //     <View style={styles.commentContainer}>
 
-                }}>
-                    <View style={styles.commentContainer}>
+                //         <TextInput
+                //             style={styles.input}
+                //             placeholder="Enter a header..."
+                //             value={topInputValue}
+                //             onChangeText={text => setTopInputValue(text)} // Update the state on input change
+                //             placeholderTextColor="gray"
+                //             multiline
+                //             maxLength={30}
+                //         />
+                //         <CustomText style={styles.counter}>
+                //             {topInputValue.length} / 30
+                //         </CustomText>
+                //     </View>
+                //     <View style={[styles.commentContainer, { height: 100, marginTop: 30 }]}>
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter a header..."
-                            value={topInputValue}
-                            onChangeText={text => setTopInputValue(text)} // Update the state on input change
-                            placeholderTextColor="gray"
-                            multiline
-                            maxLength={30}
-                        />
-                        <CustomText style={styles.counter}>
-                            {topInputValue.length} / 30
-                        </CustomText>
-                    </View>
-                    <View style={[styles.commentContainer, { height: 100, marginTop: 30 }]}>
+                //         <TextInput
+                //             style={styles.input}
+                //             placeholder="Enter a body..."
+                //             value={botInputValue}
+                //             onChangeText={text => setBotInputValue(text)} // Update the state on input change
+                //             placeholderTextColor="gray"
+                //             multiline
+                //             maxLength={240}
+                //         />
+                //         <CustomText style={styles.counter}>
+                //             {botInputValue.length} / 240
+                //         </CustomText>
+                //     </View>
+                //     <View style={{
+                //         flexDirection: "row",
+                //         justifyContent: "flex-end",
+                //         marginBottom: 10,
+                //         paddingHorizontal: 20,
+                //         left: 5,
+                //         marginTop: 40
+                //     }}>
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter a body..."
-                            value={botInputValue}
-                            onChangeText={text => setBotInputValue(text)} // Update the state on input change
-                            placeholderTextColor="gray"
-                            multiline
-                            maxLength={240}
-                        />
-                        <CustomText style={styles.counter}>
-                            {botInputValue.length} / 240
-                        </CustomText>
-                    </View>
-                    <View style={{
-                        flexDirection: "row",
-                        justifyContent: "flex-end",
-                        marginBottom: 10,
-                        paddingHorizontal: 20,
-                        left: 5,
-                        marginTop: 40
-                    }}>
+                //         <Button
+                //             label={"Submit"}
+                //             grey
+                //             onPressIn={() => {
+                //                 console.log()
 
-                        <Button
-                            label={"Submit"}
-                            grey
-                            onPressIn={() => {
-                                console.log()
-
-                            }}
-                        />
-                    </View>
-                </View>
+                //             }}
+                //         />
+                //     </View>
+                // </View>
             }
         </View>
     )
@@ -120,7 +126,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: -20,
         right: 0
-
     },
     btnContainer: {
         // flex: 1,
@@ -133,9 +138,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 22, color: "white",
         alignItems: "center",
-        //   width: '100%',
         top: 2
-
     },
 
     postHeader: {
@@ -144,16 +147,12 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     commentContainer: {
-
         marginTop: 20,
-        //  padding: 10,
         marginHorizontal: 20,
         backgroundColor: "rgba(31, 32, 34, 0.5)",
         height: 40,
         borderRadius: 5,
-        //  justifyContent: "center",
         paddingHorizontal: 10,
-        //  paddingBottom: 20
     },
     topContiner: {
 

@@ -1,10 +1,13 @@
 import {
   StyleSheet,
   View,
-  ScrollView
+  ScrollView,
+  Text,
+  TouchableOpacity
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ReportInput from "../../components/report_input";
 
 import Animated, {
   useSharedValue,
@@ -24,8 +27,9 @@ import Map from "../map";
 import CustomText from "../../components/text";
 import MapContainer from "../map";
 import UserPosts from "../profile/UserPosts";
-import { fetchUserAudios, fetchFeed } from "../../redux";
+import { fetchFeed, setActiveReportId } from "../../redux";
 import RenderSkeleton from "../../components/render_skeleton";
+import { BlurView } from "expo-blur";
 
 const FeedScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -36,9 +40,13 @@ const FeedScreen = ({ navigation }) => {
   const scrollY = useSharedValue(0);
   const feedOpacity = useSharedValue(0);
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
-  const { posts, isLoading } = useSelector((state) => state?.feed);
+  const { posts, isLoading, activeReportId } = useSelector((state) => state?.feed);
   const [feedHeight, setFeedHeight] = useState(null)
   const [feedY, setFeedY] = useState(0);
+
+
+  const [topInputValue, setTopInputValue] = useState("")
+  const [botInputValue, setBotInputValue] = useState("")
 
   console.log("imgpost", posts[0])
 
@@ -137,6 +145,7 @@ const FeedScreen = ({ navigation }) => {
     } else {
       return (
         <View style={styles.userPostContainer} onLayout={onEditorRightLayout}>
+
           <ScrollView
             scrollEventThrottle={16}
             ref={scrollViewRef}
@@ -171,6 +180,32 @@ const FeedScreen = ({ navigation }) => {
               </View>
             </View>
           </ScrollView>
+          {activeReportId && <View style={styles.blurBackground}>
+            <BlurView intensity={80} style={StyleSheet.absoluteFill} />
+
+
+            <View style={{
+              borderRadius: 10,
+              width: "100%",
+              backgroundColor: "rgba(31, 32, 34, 0.7)",
+
+
+            }}>
+              <TouchableOpacity style={{ paddingHorizontal: 20, marginTop: 15 }} onPress={() => {
+                dispatch(setActiveReportId(null))
+              }}>
+                <CustomText >AAAAA</CustomText>
+              </TouchableOpacity>
+              <ReportInput
+                topInputValue={topInputValue}
+                setTopInputValue={setTopInputValue}
+                botInputValue={botInputValue}
+                setBotInputValue={setBotInputValue}
+              />
+            </View>
+
+
+          </View>}
 
         </View>
       )
@@ -213,6 +248,17 @@ const FeedScreen = ({ navigation }) => {
 export default FeedScreen;
 
 const styles = StyleSheet.create({
+  blurBackground: {
+    justifyContent: 'center', // Centers children vertically in the container
+    alignItems: 'center',
+    // backgroundColor: "yellow",
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    paddingHorizontal: 20
+  },
   userPostContainer: {
 
     paddingHorizontal: 10

@@ -7,6 +7,7 @@ const initialState = {
   time: "1",
   activeCommentId: null,
   activeDrawerId: null,
+  activeReportId: null,
   posts: [],
   comments: [],
 
@@ -20,6 +21,9 @@ const feedSlice = createSlice({
   reducers: {
     updateTimeStamp: (state, action) => {
       state.time = action.payload;
+    },
+    setActiveReportId: (state, action) => {
+      state.activeReportId = action.payload;
     },
     setActiveCommentId: (state, action) => {
       state.activeCommentId = action.payload;
@@ -169,7 +173,8 @@ const feedSlice = createSlice({
 export const {
   updateTimeStamp,
   setActiveCommentId,
-  setActiveDrawerId
+  setActiveDrawerId,
+  setActiveReportId
 } = feedSlice.actions;
 
 export const feedReducer = feedSlice.reducer;
