@@ -12,6 +12,7 @@ import { useNavigation, StackActions } from "@react-navigation/native";
 import FollowUnfollowButton from "../follow_unfollow_button";
 import Icon from "../icon";
 import CustomText from "../text";
+import { ScrollView } from "react-native-gesture-handler";
 
 const UsersList = ({ results, setResults }) => {
   const navigation = useNavigation();
@@ -20,13 +21,10 @@ const UsersList = ({ results, setResults }) => {
   return (
     <View style={{ paddingBottom: 125 }}>
       {results ? (
-
-        <FlatList
-          style={styles.list}
-          data={results}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
+        <ScrollView style={{ paddingBottom: 125 }}>
+          {results.map((item) => {
+            return <TouchableOpacity
+              key={item.id}
               onPress={() => {
                 storedUserInfo.id !== item.id
                   ? navigation.push("UserProfileScreen", {
@@ -59,8 +57,8 @@ const UsersList = ({ results, setResults }) => {
                 ) : null}
               </View>
             </TouchableOpacity>
-          )}
-        />
+          })}
+        </ScrollView>
 
       ) : (
         <Text>Nothing to fetch</Text>

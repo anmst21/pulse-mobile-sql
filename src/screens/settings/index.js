@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, ScrollView, TouchableWithoutFeedback } from "react-native";
+import { View, Text, StyleSheet, Button, ScrollView, TouchableWithoutFeedback, FlatList } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import customMapStyle from "../../components/map/mapStyle";
 import AsyncSearch from "../../components/async_search";
@@ -87,6 +87,7 @@ const Settings = ({ route }) => {
       !notificationsOpen &&
       !genreOpen
     }>
+
       <View style={{ backgroundColor: "black", flex: 1, }}>
         <View style={styles.header}>
           <SettingsHeader />

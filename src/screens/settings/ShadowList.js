@@ -1,23 +1,34 @@
 {/* <Icon name="markSeenIcon" /> */ }
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '../../components/button'
 import CustomText from '../../components/text'
 import Icon from '../../components/icon'
 import AsyncSearch from '../../components/async_search'
 import { useDispatch, useSelector } from "react-redux";
+import sqlApi from "../../redux/axios/sqlApi"
 import {
     closeShadowList,
     openShadowList
 } from "../../redux"
-
+import UsersList from '../../components/user_list'
 const NotificationsSettings = () => {
     const dispatch = useDispatch()
     const { shadowListOpen } = useSelector((state) => state.settings);
+    const [results, setResults] = useState([])
 
-
-
-
+    const fetchShadowList = async () => {
+        try {
+            const { data } = await sqlApi.post("/user/shadowlist")
+            setResults(data)
+            console.log("fetchShadowList", data)
+        } catch (err) {
+            console.error("Something Went Wrong", err)
+        }
+    }
+    useEffect(() => {
+        fetchShadowList()
+    }, [])
 
     return (
         <View style={[styles.topContiner, {
@@ -44,12 +55,13 @@ const NotificationsSettings = () => {
                     </View>
                 </View>
             </TouchableOpacity>
-            {shadowListOpen &&
-                <ScrollView>
-
-                </ScrollView>
-            }
-        </View>
+            <View style={{ paddingHorizontal: 20 }}>
+                {
+                    shadowListOpen &&
+                    <UsersList results={results} setResults={setResults} />
+                }
+            </View>
+        </View >
     )
 }
 
