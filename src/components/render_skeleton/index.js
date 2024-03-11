@@ -63,66 +63,70 @@ const RenderSkeleton = ({ name, count }) => {
                             style={[
                                 styles.userElement,
                                 animatedStyle,
-                                { height: 240 }
+                                { width, borderRadius: 100 }
                             ]}
                         />
                     ))
                 }
-            </View>}
-            {name === "postList" && <View style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                gap: 15,
+            </View >}
+            {
+                name === "postList" && <View style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    gap: 15,
 
 
-                // backgroundColor: "blue"
-            }}>
-                {
+                    // backgroundColor: "blue"
+                }}>
+                    {
 
-                    Array.from({ length: count }, (_, index) => (
-                        <Animated.View
-                            key={index}
-                            style={[
-                                styles.userElement,
-                                animatedStyle,
-                                {
-                                    height: 500, width: "100%", padding: 0, flexShrink: 0
-                                }
-                            ]}
-                        />
-                    ))
-                }
-            </View>}
-            {name === "postWindowList" && <View style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                // gap: 10
+                        Array.from({ length: count }, (_, index) => (
+                            <Animated.View
+                                key={index}
+                                style={[
+                                    styles.userElement,
+                                    animatedStyle,
+                                    {
+                                        height: 500, width: "100%", padding: 0, flexShrink: 0
+                                    }
+                                ]}
+                            />
+                        ))
+                    }
+                </View>
+            }
+            {
+                name === "postWindowList" && <View style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    // gap: 10
 
-                //   backgroundColor: "blue"
-            }}>
-                {
+                    //   backgroundColor: "blue"
+                }}>
+                    {
 
-                    Array.from({ length: count }, (_, index) => (
-                        <Animated.View
-                            key={index}
-                            style={[
+                        Array.from({ length: count }, (_, index) => (
+                            <Animated.View
+                                key={index}
+                                style={[
 
-                                animatedStyle,
-                                {
-                                    height: 250,
-                                    marginBottom: 10,
-                                    width: 200,
-                                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                                    borderRadius: 5,
-                                    width: '48%',
-                                }
-                            ]}
-                        />
-                    ))
-                }
-            </View>}
+                                    animatedStyle,
+                                    {
+                                        height: 250,
+                                        marginBottom: 10,
+                                        width: 200,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                        borderRadius: 5,
+                                        width: '48%',
+                                    }
+                                ]}
+                            />
+                        ))
+                    }
+                </View>
+            }
 
         </>
     );

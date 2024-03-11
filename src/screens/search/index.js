@@ -7,7 +7,7 @@ import CustomText from "../../components/text";
 
 const SearchScreen = () => {
   return (
-    <View style={{ flex: 1, marginTop: 100 }}>
+    <View style={{ flex: 1, marginTop: 100, }}>
       {/* <View style={styles.container}>
                 <MapView
                     provider={PROVIDER_GOOGLE} // remove if not using Google Maps

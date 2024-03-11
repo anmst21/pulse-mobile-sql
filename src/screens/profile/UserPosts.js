@@ -207,7 +207,7 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
       !isOpenComments ?
         (
           setIsOpenComments(true),
-          // dispatch(setActiveCommentId(audio.id)),
+          dispatch(setActiveCommentId(audio.id)),
           translateX.value = withSpring(0),
           setActiveDrawerId(null)
         ) :

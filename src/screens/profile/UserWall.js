@@ -22,9 +22,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import RectBtn from "../../components/rect_btn";
+import Theme from "../../styles/theme";
 
 
-const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton, setUserButton }) => {
+const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, handleBan, status }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const { windowTab, showBookmarks, showOld } = useSelector((state) => state.user)
@@ -36,7 +37,7 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton
     });
   };
   const [audios, setAudios] = useState([])
-
+  //console.log("userBtn", userButton)
   const calcWidth = 100
   const translateX = useSharedValue(0);
 
@@ -95,20 +96,6 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton
     }
   };
 
-  const handleBan = async () => {
-    try {
-      const updatedResults = userButton.map((result) =>
-        result.id === userId ? { ...result, banned: result.banned ? false : true } : result
-      );
-      setUserButton(updatedResults);
-      const response = await sqlApi.post("/ban/toggle", {
-        targetId: userId
-      })
-      console.log("banned", response.data.message)
-    } catch (err) {
-      console.error("Something Went Wrong With Togging Ban State:", err)
-    }
-  }
 
 
   return (
@@ -124,7 +111,7 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton
               width: calcWidth, zIndex: 9999
             }]}>
 
-              <RectBtn state={userInfo.banned === "true" ? true : false} name="eye" callback={() => {
+              <RectBtn state={status === "banned" ? true : false} name="eye" callback={() => {
                 handleBan()
                 translateX.value = withSpring(0);
               }} />
@@ -132,12 +119,13 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton
 
             </View>
             <View style={styles.container}>
-
-              <View style={styles.userNameContainer} >
-                <CustomText style={{ fontSize: 30 }}>
-                  {userInfo.username}
-                </CustomText>
-              </View>
+              {userInfo.username &&
+                <View style={styles.userNameContainer} >
+                  <CustomText style={{ fontSize: 30 }}>
+                    {userInfo.username}
+                  </CustomText>
+                </View>
+              }
 
 
               <View style={styles.bio}>
@@ -265,7 +253,16 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton
           </TouchableOpacity>
 
           <View style={styles.sortRight}>
-            <View>
+
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10
+            }}>
+              <View style={styles.urlContainer}>
+                <CustomText style={styles.trackUrl}>UnSeen</CustomText>
+
+              </View>
               <TouchableOpacity onPress={() => dispatch(setShowBookmarks(!showBookmarks))}>
                 <Icon name="bookmarkIcon" style={{ width: 24, stroke: "white", background: showBookmarks ? "white" : null }} />
               </TouchableOpacity>
@@ -303,6 +300,29 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton
 export default UserWall;
 
 const styles = StyleSheet.create({
+  trackUrl: {
+    fontFamily: "london",
+    fontSize: 10,
+    color: Theme.green,
+
+    top: 1,
+
+
+  },
+  urlContainer: {
+    backgroundColor: "rgba(41, 255, 127, 0.05)",
+
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "rgba(41, 255, 127, 0.2)",
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+
+  },
   ctaBtn: {
     position: "absolute",
     left: "100%",

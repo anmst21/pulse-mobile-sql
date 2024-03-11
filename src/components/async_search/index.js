@@ -168,10 +168,13 @@ const AsyncSearch = ({ genre, search, tags, setUserChoice }) => {
           bottom: -70
         }}><CustomText>No Results</CustomText></View>}
       </View>
-      {search && <UsersList results={results} setResults={setResults} />}
-      {!search && isLoading &&
+      {search && !isLoading && <UsersList results={results} setResults={setResults} />}
+      {!search && isLoading && (genre || tags) &&
         // <GenresList setUserChoice={setUserChoice} results={query.length !== 0 ? results : genreList} setResults={setResults} />
         <RenderSkeleton name="genreList" />
+      }
+      {search && isLoading &&
+        <RenderSkeleton name="userElement" count={15} />
       }
       {!search && !isLoading && showInitial && !tags &&
         <GenresList tags={tags} setUserChoice={setUserChoice} results={genreList} setResults={setResults} />

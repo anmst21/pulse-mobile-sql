@@ -26,9 +26,8 @@ const UserProfileScreen = ({ route }) => {
         // );
         // console.log("111111111", response.data)
         setUserButton([{
-          follows: response.data.follows,
-          subscribed: response.data.subscribed,
-          banned: response.data.subscribed,
+
+          status: response.data.status,
           id: response.data.id
         }])
         // setUserAudios(responseAudios.data);
@@ -44,12 +43,34 @@ const UserProfileScreen = ({ route }) => {
   }, [id, setIsLoading]);
 
   const FollowBtn = () => {
-    return userButton.length !== 0 &&
+    return userButton?.length !== 0 &&
       <FollowUnfollowButton
         item={userButton[0]}
         results={userButton}
         setResults={setUserButton}
       />
+  }
+
+  const handleBan = async () => {
+    try {
+
+      console.log("updatedResults", updatedResults)
+      const response = await sqlApi.post("/ban/toggle", {
+        targetId: id
+      })
+      const updatedResults = userButton.map((result) =>
+        result.id === id ? { ...result, status: response.data.action === "ban" ? "banned" : "false" } : result
+      );
+      setUserButton(updatedResults);
+
+      console.log("banned", updatedResults)
+    } catch (err) {
+      console.error("Something Went Wrong With Togging Ban State:", err)
+    }
+  }
+
+  const BanBtn = () => {
+
   }
 
 
@@ -79,7 +100,8 @@ const UserProfileScreen = ({ route }) => {
         userId={id}
         btn={() => FollowBtn()}
         isLoading={isLoading}
-        userButton={userButton[0]} setUserButton={setUserButton}
+        handleBan={() => handleBan()}
+        status={userButton[0]?.status}
       />
 
     </View>
