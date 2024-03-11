@@ -40,21 +40,23 @@ const feedSlice = createSlice({
     builder
 
       .addCase(toggleBookmark.fulfilled, (state, action) => {
+        const { postId, action: bool } = action.payload;
 
-        const postId = action.payload.postId;
-        const bool = action.payload.action
+        // Clone the posts array to ensure immutability
+        const posts = [...state.posts];
 
-        state.posts = state.posts.map(post => {
-          if (post.id === postId) {
-            if (bool === "added") {
-              return { ...post, bookmarked: true };
-            } else {
-              return { ...post, bookmarked: false };
-            }
-          }
-          return post;
-        });
+        // Find the index of the post directly
+        const index = posts.findIndex(post => post.id === postId);
 
+        // Only proceed if a post with the matching postId is found
+        if (index !== -1) {
+          // Directly update the cloned array at the found index
+          // This is a shallow clone of the post object with the 'bookmarked' property updated
+          posts[index] = { ...posts[index], bookmarked: bool === "added" ? true : false };
+
+          // Update the state with the modified posts array
+          state.posts = posts;
+        }
       })
       .addCase(followUser.fulfilled, (state, action) => {
         if (action.payload.isPost) {
@@ -120,43 +122,50 @@ const feedSlice = createSlice({
       })
       .addCase(toggleUpvote.fulfilled, (state, action) => {
         const { post_id, vote_type, action: actionType } = action.payload;
-        state.posts = state.posts.map((post) => {
-          if (post.id === post_id) {
-            let updatedPost = { ...post };
-            if (vote_type === true) {
-              if (actionType === "add") {
-                updatedPost.vote_type = true
-                updatedPost.upvotes = (updatedPost.upvotes || 0) + 1;
-              } else if (actionType === "update") {
-                updatedPost.vote_type = true
-                updatedPost.upvotes = (updatedPost.upvotes || 0) + 1;
-                updatedPost.downvotes = Math.max(0, (updatedPost.downvotes || 0) - 1);
-              }
-            } else if (vote_type === false) {
-              if (actionType === "add") {
-                updatedPost.vote_type = false
-                updatedPost.downvotes = (updatedPost.downvotes || 0) + 1;
-              } else if (actionType === "update") {
-                updatedPost.vote_type = false
-                updatedPost.downvotes = (updatedPost.downvotes || 0) + 1;
-                updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
-              }
-            } else if (actionType === "delete") {
-              if (updatedPost.vote_type === true) {
-                updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
-              } else if (updatedPost.vote_type === false) {
-                updatedPost.downvotes = Math.max(0, (updatedPost.downvotes || 0) - 1);
 
+        // Find the index of the post
+        const index = state.posts.findIndex(post => post.id === post_id);
+
+        // Proceed only if a valid post is found
+        if (index !== -1) {
+          // Make a shallow copy of the post to be updated
+          let updatedPost = { ...state.posts[index] };
+
+          // Apply the updates to the copied post
+          if (vote_type === true) {
+            if (actionType === "add" || actionType === "update") {
+              updatedPost.vote_type = true;
+              updatedPost.upvotes = (updatedPost.upvotes || 0) + 1;
+              if (actionType === "update") {
+                updatedPost.downvotes = Math.max(0, (updatedPost.downvotes || 0) - 1);
               }
-              // Handle vote removal
-              updatedPost.vote_type = null
-              updatedPost.upvotes = actionType === true ? Math.max(0, (updatedPost.upvotes || 0) - 1) : updatedPost.upvotes;
-              updatedPost.downvotes = actionType === false ? Math.max(0, (updatedPost.downvotes || 0) - 1) : updatedPost.downvotes;
             }
-            return updatedPost;
+          } else if (vote_type === false) {
+            if (actionType === "add" || actionType === "update") {
+              updatedPost.vote_type = false;
+              updatedPost.downvotes = (updatedPost.downvotes || 0) + 1;
+              if (actionType === "update") {
+                updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
+              }
+            }
           }
-          return post;
-        });
+
+          if (actionType === "delete") {
+            if (updatedPost.vote_type === true) {
+              updatedPost.upvotes = Math.max(0, (updatedPost.upvotes || 0) - 1);
+            } else if (updatedPost.vote_type === false) {
+              updatedPost.downvotes = Math.max(0, (updatedPost.downvotes || 0) - 1);
+            }
+            updatedPost.vote_type = null;
+          }
+
+          // Replace the old post with the updated one in a new array to maintain immutability
+          state.posts = [
+            ...state.posts.slice(0, index),
+            updatedPost,
+            ...state.posts.slice(index + 1)
+          ];
+        }
       })
       .addCase(toggleUpvote.rejected, (state, action) => {
         state.error = action.error.message;

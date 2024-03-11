@@ -111,9 +111,9 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
 
   }, [activeCommentId])
 
-  useEffect(() => {
-    activeCommentId !== audio.id && setIsOpenComments(false)
-  }, [activeCommentId])
+  // useEffect(() => {
+  //   activeCommentId !== audio.id && setIsOpenComments(false)
+  // }, [activeCommentId])
 
 
   useEffect(() => {
@@ -203,10 +203,20 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
 
 
   const toggleComments = () => {
-    activeCommentId === audio.id && setPrevChildRef(null),
-      activeCommentId !== audio.id ?
-        (dispatch(setActiveCommentId(audio.id)), translateX.value = withSpring(0), setActiveDrawerId(null)) :
-        (dispatch(setActiveCommentId(null)), translateX.value = withSpring(0), setActiveDrawerId(null))
+    isOpenComments && setPrevChildRef(null),
+      !isOpenComments ?
+        (
+          setIsOpenComments(true),
+          // dispatch(setActiveCommentId(audio.id)),
+          translateX.value = withSpring(0),
+          setActiveDrawerId(null)
+        ) :
+        (
+          setIsOpenComments(false),
+          dispatch(setActiveCommentId(null)),
+          translateX.value = withSpring(0),
+          setActiveDrawerId(null)
+        )
 
   }
 
@@ -313,10 +323,11 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
                 <RectBtn state={activeDrawer} name="chevronOpen" callback={toggleDrawer} />
               </View>
 
-              {activeCommentId === audio.id ?
+              {isOpenComments ?
                 <PostComment
                   userId={storedUserInfo}
                   audio={audio}
+                  close={toggleComments}
                 /> :
                 <>
                   <PostHeader

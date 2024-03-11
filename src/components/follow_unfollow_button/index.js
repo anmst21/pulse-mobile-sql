@@ -8,17 +8,18 @@ import {
 import { useDispatch } from "react-redux";
 import React from "react";
 import Icon from "../icon";
+import RectBtn from "../rect_btn";
 
 const FollowUnfollowButton = ({ item, results, setResults, post }) => {
   const dispatch = useDispatch();
 
-
+  console.log("status", results[0].status)
 
   const handleUnfollow = (userId) => {
     if (!post) {
       dispatch(unfollowUser({ userId, post }));
       const updatedResults = results.map((result) =>
-        result.id === userId ? { ...result, follows: "false", subscribed: "pending" } : result
+        result.id === userId ? { ...result, status: "false", } : result
       );
       setResults(updatedResults);
     } else {
@@ -31,7 +32,7 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
     if (!post) {
       dispatch(followUser({ userId, post }));
       const updatedResults = results.map((result) =>
-        result.id === userId ? { ...result, follows: "true" } : result
+        result.id === userId ? { ...result, status: "follows" } : result
       );
       setResults(updatedResults);
     } else {
@@ -44,7 +45,7 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
     if (!post) {
       dispatch(subscribeUser({ userId, post }));
       const updatedResults = results.map((result) =>
-        result.id === userId ? { ...result, subscribed: "pending" } : result
+        result.id === userId ? { ...result, status: "pending" } : result
       );
       setResults(updatedResults);
     } else {
@@ -52,22 +53,59 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
     };
   }
 
+  const handleUnban = (userId) => {
+    if (!post) {
+      const updatedResults = results.map((result) =>
+        result.id === userId ? { ...result, status: "false" } : result
+      );
+      setResults(updatedResults);
+    }
+  }
+
+  const renderComponent = () => {
+    switch (item.status) {
+      case "false":
+        return <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#8136DC" }} />
+
+
+      case "follows":
+        return <>
+          <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+          <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#8136DC" }} />
+        </>
+      case "pending":
+        return <>
+          <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+          <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#FFAB1F" }} />
+        </>
+
+
+      case "accepted":
+        return <>
+          <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+          <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
+        </>
+      case "banned":
+        return <RectBtn state={true} name="eye" callback={() => {
+
+        }} />
+    }
+  }
+
   return (
     <View style={{
       flexDirection: "row",
       width: 70,
       // backgroundColor: "blue",
-      justifyContent: "space-between"
+      justifyContent: "flex-end",
+      gap: 10
     }}>
-      {item.subscribed === "true" ? (
-        // <Button
-        //   title="Unsubscribe and Unfollow"
-        //   onPress={() => handleUnfollow(item.id)}
-        // />
+      {renderComponent()}
+      {/* {item.subscribed === "true" ? (
+      
         <TouchableOpacity onPress={() => handleUnfollow(item.id)}>
           <View style={{
             flexDirection: "row", width: 70,
-            //  backgroundColor: "blue",
             justifyContent: "space-between",
 
           }}>
@@ -77,7 +115,6 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
         </TouchableOpacity>
       ) : item.follows === "true" ? (
         <>
-          {/* <Button title="Unfollow" onPress={() => handleUnfollow(item.id)} /> */}
           <TouchableOpacity onPress={() => handleUnfollow(item.id)}>
             <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#14AD4D" }} />
           </TouchableOpacity>
@@ -87,10 +124,7 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
           ) : item.subscribed === "declined" ? (
             <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#F53535" }} />
           ) : (
-            // <Button
-            //   title="Subscribe"
-            //   onPress={() => handleSubscribe(item.id)}
-            // />
+       
             <TouchableOpacity onPress={() => handleSubscribe(item.id)}>
               <Icon name="subscribeIcon" style={{ width: 30, heigth: 30, color: "#8136DC" }} />
             </TouchableOpacity>
@@ -98,12 +132,11 @@ const FollowUnfollowButton = ({ item, results, setResults, post }) => {
           )}
         </>
       ) : (
-        // <Button title="Follow" onPress={() => handleFollow(item.id)} />
         <TouchableOpacity onPress={() => handleFollow(item.id)} >
           <Icon name="followIcon" style={{ width: 30, heigth: 30, color: "#8136DC" }} />
         </TouchableOpacity>
 
-      )}
+      )} */}
     </View>
   );
 };

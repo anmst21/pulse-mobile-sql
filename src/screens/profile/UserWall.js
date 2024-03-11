@@ -13,9 +13,18 @@ import {
   setWindowTab, setShowOld,
   setShowBookmarks
 } from "../../redux";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+  useAnimatedGestureHandler,
+} from "react-native-reanimated";
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import RectBtn from "../../components/rect_btn";
 
 
-const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios }) => {
+const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userButton, setUserButton }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const { windowTab, showBookmarks, showOld } = useSelector((state) => state.user)
@@ -27,6 +36,36 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios
     });
   };
   const [audios, setAudios] = useState([])
+
+  const calcWidth = 100
+  const translateX = useSharedValue(0);
+
+  const panGestureEvent = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.startX = translateX.value;
+
+    },
+    onActive: (event, ctx) => {
+      let newX = ctx.startX + event.translationX;
+      if (newX > 0) {
+        newX = 0;
+      }
+      translateX.value = newX;
+    },
+    onEnd: () => {
+      if (translateX.value < -100) {
+        translateX.value = withSpring(-calcWidth);
+      } else {
+        translateX.value = withSpring(0);
+      }
+    },
+  });
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+    };
+  });
 
 
 
@@ -56,140 +95,165 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios
     }
   };
 
+  const handleBan = async () => {
+    try {
+      const updatedResults = userButton.map((result) =>
+        result.id === userId ? { ...result, banned: result.banned ? false : true } : result
+      );
+      setUserButton(updatedResults);
+      const response = await sqlApi.post("/ban/toggle", {
+        targetId: userId
+      })
+      console.log("banned", response.data.message)
+    } catch (err) {
+      console.error("Something Went Wrong With Togging Ban State:", err)
+    }
+  }
+
 
   return (
-    <ScrollView>
+    <ScrollView onMomentumScrollBegin={event => {
+
+      translateX.value = withSpring(0);
+
+    }}>
       <View style={styles.mainContainer}>
+        <PanGestureHandler enabled={userId !== storedUserInfo} onGestureEvent={panGestureEvent} activeOffsetX={[-10, 10]}   >
+          <Animated.View style={animatedStyles}>
+            <View style={[styles.ctaBtn, {
+              width: calcWidth, zIndex: 9999
+            }]}>
 
-        <View style={styles.container}>
-
-          <View style={styles.userNameContainer} >
-            <CustomText style={{ fontSize: 30 }}>
-              {userInfo.username}
-            </CustomText>
-          </View>
+              <RectBtn state={userInfo.banned === "true" ? true : false} name="eye" callback={() => {
+                handleBan()
+                translateX.value = withSpring(0);
+              }} />
 
 
-          <View style={styles.bio}>
-            <View style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 7
-            }}>
+            </View>
+            <View style={styles.container}>
 
-              <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20 }} />
-              {userInfo.link && !isLoading ?
-                <TouchableOpacity onPress={() => {
-                  handleLinkPress(userInfo.link.link)
+              <View style={styles.userNameContainer} >
+                <CustomText style={{ fontSize: 30 }}>
+                  {userInfo.username}
+                </CustomText>
+              </View>
+
+
+              <View style={styles.bio}>
+                <View style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 7
                 }}>
-                  <CustomText style={{ fontSize: 16, textDecorationLine: 'underline', }}>{userInfo.link.linkName}</CustomText>
-                </TouchableOpacity>
-                :
+
+                  <Icon name="linkIcon" style={{ color: "#ABABAB", width: 20 }} />
+                  {userInfo.link && !isLoading ?
+                    <TouchableOpacity onPress={() => {
+                      handleLinkPress(userInfo.link.link)
+                    }}>
+                      <CustomText style={{ fontSize: 16, textDecorationLine: 'underline', }}>{userInfo.link.linkName}</CustomText>
+                    </TouchableOpacity>
+                    :
+                    <View style={{
+                      flex: 0.5,
+                      backgroundColor: "rgba(31, 32, 34, 0.8)",
+                      height: 20,
+                      borderRadius: 3
+                    }} />
+                  }
+
+                </View>
                 <View style={{
-                  flex: 0.5,
-                  backgroundColor: "rgba(31, 32, 34, 0.8)",
-                  height: 20,
-                  borderRadius: 3
-                }} />
-              }
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 7,
+                  width: 250,
+                  paddingRight: 20,
+                }}>
 
-            </View>
-            <View style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 7,
-              width: 250,
-              paddingRight: 20,
-            }}>
+                  <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20 }} />
+                  {userInfo.bio && !isLoading ?
+                    <CustomText style={{ fontSize: 16 }}>{userInfo.bio}</CustomText>
+                    :
+                    <View style={{
+                      width: "100%",
+                      backgroundColor: "rgba(31, 32, 34, 0.8)",
+                      height: 60,
+                      borderRadius: 3
+                    }} />
+                  }
+                </View>
 
-              <Icon name="zapIcon" style={{ color: "#ABABAB", width: 20 }} />
-              {userInfo.bio && !isLoading ?
-                <CustomText style={{ fontSize: 16 }}>{userInfo.bio}</CustomText>
-                :
                 <View style={{
-                  width: "100%",
-                  backgroundColor: "rgba(31, 32, 34, 0.8)",
-                  height: 60,
-                  borderRadius: 3
-                }} />
-              }
-            </View>
+                  position: "absolute", right: 20
+                }}>
+                  {storedUserInfo === userInfo.id ?
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("Settings");
+                      }}
+                    >
+                      <Icon name="cog" />
+                    </TouchableOpacity>
+                    :
+                    <>{btn()}</>
+                  }
+                </View>
 
-            <View style={{
-              position: "absolute", right: 20
-            }}>
-              {storedUserInfo === userInfo.id ?
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Settings");
-                  }}
-                >
-                  <Icon name="cog" />
-                </TouchableOpacity>
-                :
-                <>{btn()}</>
-              }
-            </View>
+              </View>
 
-          </View>
+              <ProfilePicture userId={userId} imageLink={userInfo.image_link?.large} width={250} />
 
-          <ProfilePicture userId={userId} imageLink={userInfo.image_link?.large} width={250} />
+              <View style={styles.itemsCenter}>
 
-          <View style={styles.itemsCenter}>
+                <View style={styles.infoContainer}>
 
-            <View style={styles.infoContainer}>
-
-              {/* <TouchableOpacity onPress={() => handlePress("fetchFollowing")}>
+                  {/* <TouchableOpacity onPress={() => handlePress("fetchFollowing")}>
               <View style={styles.lilBox}>
                 <CustomText>Following:</CustomText>
                 <CustomText>{userInfo.followingCount}</CustomText>
               </View>
             </TouchableOpacity> */}
 
-              <View style={[styles.lilBox, { left: -10, }]}>
+                  <View style={[styles.lilBox, { left: -10, }]}>
 
-                {!isLoading ?
-                  <>
-                    <Icon name="waveFormProfile" style={styles.actionIcon} />
-                    <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
-                  </>
-                  : <View style={styles.skeletonIcon} />
-                }
+                    {!isLoading ?
+                      <>
+                        <Icon name="waveFormProfile" style={styles.actionIcon} />
+                        <CustomText style={[styles.number, { right: -5, }]}>{userInfo.postsCount}</CustomText>
+                      </>
+                      : <View style={styles.skeletonIcon} />
+                    }
+                  </View>
+
+                  <TouchableOpacity onPress={() => handlePress("followers")}>
+                    <View style={styles.lilBox}>
+                      {!isLoading ?
+                        <>
+                          <Icon name="followIcon" style={styles.actionIcon} />
+                          <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
+                        </>
+                        : <View style={styles.skeletonIcon} />}
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handlePress("subscribers")}>
+                    <View style={[styles.lilBox, { left: -20 }]}>
+                      {!isLoading ?
+                        <>
+                          <Icon name="subscribeIcon" style={styles.actionIcon} />
+                          <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
+                        </>
+                        : <View style={styles.skeletonIcon} />}
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
-
-              <TouchableOpacity onPress={() => handlePress("followers")}>
-                <View style={styles.lilBox}>
-                  {!isLoading ?
-                    <>
-                      <Icon name="followIcon" style={styles.actionIcon} />
-                      <CustomText style={[styles.number, { right: -5, }]}>{userInfo.followersCount}</CustomText>
-                    </>
-                    : <View style={styles.skeletonIcon} />}
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handlePress("subscribers")}>
-                <View style={[styles.lilBox, { left: -20 }]}>
-                  {!isLoading ?
-                    <>
-                      <Icon name="subscribeIcon" style={styles.actionIcon} />
-                      <CustomText style={[styles.number, { right: -2, }]}>{userInfo.subscribersCount}</CustomText>
-                    </>
-                    : <View style={styles.skeletonIcon} />}
-                </View>
-              </TouchableOpacity>
-
             </View>
-            {/* <View style={styles.infoContainer}>
-            <TouchableOpacity onPress={() => handlePress("fetchSubscribing")}>
-              <View style={styles.lilBox}>
-                <CustomText>Subscribing:</CustomText>
-                <CustomText>{userInfo.subscriptionsCount}</CustomText>
-              </View>
-            </TouchableOpacity>
+          </Animated.View>
+        </PanGestureHandler>
 
-          </View> */}
-          </View>
-        </View>
+
         <View style={styles.sortBar}>
           <TouchableOpacity onPress={() => dispatch(setShowOld(!showOld))}>
             <View style={styles.sort}>
@@ -239,6 +303,17 @@ const UserWall = ({ userInfo, userId, storedUserInfo, btn, isLoading, userAudios
 export default UserWall;
 
 const styles = StyleSheet.create({
+  ctaBtn: {
+    position: "absolute",
+    left: "100%",
+    flexDirection: "column",
+    paddingHorizontal: 10,
+    gap: 20,
+    justifyContent: "center",
+    height: "100%",
+    alignItems: "center",
+    paddingBottom: 20,
+  },
   viewStyle: {
 
     flexDirection: "row",

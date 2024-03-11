@@ -21,11 +21,16 @@ const UserProfileScreen = ({ route }) => {
       setIsLoading(true)
       try {
         const response = await sqlApi.get(`/user/${id}`);
-        const responseAudios = await sqlApi.get(
-          `/user/${id}/audios`
-        );
+        // const responseAudios = await sqlApi.get(
+        //   `/user/${id}/audios`
+        // );
         // console.log("111111111", response.data)
-        setUserButton([{ follows: response.data.follows, subscribed: response.data.subscribed }])
+        setUserButton([{
+          follows: response.data.follows,
+          subscribed: response.data.subscribed,
+          banned: response.data.subscribed,
+          id: response.data.id
+        }])
         // setUserAudios(responseAudios.data);
         setUserInfo(response.data);
       } catch (error) {
@@ -38,7 +43,7 @@ const UserProfileScreen = ({ route }) => {
     fetchUserInfo();
   }, [id, setIsLoading]);
 
-  const Btn = () => {
+  const FollowBtn = () => {
     return userButton.length !== 0 &&
       <FollowUnfollowButton
         item={userButton[0]}
@@ -46,6 +51,7 @@ const UserProfileScreen = ({ route }) => {
         setResults={setUserButton}
       />
   }
+
 
   return (
 
@@ -71,8 +77,9 @@ const UserProfileScreen = ({ route }) => {
         userAudios={userAudios}
         userInfo={userInfo}
         userId={id}
-        btn={() => Btn()}
+        btn={() => FollowBtn()}
         isLoading={isLoading}
+        userButton={userButton[0]} setUserButton={setUserButton}
       />
 
     </View>

@@ -31,25 +31,7 @@ const ReportBug = () => {
             console.log("Error Reporting a Bug:", err)
         }
     }
-    // const onSubmitReport = async () => {
-    //     try {
-    //         dispatch(setActiveReportId(null))
 
-    //         const object = posts.find(item => item.id === activeReportId);
-
-    //         const response = sqlApi.post("/report/post", {
-    //             audioId: object.id,
-    //             ownerUserId: object.user_id,
-    //             reportReason: topInputValue,
-    //             reportDetails: botInputValue
-    //         })
-    //         setBotInputValue("")
-    //         setTopInputValue("")
-    //         console.log("Success!", response.data)
-    //     } catch (err) {
-    //         console.log("Error uploading post report", err)
-    //     }
-    // }
 
 
 

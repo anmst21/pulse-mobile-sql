@@ -86,6 +86,11 @@ const RectBtn = ({ count, name, callback, state }) => {
                     type="noBG"
                     icon={<Icon name="minusIcon" />}
                 />;
+            case "eye":
+                return <NumberBtn
+                    type="noBG"
+                    icon={<Icon name={state ? "eyeIcon" : "markSeenIcon"} style={{ color: "#F25219" }} />}
+                />;
         }
     }
     return (

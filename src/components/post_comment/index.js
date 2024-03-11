@@ -4,9 +4,10 @@ import sqlApi from "../../redux/axios/sqlApi"
 import CustomText from '../text';
 import CommentInput from './CommentInput';
 import CommentComponent from './CommentComponent';
+import RectBtn from '../rect_btn';
 
 
-const PostComment = ({ userId, audio }) => {
+const PostComment = ({ userId, audio, close }) => {
     const [comments, setComments] = useState([]);
     const [replies, setReplies] = useState([]);
     const [activeReplyId, setActiveReplyId] = useState(null)
@@ -59,7 +60,18 @@ const PostComment = ({ userId, audio }) => {
 
     return (
         <View style={styles.comments} onLayout={onEditorLayout}>
-            <CustomText style={{ fontSize: 40, position: "absolute", top: 30, zIndex: 9999 }}>Comments</CustomText>
+            <View style={{
+                flexDirection: "row",
+                // backgroundColor: "blue",
+                position: "absolute", top: 30,
+                zIndex: 9999,
+                alignItems: "center",
+                width: "100%",
+                justifyContent: "space-between"
+            }}>
+                <CustomText style={{ fontSize: 40, }}>Comments</CustomText>
+                <RectBtn name="minus" callback={() => close()} />
+            </View>
             <ScrollView showsHorizontalScrollIndicator={false} horizontal style={{
 
             }}>
