@@ -15,6 +15,7 @@ import Animated, {
 import { resetScroll, stopScroll } from "../../redux/slices/tabSlice";
 import LineLoader from "../line_loader";
 import Theme from "../../styles/theme";
+import MainDrawerPlayer from "../main_drawer_player";
 
 const AppTabBar = () => {
   const [initialAnimation, setInitialAnimation] = useState(true);
@@ -109,6 +110,7 @@ const AppTabBar = () => {
   return (
     <Animated.View style={[styles.tabBar, animatedStyles]}>
 
+      <MainDrawerPlayer />
       {isPostLoading && <LineLoader name="postUpload" status={postLoader} />}
       <View style={{
         paddingHorizontal: 20, flexDirection: "row",
@@ -221,6 +223,7 @@ const styles = StyleSheet.create({
 
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.05)",
+    // backgroundColor: "red",
     backgroundColor: "#000000",
   },
   button: {

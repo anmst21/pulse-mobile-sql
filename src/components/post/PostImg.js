@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { BlurView } from 'expo-blur'
 
-const PostImg = ({ activeCommentId, audio }) => {
+const PostImg = ({ isOpenComments, audio }) => {
     return (
         <>
             {audio.img && <>
@@ -12,7 +12,7 @@ const PostImg = ({ activeCommentId, audio }) => {
                 />
                 <BlurView
                     style={styles.stretchBg}
-                    intensity={activeCommentId === audio.id ? 20 : 0}
+                    intensity={isOpenComments ? 20 : 0}
                     tint="systemThickMaterialLight"
                 />
             </>

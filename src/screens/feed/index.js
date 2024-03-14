@@ -6,7 +6,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import ReportInput from "../../components/report_input";
 import RectBtn from "../../components/rect_btn";
 import Animated, {
@@ -27,7 +27,7 @@ import Map from "../map";
 import CustomText from "../../components/text";
 import MapContainer from "../map";
 import UserPosts from "../profile/UserPosts";
-import { fetchFeed, setActiveReportId } from "../../redux";
+import { fetchFeed, } from "../../redux";
 import RenderSkeleton from "../../components/render_skeleton";
 import { BlurView } from "expo-blur";
 
@@ -40,7 +40,11 @@ const FeedScreen = ({ navigation }) => {
   const scrollY = useSharedValue(0);
   const feedOpacity = useSharedValue(0);
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
-  const { posts, isLoading, activeReportId } = useSelector((state) => state?.feed);
+  const { posts, isLoading, } = useSelector((state) => state?.feed);
+
+  const [activeReportId, setActiveReportId] = useState(null)
+
+
   const [feedHeight, setFeedHeight] = useState(null)
   const [feedY, setFeedY] = useState(0);
 
@@ -48,9 +52,11 @@ const FeedScreen = ({ navigation }) => {
   const [topInputValue, setTopInputValue] = useState("")
   const [botInputValue, setBotInputValue] = useState("")
 
+
   console.log("imgpost", posts[0])
 
   const [activeDrawerId, setActiveDrawerId] = useState(null)
+
 
 
   console.log("setFeedY", feedY)
@@ -141,7 +147,7 @@ const FeedScreen = ({ navigation }) => {
 
   const onSubmitReport = async () => {
     try {
-      dispatch(setActiveReportId(null))
+      setActiveReportId(null)
 
       const object = posts.find(item => item.id === activeReportId);
 
@@ -186,10 +192,11 @@ const FeedScreen = ({ navigation }) => {
                     <UserPosts
                       activeDrawer={activeDrawerId === audio.id}
                       setActiveDrawerId={setActiveDrawerId}
-
+                      setActiveReportId={setActiveReportId}
+                      activeReport={activeReportId === audio.id}
                       key={audio.id}
                       feedY={feedY}
-
+                      activeReportId={activeReportId}
                       audio={audio}
                       isLoading={isLoading}
                       userId={storedUserInfo}
@@ -210,7 +217,7 @@ const FeedScreen = ({ navigation }) => {
               <View style={styles.modalHeader}>
                 <CustomText style={{ fontSize: 25 }}>Report a post</CustomText>
                 {/* <RectBtn /> */}
-                <RectBtn name="minus" callback={() => dispatch(setActiveReportId(null))
+                <RectBtn name="minus" callback={() => setActiveReportId(null)
                 } />
               </View>
               <ReportInput

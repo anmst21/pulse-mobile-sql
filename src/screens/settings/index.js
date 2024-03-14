@@ -97,9 +97,9 @@ const Settings = ({ route }) => {
             <TouchableWithoutFeedback>
               <ChangeProfileImg />
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
+            {/* <TouchableWithoutFeedback>
               <TagsSettings />
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback> */}
             <TouchableWithoutFeedback>
               <GenrePreferences />
             </TouchableWithoutFeedback>

@@ -63,6 +63,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-sound-level": "^1.2.0",
     "react-native-svg": "^13.14.0",
+    "react-native-track-player": "^4.0.1",
     "react-native-webview": "^13.6.2",
     "react-native-workers": "^0.3.1",
     "react-native-worklets-core": "^0.2.2",

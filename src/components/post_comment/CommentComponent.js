@@ -138,7 +138,7 @@ const CommentComponent = ({ containerWidth, comment, setComments, setReply, repl
                     <View style={styles.like}>
                         <TouchableOpacity onPress={() => likeComment(storedUserInfo.id, comment.id)}>
 
-                            <Icon style={{ fill: comment.liked && "white" }} name="heartIcon" />
+                            <Icon style={{ fill: comment.liked ? "white" : "transparent" }} name="heartIcon" />
 
                         </TouchableOpacity>
                         <CustomText style={styles.likeText}>{comment.likes_count}</CustomText>

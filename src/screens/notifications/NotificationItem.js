@@ -104,7 +104,7 @@ const NotificationItem = ({ setActiveItem, isActive, item, handleAccept, handleD
 
 
 
-    return <PanGestureHandler onGestureEvent={panGestureEvent}>
+    return <PanGestureHandler onGestureEvent={panGestureEvent} activeOffsetX={[-10, 10]} >
         <Animated.View style={[styles.slidingContainer, animatedStyles]}>
             <View style={[styles.ctaBtn, { width: calcWidth }]}>
                 {item.type === "subscription_request" &&

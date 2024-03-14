@@ -13,7 +13,7 @@ import RectBtn from "../rect_btn";
 const FollowUnfollowButton = ({ item, results, setResults, post }) => {
   const dispatch = useDispatch();
 
-  console.log("status", results[0].status)
+  // console.log("status", results[0].status)
 
   const handleUnfollow = (userId) => {
     if (!post) {

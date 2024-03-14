@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useCallback } from 'react'
 import CustomText from '../text'
 import Icon from '../icon'
 
 const RectBtn = ({ count, name, callback, state }) => {
 
-
+    const run = useCallback(() => { callback() }, [callback])
     const NumberBtn = ({ type, icon }) => {
-        return <TouchableOpacity onPress={callback}>
+        return <TouchableOpacity onPress={run}>
             <View style={[
                 styles.message,
                 {

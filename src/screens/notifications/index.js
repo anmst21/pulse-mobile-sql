@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image, Button, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { View, Text, FlatList, Image, Button, StyleSheet, TouchableWithoutFeedback, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomText from "../../components/text";
 import sqlApi from "../../redux/axios/sqlApi";
@@ -137,18 +137,25 @@ const Notifications = () => {
 
 
   return (
-    <View style={{ backgroundColor: "black", flex: 1, paddingTop: 130 }}>
+    <View style={{ paddingBottom: 100, backgroundColor: "black", flex: 1, paddingTop: 130 }}>
       <View style={styles.header}>
         <NotificationHeader />
       </View>
-      <FlatList
-        data={notifications}
-        renderItem={({ item }) => <NotificationItem
+      <ScrollView >
+        {notifications.map((item) => <NotificationItem
           isActive={activeItemId === item.id}
           setActiveItem={handleSetActiveItem}
-          storedUserInfo={storedUserInfo} handleAccept={handleAccept} handleDecline={handleDecline} handleSeen={handleSeen} item={item} />}
-        keyExtractor={(item) => item.id}
-      />
+          storedUserInfo={storedUserInfo}
+          handleAccept={handleAccept}
+          handleDecline={handleDecline}
+          handleSeen={handleSeen}
+          item={item}
+          key={item.id}
+        />
+
+        )}
+
+      </ScrollView>
     </View>
   );
 };

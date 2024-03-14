@@ -2,13 +2,13 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import {
   deleteAudio,
   setActiveCommentId,
   toggleBookmark,
-  setActiveReportId,
+
   setActiveShareId
 } from "../../redux";
 import sqlApi from "../../redux/axios/sqlApi"
@@ -25,6 +25,8 @@ import Animated, {
   withSpring,
   runOnJS,
   useAnimatedGestureHandler,
+  withTiming,
+  Easing
 } from "react-native-reanimated";
 import PostFooter from "../../components/post/PostFooter";
 import PostPlayer from "../../components/pulse_player/PostPlayer";
@@ -35,15 +37,23 @@ import Icon from "../../components/icon";
 
 
 
-const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, feedY, activeDrawer, setActiveDrawerId }) => {
+
+const UserPosts = ({ activeReport, setActiveReportId, activeReportId, audio, userId, scrollViewRef, feedHeight: screenHeight, feedY, activeDrawer, setActiveDrawerId }) => {
   const dispatch = useDispatch();
   const storedUserInfo = useSelector((state) => state.user?.userInfo.id);
 
-  const { activeCommentId, activeReportId, activeShareId } = useSelector((state) => state.feed);
+  const { activeCommentId, activeShareId } = useSelector(
+    state => ({
+      activeCommentId: state.feed.activeCommentId,
+      activeShareId: state.feed.activeShareId,
+    }),
+    shallowEqual // This tells Redux to do a shallow equality check on objects/arrays
+  );
   const [isOpenTags, setIsOpenTags] = useState(false)
   const [isOpenComments, setIsOpenComments] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(audio.bookmarked)
   const [isSeen, setIsSeen] = useState(audio.isSeen)
+  const [isOpenShare, setIsOpenShare] = useState(false)
   const [seen, setSeen] = useState(audio.seen)
 
 
@@ -60,6 +70,8 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
     console.log("compHeight", height)
   };
 
+
+
   const panGestureEvent = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       ctx.startX = translateX.value;
@@ -75,9 +87,16 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
     },
     onEnd: () => {
       if (translateX.value < -100) {
-        translateX.value = withSpring(-calcWidth);
+
+        translateX.value = withTiming(-calcWidth, {
+          duration: 300,
+          easing: Easing.sin,
+        });
       } else {
-        translateX.value = withSpring(0);
+        translateX.value = withTiming(0, {
+          duration: 300,
+          easing: Easing.sin,
+        });
         runOnJS(setActiveDrawerId)(null)
       }
     },
@@ -90,13 +109,23 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
   });
 
 
-  useEffect(() => {
-    if (!activeDrawer) { translateX.value = withSpring(0); }
-    if (activeShareId === audio.id && !activeDrawer) {
-      dispatch(setActiveShareId(null))
+  const handleDrawerEffect = useCallback(() => {
+    if (isOpenShare && !activeDrawer) {
+      setIsOpenShare(false)
+    }
+    if (!activeDrawer) {
+      translateX.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.sin,
+      });
     }
 
-  }, [activeDrawer])
+  }, [activeDrawer, translateX, activeShareId, audio.id, dispatch, setIsOpenShare]); // Include all dependencies used in the callback
+
+  // Then, use this memoized function inside your useEffect
+  useEffect(() => {
+    handleDrawerEffect();
+  }, [handleDrawerEffect]);
 
   useEffect(() => {
     if (audio.isSeen === true && !isSeen) {
@@ -106,10 +135,10 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
   }, [audio.isSeen])
 
 
-  useEffect(() => {
-    !activeCommentId && setActiveCommentId(null)
-
-  }, [activeCommentId])
+  // useEffect(() => {
+  //   !activeCommentId && setActiveCommentId(null)
+  //   activeCommentId !== audio.id && setIsOpenComments(false)
+  // }, [activeCommentId])
 
   // useEffect(() => {
   //   activeCommentId !== audio.id && setIsOpenComments(false)
@@ -160,40 +189,7 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
   console.log("container", feedY)
 
 
-  const scrollToChild = () => {
-    childRef.current.measure((x, y, width, height, pageX, pageY) => {
-      scrollViewRef.current.measure((xX, yY, widthW, heightH, pageXX, pageYY) => {
-        console.log("popopo", prevChildRef, y, height, pageY)
-        console.log("true?", null < 1040)
-        // down popopo 233.33333333333348 3120 520 144.33333333333348
-        if (prevChildRef < y && prevChildRef !== null) {
-          scrollViewRef.current.scrollTo({ y: feedY + y, animated: true });
-          console.log("action under")
-        } else if (prevChildRef > y && prevChildRef !== null) {
-          scrollViewRef.current.scrollTo({ y: y + 10 - height, animated: true });
-          console.log("action onTop")
-        } else {
-          scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
-          console.log("action null")
 
-        }
-        // if (prevChildRef <= y && prevChildRef) {
-
-        //   scrollViewRef.current.scrollTo({ y: y + 10 + 500, animated: true });
-        // } else if (prevChildRef >= y && prevChildRef) {
-
-        //   scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
-        // } else if (!prevChildRef && !isOpenComments) {
-        //   scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
-        // }
-
-        scrollViewRef.current.scrollTo({ y: pageY + 10 + height, animated: true });
-
-        setPrevChildRef(pageY)
-
-      });
-    })
-  };
 
   const handleDelete = (id) => {
     if (id) {
@@ -202,23 +198,15 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
   };
 
 
-  const toggleComments = () => {
-    isOpenComments && setPrevChildRef(null),
-      !isOpenComments ?
-        (
-          setIsOpenComments(true),
-          dispatch(setActiveCommentId(audio.id)),
-          translateX.value = withSpring(0),
-          setActiveDrawerId(null)
-        ) :
-        (
-          setIsOpenComments(false),
-          dispatch(setActiveCommentId(null)),
-          translateX.value = withSpring(0),
-          setActiveDrawerId(null)
-        )
+  const toggleComments = useCallback(() => {
+    setIsOpenComments(prevState => !prevState);
+    translateX.value = withTiming(0, {
+      duration: 300,
+      easing: Easing.sin,
+    });
+    setActiveDrawerId(null)
 
-  }
+  }, [translateX.value, setActiveDrawerId, setIsOpenComments, setPrevChildRef])
 
   const toggleBookmarkState = () => {
     if (audio.bookmarked) {
@@ -230,42 +218,52 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
   }
 
   const toggleTags = () => {
-    translateX.value = withSpring(0), setActiveDrawerId(null)
+    translateX.value = withTiming(0, {
+      duration: 300,
+      easing: Easing.sin,
+    }), setActiveDrawerId(null)
     setIsOpenTags(!isOpenTags)
   }
 
   const toggleDrawer = useCallback(() => {
     if (activeDrawer) {
-      translateX.value = withSpring(0);
+      translateX.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.sin,
+      });
       setActiveDrawerId(null);
     } else {
-      translateX.value = withSpring(-calcWidth);
+      translateX.value = withTiming(-calcWidth, {
+        duration: 300,
+        easing: Easing.sin,
+      });
       setActiveDrawerId(audio.id);
     }
-  }, [activeDrawer]);
+  }, [activeDrawer, translateX.value, setActiveDrawerId]);
 
-  const toggleReport = () => {
-    if (activeReportId) {
-      translateX.value = withSpring(0)
-      setActiveDrawerId(null)
-      dispatch(setActiveReportId((null)))
+  const toggleReport = useCallback(() => {
+    if (activeReport) {
+      setActiveReportId(null);
+      // setActiveDrawerId(null);
+      // translateX.value = withTiming(0, {
+      //   duration: 300,
+      //   easing: Easing.sin,
+      // });
     } else {
-      translateX.value = withSpring(-calcWidth)
-      setActiveDrawerId(null)
-      dispatch(setActiveReportId((audio.id)))
+      setActiveReportId(audio.id);
+      // setActiveDrawerId(null);
+      // translateX.value = withTiming(-calcWidth, {
+      //   duration: 300,
+      //   easing: Easing.sin,
+      // });
     }
-  }
+  }, [setActiveReportId, activeReport]); // Dependencies array
+
+
   const toggleShare = () => {
-    if (activeShareId) {
+    setIsOpenShare(prev => !prev)
 
-      dispatch(setActiveShareId((null)))
-    } else {
-
-      dispatch(setActiveShareId((audio.id)))
-    }
   }
-
-
 
   const modalObject = [
     {
@@ -296,14 +294,19 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
           <View style={[styles.ctaBtn, {
             width: calcWidth, zIndex: 9999
           }]}>
-            <RectBtn count={audio.comment_count} state={activeCommentId === audio.id} name="comments" callback={toggleComments} />
+            <RectBtn count={audio.comment_count} state={isOpenComments} name="comments" callback={toggleComments} />
             <RectBtn state={isBookmarked} name="bookmark" callback={toggleBookmarkState} />
             <RectBtn count={audio.tags.length} state={isOpenTags} name="tags" callback={toggleTags} />
             <View style={{
               zIndex: 9999
             }}>
-              {activeShareId === audio.id && <Modal modalList={modalObject} />}
-              <RectBtn state={activeShareId === audio.id} name="share" callback={toggleShare} />
+              {isOpenShare &&
+                <>
+
+                  <Modal modalList={modalObject} />
+                </>
+              }
+              <RectBtn state={isOpenShare} name="share" callback={toggleShare} />
             </View>
             <RectBtn state={activeReportId === audio.id} name="report" callback={toggleReport} />
             {audio.user_id === storedUserInfo && <RectBtn state={isOpenTags} name="trash" callback={() => handleDelete(audio.id)} />}
@@ -315,7 +318,7 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
             onLayout={onEditorRightLayout}
           >
             <View style={styles.outerPost} >
-              <PostImg activeCommentId={activeCommentId} audio={audio} />
+              <PostImg isOpenComments={isOpenComments} audio={audio} />
 
               <PostSeen isSeen={isSeen} />
 
@@ -353,7 +356,7 @@ const UserPosts = ({ audio, userId, scrollViewRef, feedHeight: screenHeight, fee
 };
 
 
-export default UserPosts;
+export default React.memo(UserPosts);
 
 const styles = StyleSheet.create({
   drawerBtn: {
@@ -394,3 +397,39 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 });
+
+
+// const scrollToChild = () => {
+//   childRef.current.measure((x, y, width, height, pageX, pageY) => {
+//     scrollViewRef.current.measure((xX, yY, widthW, heightH, pageXX, pageYY) => {
+//       console.log("popopo", prevChildRef, y, height, pageY)
+//       console.log("true?", null < 1040)
+//       // down popopo 233.33333333333348 3120 520 144.33333333333348
+//       if (prevChildRef < y && prevChildRef !== null) {
+//         scrollViewRef.current.scrollTo({ y: feedY + y, animated: true });
+//         console.log("action under")
+//       } else if (prevChildRef > y && prevChildRef !== null) {
+//         scrollViewRef.current.scrollTo({ y: y + 10 - height, animated: true });
+//         console.log("action onTop")
+//       } else {
+//         scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
+//         console.log("action null")
+
+//       }
+//       // if (prevChildRef <= y && prevChildRef) {
+
+//       //   scrollViewRef.current.scrollTo({ y: y + 10 + 500, animated: true });
+//       // } else if (prevChildRef >= y && prevChildRef) {
+
+//       //   scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
+//       // } else if (!prevChildRef && !isOpenComments) {
+//       //   scrollViewRef.current.scrollTo({ y: y + 10, animated: true });
+//       // }
+
+//       scrollViewRef.current.scrollTo({ y: pageY + 10 + height, animated: true });
+
+//       setPrevChildRef(pageY)
+
+//     });
+//   })
+// };

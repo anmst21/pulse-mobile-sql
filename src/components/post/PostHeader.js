@@ -33,11 +33,11 @@ const PostHeader = ({ audio, userId }) => {
 
     return (
         <View style={styles.postHeader}>
-            {/* {audio?.user_id !== userId &&
+            {audio?.user_id !== userId &&
                 <View style={styles.dotMenu}>
                     <FollowUnfollowButton item={audio} post />
                 </View>
-            } */}
+            }
             <ProfilePicture userId={userId} imageLink={audio.image_link?.medium} width={30} />
 
             {(audio.bpm || audio.location) &&
