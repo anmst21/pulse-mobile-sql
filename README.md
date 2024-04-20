@@ -1,4 +1,9 @@
 # pulllse-mobile
 
-yarn install 
-yarn add package_name
+
+
+# Getting started 
+
+npx react-native start --reset-cache
+npx react-native run-ios --simulator="iPhone 14"
+
