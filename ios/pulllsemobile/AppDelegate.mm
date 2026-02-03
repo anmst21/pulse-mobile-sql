@@ -3,13 +3,15 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import "ReactNativeConfig.h"
 
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"REDACTED"]; // add this line using the api key obtained from Google Console
+  NSString *googleMapsApiKey = [ReactNativeConfig envFor:@"GOOGLE_MAPS_API_KEY"];
+  [GMSServices provideAPIKey:googleMapsApiKey];
   self.moduleName = @"main";
 
   // You can add your custom initial props in the dictionary below.
