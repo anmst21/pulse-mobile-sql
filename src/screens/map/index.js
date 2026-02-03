@@ -20,7 +20,7 @@ import customMapStyle from "../../components/map/mapStyle";
 import CustomText from "../../components/text";
 import Button from "../../components/button"
 
-// MapboxGL.setAccessToken("REDACTED")
+// MapboxGL.setAccessToken(config.mapBoxToken)
 
 const MapContainer = () => {
 
